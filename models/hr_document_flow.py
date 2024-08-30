@@ -6,17 +6,19 @@ from odoo import models, fields
 class DocumentFlow(models.Model):
     _name = 'hr.document_flow'
     _description = 'HR Document Flow'
+    _inherit = ['mail_template']
 
     name = fields.Char(string='Name', required=True)
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
     tag_ids = fields.Many2many('hr.document_flow.tags', string='Tags')
     validity = fields.Date(string='Valid until')
     state = fields.Selection([
+        ('new', 'New'),
         ('shared', 'Shared'),
         ('sent', 'Sent'),
         ('signed', 'Signed'),
         ('canceled', 'Cancelled'),
-        ('expired', 'Expired')], string='State', default='shared')
+        ('expired', 'Expired')], string='State', default='new')
     signers_lines = fields.One2many('hr.document_flow.signers', 'document_id')
 
 
@@ -34,20 +36,19 @@ class Role(models.Model):
 
     name = fields.Char(string='Name', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
-    color = fields.Integer(string='Color')
 
 
 class Signers(models.Model):
     _name = 'hr.document_flow.signers'
     _description = 'HR Document Flow: Signers'
 
-    employee_id = fields.Many2one('hr.employee', string='Singer')
+    employee_id = fields.Many2one('hr.employee', string='Singer', required=True)
     signer_email = fields.Char(string='E-mail', related='employee_id.work_email')
     mobile_phone = fields.Char(string='Phone number', related='employee_id.mobile_phone')
     role_id = fields.Many2one('hr.document_flow.role', string='Role')
     signing_date = fields.Date(string='Signing date')
     color = fields.Integer(string='Color', default=0)
-    state = fields.Selection([('new', 'New'), ('sent', 'Sent'), ('completed', 'Completed'), ('canceled', 'Canceled')], string='State', default='sent')
+    state = fields.Selection([('sent', 'Sent'), ('completed', 'Completed'), ('canceled', 'Canceled')], string='State', default='sent', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
 
 

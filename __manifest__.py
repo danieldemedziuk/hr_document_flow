@@ -12,6 +12,7 @@
     'category': 'Human Resources',
     'depends': [
         'hr',
+        'mail_template',
     ],
     'data': [
         'security/ir.model.access.csv',
