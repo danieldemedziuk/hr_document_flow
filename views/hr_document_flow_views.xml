@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="hr_document_flow_tree_view" model="ir.ui.view">
+            <field name="name">HR Document Flow tree view</field>
+            <field name="model">hr.document_flow</field>
+            <field name="arch" type="xml">
+                <tree string='Document flow'>
+                    <field name="name"/>
+                    <field name="validity"/>
+                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_document_flow_form_view" model="ir.ui.view">
+            <field name="name">HR Document Flow form view</field>
+            <field name="model">hr.document_flow</field>
+            <field name="arch" type="xml">
+                <form string='Document flow'>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div name="title-name" class="oe_title">
+                            <h2>
+                                <field name="name" placeholder="Document title..." attrs="{'readonly': [('state', '!=', 'new')]}"/>
+                            </h2>
+                        </div>
+
+                        <field name="validity"/>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_document_flow_tags_tree_view" model="ir.ui.view">
+            <field name="name">HR Document Flow Tags tree view</field>
+            <field name="model">hr.document_flow.tags</field>
+            <field name="arch" type="xml">
+                <tree string='Tags' editable="bottom">
+                    <field name="name"/>
+                    <field name="color"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="my_hr_document_flow_act" model="ir.actions.act_window">
+            <field name="name">My documents</field>
+            <field name="res_model">hr.document_flow</field>
+            <field name="domain">[('create_uid', '=', uid)]</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record id="all_hr_document_flow_act" model="ir.actions.act_window">
+            <field name="name">All documents</field>
+            <field name="res_model">hr.document_flow</field>
+            <field name="domain">[]</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+    </data>
+
+    <menuitem name="Document flow" id="menu_root" web_icon="hr_document_flow,static/description/icon.png"/>
+    <menuitem name="Documents" id="menu_document_flow" parent="menu_root" sequence="10"/>
+    <menuitem name="My documents" id="menu_my_document_flow" action="my_hr_document_flow_act" parent="menu_document_flow" sequence="1"/>
+    <menuitem name="All documents" id="menu_all_document_flow" action="all_hr_document_flow_act" parent="menu_document_flow" sequence="5"/>
+
+    <menuitem name="Configuration" id="menu_config" parent="menu_root" sequence="20"/>
+
+</odoo>
