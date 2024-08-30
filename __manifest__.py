@@ -14,9 +14,8 @@
         'hr',
     ],
     'data': [
-        # 'security/hr_delegations_security.xml',
         'security/ir.model.access.csv',
-        # 'views/hr_delegations_views.xml',
+        'views/hr_document_flow_views.xml',
     ],
     'auto_install': False,
     'application': True,
