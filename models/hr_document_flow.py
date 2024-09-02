@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, AccessError, ValidationError
 
 
 class DocumentFlow(models.Model):
     _name = 'hr.document_flow'
     _description = 'HR Document Flow'
-    _inherit = ['mail_template']
+    _inherit = ['mail_template', 'mail.activity.mixin', 'mail.thread']
 
     name = fields.Char(string='Name', required=True)
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
@@ -20,6 +21,30 @@ class DocumentFlow(models.Model):
         ('canceled', 'Cancelled'),
         ('expired', 'Expired')], string='State', default='new')
     signers_lines = fields.One2many('hr.document_flow.signers', 'document_id')
+
+    @api.model
+    def create(self, vals):
+        res = super(DocumentFlow, self).create(vals)
+
+        if 'attachment_ids' in vals:
+            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
+            attachments.write({
+                'res_model': self._name,
+                'res_id': res.id,
+            })
+
+        return res
+
+    @api.multi
+    def action_get_attachment_tree_view(self):
+        action = self.env.ref('base.action_attachment').read()[0]
+        action['context'] = {
+            'default_res_model': self._name,
+            'default_res_id': self.ids[0],
+        }
+        action['domain'] = str(["&", ('res_model', '=', self._name), ('res_id', 'in', self.ids)])
+
+        return action
 
 
 class Tags(models.Model):
