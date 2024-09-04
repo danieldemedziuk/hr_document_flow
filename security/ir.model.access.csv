@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
 access_hr_document_flow_manager,hr.document_flow manager,model_hr_document_flow,hr.group_hr_manager,1,1,1,1
-access_hr_document_flow_tags_manager,hr.document_flow.tags manager,model_hr_document_flow_tags,hr.group_hr_manager,1,1,1,1
+access_hr_document_flow_tags_manager,hr.document_flow.tags manager,model_hr_document_flow_type,hr.group_hr_manager,1,1,1,1
 access_hr_document_flow_role_manager,hr.document_flow.role manager,model_hr_document_flow_role,hr.group_hr_manager,1,1,1,1
 access_hr_document_flow_signers_manager,hr.document_flow.signers manager,model_hr_document_flow_signers,hr.group_hr_manager,1,1,1,1
 access_hr_document_flow_employee_cc_manager,hr.document_flow.employee_cc manager,model_hr_document_flow_employee_cc,hr.group_hr_manager,1,1,1,1
