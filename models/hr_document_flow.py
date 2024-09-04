@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, AccessError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class DocumentFlow(models.Model):
     name = fields.Char(string='Name', required=True)
     employee_signer_ids = fields.Many2many('hr.employee', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
-    tag_ids = fields.Many2many('hr.document_flow.tags', string='Tags')
+    doc_type = fields.Many2one('hr.document_flow.type', string='Type', required=True)
     validity = fields.Date(string='Valid until', track_visibility='onchange')
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -49,17 +50,20 @@ class DocumentFlow(models.Model):
     def write(self, vals):
         if vals.get('signers_lines'):
             self.action_state_signers_lines(vals.get('signers_lines'))
-
-        if 'attachment_ids' in vals:
-            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
-            attachments.write({
-                'res_model': self._name,
-                'res_id': self.id,
-            })
+            self.add_document_to_attachment(vals.get('signers_lines'))
 
         res = super(DocumentFlow, self).write(vals)
 
         return res
+
+    def add_document_to_attachment(self, vals):
+        print("VALS", vals)
+        if vals['signers_lines'][0][2] and 'attachment_ids' in vals['signers_lines'][0][2]:
+            attachments = self.env['ir.attachment'].browse(vals['signers_lines'][0][2]['attachment_ids'][0][2])
+            attachments.write({
+                'res_model': self._name,
+                'res_id': self.id,
+            })
 
     @api.multi
     def action_get_attachment_tree_view(self):
@@ -79,13 +83,17 @@ class DocumentFlow(models.Model):
         self.state = 'canceled'
 
     def action_send_message(self):
-        self.state = 'sent'
-        self.archive_activity_log('sent', self.write_date, self.creator_id)
+        if self.signers_lines and self.attachment_ids:
+            self.state = 'sent'
+            self.archive_activity_log('sent', self.write_date, self.creator_id)
 
-        for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
-            line.state = 'sent'
-            self.prepare_message(line.signer_email)
-            break
+            for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
+                line.state = 'sent'
+                self.prepare_message(line.signer_email)
+                break
+        else:
+            raise UserError(
+                _('Cannot send form for signature because required fields are missing. Check if you are sure you have added the document for signature or the list of signers is complete.'))
 
     @api.onchange('signers_lines')
     def fill_signer_lines(self):
@@ -126,14 +134,6 @@ class DocumentFlow(models.Model):
                 item[2]['state'] = 'completed'
                 self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
                 self.action_send_message()
-
-
-class Tags(models.Model):
-    _name = 'hr.document_flow.tags'
-    _description = 'HR Document Flow: Tags'
-
-    name = fields.Char(string='Name', required=True)
-    color = fields.Integer(string='Color index')
 
 
 class Role(models.Model):
@@ -188,3 +188,10 @@ class ActivityLogs(models.Model):
     log_date = fields.Datetime(string='Log date')
     employee_id = fields.Many2one('hr.employee', string='Contact')
     document_id = fields.Many2one('hr.document_flow')
+
+
+class DocumentType(models.Model):
+    _name = 'hr.document_flow.type'
+    _description = 'HR Document flow: Type'
+
+    name = fields.Char(string='Name', required=True)
