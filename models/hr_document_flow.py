@@ -14,9 +14,9 @@ class DocumentFlow(models.Model):
 
     name = fields.Char(string='Name', required=True)
     employee_signer_ids = fields.Many2many('hr.employee', string='Signers')
-    attachment_ids = fields.Many2many('ir.attachment', string='Attachments')
+    attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     tag_ids = fields.Many2many('hr.document_flow.tags', string='Tags')
-    validity = fields.Date(string='Valid until')
+    validity = fields.Date(string='Valid until', track_visibility='onchange')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('new', 'New'),
@@ -24,16 +24,17 @@ class DocumentFlow(models.Model):
         ('signed', 'Signed'),
         ('canceled', 'Cancelled'),
         ('expired', 'Expired')], string='State', default='draft')
-    signers_lines = fields.One2many('hr.document_flow.signers', 'document_id')
+    signers_lines = fields.One2many('hr.document_flow.signers', 'document_id', required=True)
     employee_cc_ids = fields.One2many('hr.document_flow.employee_cc', 'document_id')
     activity_log_ids = fields.One2many('hr.document_flow.activity_logs', 'document_id')
+    creator_id = fields.Many2one('hr.employee', string='Created by', default=lambda lm: lm.env['hr.employee'].search([('user_id', '=', lm.env.user.id)]))
+    complete_flow = fields.Boolean(string='Complete flow', compute="_check_current_flow", default=False)
 
     @api.model
     def create(self, vals):
         vals['state'] = 'new'
         res = super(DocumentFlow, self).create(vals)
-        cur_employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.user.id)])
-        res.archive_activity_log('create', res.create_date, cur_employee_id)
+        res.archive_activity_log('create', res.create_date, res.creator_id)
 
         if 'attachment_ids' in vals:
             attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
@@ -42,11 +43,20 @@ class DocumentFlow(models.Model):
                 'res_id': res.id,
             })
 
-        res.prepare_message('daniel.demedziuk@mjgroup.pl')
         return res
 
     @api.multi
     def write(self, vals):
+        if vals.get('signers_lines'):
+            self.action_state_signers_lines(vals.get('signers_lines'))
+
+        if 'attachment_ids' in vals:
+            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
+            attachments.write({
+                'res_model': self._name,
+                'res_id': self.id,
+            })
+
         res = super(DocumentFlow, self).write(vals)
 
         return res
@@ -69,10 +79,13 @@ class DocumentFlow(models.Model):
         self.state = 'canceled'
 
     def action_send_message(self):
-        print("SEND EMAIL MESSAGE")
         self.state = 'sent'
-        cur_employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.user.id)])
-        self.archive_activity_log('sent', self.write_date, cur_employee_id)
+        self.archive_activity_log('sent', self.write_date, self.creator_id)
+
+        for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
+            line.state = 'sent'
+            self.prepare_message(line.signer_email)
+            break
 
     @api.onchange('signers_lines')
     def fill_signer_lines(self):
@@ -95,8 +108,24 @@ class DocumentFlow(models.Model):
         <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
                     <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">szczegóły w Odoo.</span>
                     </p>"""
+        email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
-        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer)
+        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list)
+
+    def _check_current_flow(self):
+        check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
+
+        if all(check_list):
+            self.complete_flow = True
+        else:
+            self.complete_flow = False
+
+    def action_state_signers_lines(self, vals):
+        for item in vals:
+            if item[0] == 1:
+                item[2]['state'] = 'completed'
+                self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+                self.action_send_message()
 
 
 class Tags(models.Model):
@@ -129,25 +158,24 @@ class Signers(models.Model):
     color = fields.Integer(string='Color', default=0)
     state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('canceled', 'Canceled')], string='State', default='await', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
+    rel_state = fields.Selection(related='document_id.state')
 
     @api.model
     def create(self, vals):
-        vals['state'] = 'sent'
         res = super(Signers, self).create(vals)
 
         return res
 
     def resend_email(self):
-        print("SEND AGAIN EMAIL TO", self.employee_id.name, self.signer_email)
-        cur_employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.user.id)])
-        self.document_id.archive_activity_log('resent', datetime.now(), cur_employee_id)
+        self.document_id.prepare_message(self.signer_email)
+        self.document_id.archive_activity_log('resent', datetime.now(), self.document_id.creator_id)
 
 
 class ContactsInCopy(models.Model):
     _name = 'hr.document_flow.employee_cc'
     _description = 'HR Document Flow: Employee CC'
 
-    employee_id = fields.Many2one('hr.employee', string='Contacts in copy')
+    employee_id = fields.Many2one('hr.employee', string='Contacts in copy', required=True)
     email = fields.Char(string='E-mail', related='employee_id.work_email')
     document_id = fields.Many2one('hr.document_flow')
 
