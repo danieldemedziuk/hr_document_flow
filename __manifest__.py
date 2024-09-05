@@ -15,6 +15,7 @@
         'mail_template',
     ],
     'data': [
+        'security/hr_document_flow_security.xml',
         'security/ir.model.access.csv',
         'views/hr_document_flow_views.xml',
     ],
