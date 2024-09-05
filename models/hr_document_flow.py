@@ -14,7 +14,7 @@ class DocumentFlow(models.Model):
     _inherit = ['mail_template', 'mail.activity.mixin', 'mail.thread']
 
     name = fields.Char(string='Name', required=True)
-    employee_signer_ids = fields.Many2many('hr.employee', string='Signers')
+    user_signer_ids = fields.Many2many('res.users', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     doc_type = fields.Many2one('hr.document_flow.type', string='Type', required=True)
     validity = fields.Date(string='Valid until', track_visibility='onchange')
@@ -30,6 +30,14 @@ class DocumentFlow(models.Model):
     activity_log_ids = fields.One2many('hr.document_flow.activity_logs', 'document_id')
     creator_id = fields.Many2one('hr.employee', string='Created by', default=lambda lm: lm.env['hr.employee'].search([('user_id', '=', lm.env.user.id)]))
     complete_flow = fields.Boolean(string='Complete flow', compute="_check_current_flow", default=False)
+    current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
+
+    def get_current_employee(self):
+        for rec in self:
+            if rec.creator_id.user_id == self.env.user or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
+                rec.current_employee = True
+            else:
+                rec.current_employee = False
 
     @api.model
     def create(self, vals):
@@ -49,21 +57,27 @@ class DocumentFlow(models.Model):
     @api.multi
     def write(self, vals):
         if vals.get('signers_lines'):
-            self.action_state_signers_lines(vals.get('signers_lines'))
+            self.check_if_row_deleted(vals.get('signers_lines'))
+            self.action_change_state_signers_lines(vals.get('signers_lines'))
             self.add_document_to_attachment(vals.get('signers_lines'))
 
         res = super(DocumentFlow, self).write(vals)
 
         return res
 
+    def check_if_row_deleted(self, vals):
+        for item in vals:
+            if item[0] == 2 or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
+                raise UserError(_("You cannot modify rows when the form is in this state!"))
+
     def add_document_to_attachment(self, vals):
-        print("VALS", vals)
-        if vals['signers_lines'][0][2] and 'attachment_ids' in vals['signers_lines'][0][2]:
-            attachments = self.env['ir.attachment'].browse(vals['signers_lines'][0][2]['attachment_ids'][0][2])
-            attachments.write({
-                'res_model': self._name,
-                'res_id': self.id,
-            })
+        for item in vals:
+            if item[2] and 'attachment_ids' in item[2]:
+                attachments = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][2])
+                attachments.write({
+                    'res_model': self._name,
+                    'res_id': self.id,
+                })
 
     @api.multi
     def action_get_attachment_tree_view(self):
@@ -82,10 +96,14 @@ class DocumentFlow(models.Model):
     def action_cancel(self):
         self.state = 'canceled'
 
+    def action_expired(self):
+        self.state = 'expired'
+
     def action_send_message(self):
         if self.signers_lines and self.attachment_ids:
             self.state = 'sent'
-            self.archive_activity_log('sent', self.write_date, self.creator_id)
+
+            self.archive_activity_log('sent', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
@@ -97,7 +115,7 @@ class DocumentFlow(models.Model):
 
     @api.onchange('signers_lines')
     def fill_signer_lines(self):
-        self.employee_signer_ids = self.signers_lines.mapped('employee_id')
+        self.user_signer_ids = self.signers_lines.mapped('employee_id.user_id')
 
     def archive_activity_log(self, action, log_date, employee_id):
         self.activity_log_ids = [(0, 0, {
@@ -114,7 +132,7 @@ class DocumentFlow(models.Model):
 
         message = """<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
         <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">szczegóły w Odoo.</span>
+                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
                     </p>"""
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
@@ -128,7 +146,7 @@ class DocumentFlow(models.Model):
         else:
             self.complete_flow = False
 
-    def action_state_signers_lines(self, vals):
+    def action_change_state_signers_lines(self, vals):
         for item in vals:
             if item[0] == 1:
                 item[2]['state'] = 'completed'
@@ -159,6 +177,15 @@ class Signers(models.Model):
     state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('canceled', 'Canceled')], string='State', default='await', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
     rel_state = fields.Selection(related='document_id.state')
+    current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
+
+    @api.multi
+    def get_current_employee(self):
+        for rec in self:
+            if rec.employee_id.user_id == self.env.user:
+                rec.current_employee = True
+            else:
+                rec.current_employee = False
 
     @api.model
     def create(self, vals):
@@ -168,7 +195,7 @@ class Signers(models.Model):
 
     def resend_email(self):
         self.document_id.prepare_message(self.signer_email)
-        self.document_id.archive_activity_log('resent', datetime.now(), self.document_id.creator_id)
+        self.document_id.archive_activity_log('resent', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
 
 class ContactsInCopy(models.Model):
