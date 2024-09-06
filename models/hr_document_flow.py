@@ -67,7 +67,8 @@ class DocumentFlow(models.Model):
 
     def check_if_row_deleted(self, vals):
         for item in vals:
-            if item[0] == 2 or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
+            print("ITEM", item)
+            if item[0] == 2 or not self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
                 raise UserError(_("You cannot modify rows when the form is in this state!"))
 
     def add_document_to_attachment(self, vals):
