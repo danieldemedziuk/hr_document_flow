@@ -21,7 +21,7 @@
             <field name="name">HR Document Flow form view</field>
             <field name="model">hr.document_flow</field>
             <field name="arch" type="xml">
-                <form string='Document flow'>
+                <form string='Document flow' duplicate="0">
                     <header>
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('current_employee', '=', False), ('state', '!=', 'new')]}"/>
                         <button string="Approve" name='action_approve' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('complete_flow', '!=', True), ('state', 'not in', ['sent'])]}"
