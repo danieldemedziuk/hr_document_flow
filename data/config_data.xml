@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="config_settings_model" model="hr.document_flow.config">
+            <field name="name">Default settings</field>
+            <field name="days_notifi">3</field>
+        </record>
+
+    </data>
+</odoo>

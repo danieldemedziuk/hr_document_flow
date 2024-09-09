@@ -17,6 +17,8 @@
     'data': [
         'security/hr_document_flow_security.xml',
         'security/ir.model.access.csv',
+        'data/config_data.xml',
+        'data/cron_data.xml',
         'views/hr_document_flow_views.xml',
     ],
     'auto_install': False,

@@ -31,7 +31,9 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state', '=', 'draft')]}" groups="hr_document_flow.group_hr_document_flow_officer">
-                            <button name="action_get_attachment_tree_view" string='Documents' class="oe_stat_button" icon="fa-book" type="object"/>
+                            <button name="action_get_attachment_tree_view" class="oe_stat_button" icon="fa-book" type="object">
+                                <field name="doc_count" widget="statinfo" string="Documents"/>
+                            </button>
                         </div>
                         <div name="title-name" class="oe_title">
                             <h2>
@@ -66,7 +68,7 @@
                                                attrs="{'invisible': [('state', 'not in', ['sent', 'completed'])], 'readonly': ['|', ('current_employee', '=', False), ('state', 'in', ['completed', 'canceled'])]}"/>
                                         <field name="state"/>
                                         <button string='Resend' name="resend_email" type="object"
-                                                attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('current_employee', '=', True)]}"/>
+                                                attrs="{'invisible': ['|', '|', ('state', 'not in', ['sent']), ('rel_state', 'not in', ['sent']), ('current_employee', '=', True)]}"/>
                                         <field name="current_employee" invisible="1"/>
                                         <field name="rel_state" invisible="1"/>
                                         <field name="document_id" invisible="1"/>
@@ -134,6 +136,38 @@
             </field>
         </record>
 
+        <record id="hr_document_flow_config_tree_view" model="ir.ui.view">
+            <field name="name">HR Document Flow Config tree view</field>
+            <field name="model">hr.document_flow.config</field>
+            <field name="arch" type="xml">
+                <tree string='Configuration'>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_document_flow_config_form_view" model="ir.ui.view">
+            <field name="name">HR Document Flow Config form view</field>
+            <field name="model">hr.document_flow.config</field>
+            <field name="arch" type="xml">
+                <form string='Configuration'>
+                    <sheet>
+                        <div name="title-name" class="oe_title">
+                            <h2>
+                                <field name="name" readonly="1"/>
+                            </h2>
+                        </div>
+
+                        <group>
+                            <group string="Email notification">
+                                <field name="days_notifi"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record id="hr_document_flow_tree_view_search" model="ir.ui.view">
             <field name="name">hr_document_flow_tree_view.search</field>
             <field name="model">hr.document_flow</field>
@@ -162,8 +196,9 @@
             <field name="domain">['|', ('create_uid', '=', uid), ('user_signer_ids', '=', uid)]</field>
             <field name="search_view_id" ref="hr_document_flow_tree_view_search"/>
             <field name="context">{
-            'search_default_open_docs': 1,
-            }</field>
+                'search_default_open_docs': 1,
+                }
+            </field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -187,6 +222,12 @@
             <field name="view_mode">tree</field>
         </record>
 
+        <record id="hr_document_flow_config_act" model="ir.actions.act_window">
+            <field name="name">Config</field>
+            <field name="res_model">hr.document_flow.config</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
     </data>
 
     <menuitem name="Document flow" id="menu_root" web_icon="hr_document_flow,static/description/icon.png"/>
@@ -195,7 +236,8 @@
     <menuitem name="All documents" id="menu_all_document_flow" action="all_hr_document_flow_act" parent="menu_document_flow" sequence="5" groups="group_hr_document_flow_officer"/>
 
     <menuitem name="Configuration" id="menu_config" parent="menu_root" sequence="20" groups="group_hr_document_flow_officer"/>
-    <menuitem name="Roles" id="menu_config_roles" action="hr_document_flow_config_roles_act" parent="menu_config" sequence="1"/>
-    <menuitem name="Types" id="menu_config_doc_type" action="hr_document_flow_config_doc_type_act" parent="menu_config" sequence="5"/>
+    <menuitem name="Config" id="menu_config_config" action="hr_document_flow_config_act" parent="menu_config" sequence="1"/>
+    <menuitem name="Roles" id="menu_config_roles" action="hr_document_flow_config_roles_act" parent="menu_config" sequence="5"/>
+    <menuitem name="Types" id="menu_config_doc_type" action="hr_document_flow_config_doc_type_act" parent="menu_config" sequence="15"/>
 
 </odoo>
