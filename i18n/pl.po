@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-09 09:28+0000\n"
-"PO-Revision-Date: 2024-09-09 09:28+0000\n"
+"POT-Creation-Date: 2024-09-10 11:42+0000\n"
+"PO-Revision-Date: 2024-09-10 11:42+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:170
+#: code:addons/hr_document_flow/models/hr_document_flow.py:179
 #, python-format
 msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "                            <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
@@ -28,7 +28,7 @@ msgstr "<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do p
 "                                        </p>"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:134
+#: code:addons/hr_document_flow/models/hr_document_flow.py:137
 #, python-format
 msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "        <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
@@ -81,6 +81,18 @@ msgid "Approve"
 msgstr "Aprobuj"
 
 #. module: hr_document_flow
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
+msgid "Archive"
+msgstr "Archiwizuj"
+
+#. module: hr_document_flow
+#: selection:hr.document_flow,state:0
+#: selection:hr.document_flow.activity_logs,action:0
+#: selection:hr.document_flow.signers,state:0
+msgid "Archived"
+msgstr "Zarchiwizowane"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_attachment_count
 msgid "Attachment Count"
 msgstr "Ilość Załączników"
@@ -97,23 +109,7 @@ msgid "Await"
 msgstr "Oczekuje"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.activity_logs,action:0
-#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
-msgid "Cancel"
-msgstr "Anuluj"
-
-#. module: hr_document_flow
-#: selection:hr.document_flow.signers,state:0
-msgid "Canceled"
-msgstr "Anulowany"
-
-#. module: hr_document_flow
-#: selection:hr.document_flow,state:0
-msgid "Cancelled"
-msgstr "Anulowany"
-
-#. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:115
+#: code:addons/hr_document_flow/models/hr_document_flow.py:118
 #, python-format
 msgid "Cannot send form for signature because required fields are missing. Check if you are sure you have added the document for signature or the list of signers is complete."
 msgstr "Nie można wysłać formularza do podpisu, ponieważ brakuje wymaganych pól. Sprawdź, czy na pewno dodałeś dokument do podpisu lub czy lista sygnatariuszy jest kompletna."
@@ -179,6 +175,7 @@ msgstr "Data utworzenia"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__create_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__create_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__create_uid
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__create_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__create_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__create_uid
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -191,6 +188,7 @@ msgstr "Utworzona przez"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__create_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__create_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__create_date
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__create_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__create_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__create_date
 msgid "Created on"
@@ -208,18 +206,12 @@ msgid "Days to notification"
 msgstr "Dni do powiadomienia"
 
 #. module: hr_document_flow
-#: model:ir.actions.server,name:hr_document_flow.ir_cron_check_validity_days_action_ir_actions_server
-#: model:ir.cron,cron_name:hr_document_flow.ir_cron_check_validity_days_action
-#: model:ir.cron,name:hr_document_flow.ir_cron_check_validity_days_action
-msgid "Demo scheduler"
-msgstr "HR Document flow: Check validity days"
-
-#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_activity_logs__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__display_name
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__display_name
 msgid "Display Name"
@@ -260,12 +252,18 @@ msgid "Document to sign"
 msgstr "Dokument do podpisu"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__doc_type
+msgid "Document type"
+msgstr "Typ dokumentu"
+
+#. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_type_tree_view
 msgid "Document type name..."
 msgstr "Nazwa typu dokumentu..."
 
 #. module: hr_document_flow
 #: model:ir.actions.act_window,name:hr_document_flow.hr_document_flow_config_doc_type_act
+#: model:ir.ui.menu,name:hr_document_flow.menu_config_doc_type
 msgid "Document types"
 msgstr "Typy dokumentu"
 
@@ -367,9 +365,21 @@ msgid "HR Document flow"
 msgstr "HR Obieg dokumentów"
 
 #. module: hr_document_flow
+#: model:ir.actions.server,name:hr_document_flow.ir_cron_check_validity_days_action_ir_actions_server
+#: model:ir.cron,cron_name:hr_document_flow.ir_cron_check_validity_days_action
+#: model:ir.cron,name:hr_document_flow.ir_cron_check_validity_days_action
+msgid "HR Document flow: Check validity days"
+msgstr "HR Obieg dokumentów: "
+
+#. module: hr_document_flow
 #: model:ir.model,name:hr_document_flow.model_hr_document_flow_config
 msgid "HR Document flow: Config"
 msgstr "HR Obieg dokumentów: Konfiguracja"
+
+#. module: hr_document_flow
+#: model:ir.model,name:hr_document_flow.model_hr_document_flow_sign_type
+msgid "HR Document flow: Sign type"
+msgstr "HR Obieg dokumentów: Typ podpisu"
 
 #. module: hr_document_flow
 #: model:ir.model,name:hr_document_flow.model_hr_document_flow_type
@@ -382,6 +392,7 @@ msgstr "HR Obieg dokumentów: Typ"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__id
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__id
 msgid "ID"
@@ -413,6 +424,7 @@ msgstr "Jest obserwatorem"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config____last_update
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc____last_update
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role____last_update
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type____last_update
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers____last_update
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type____last_update
 msgid "Last Modified on"
@@ -424,6 +436,7 @@ msgstr "Data ostatniej modyfikacji"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__write_uid
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__write_uid
 msgid "Last Updated by"
@@ -435,6 +448,7 @@ msgstr "Ostatnio aktualizowane przez"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__write_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__write_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__write_date
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__write_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__write_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__write_date
 msgid "Last Updated on"
@@ -475,6 +489,7 @@ msgstr "Moje dokumenty"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__name
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__name
 msgid "Name"
 msgstr "Nazwa"
@@ -485,7 +500,7 @@ msgid "New"
 msgstr "Nowy"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:131
+#: code:addons/hr_document_flow/models/hr_document_flow.py:134
 #, python-format
 msgid "New document to sign"
 msgstr "Nowy dokument do podpisu"
@@ -531,13 +546,13 @@ msgid "Number of unread messages"
 msgstr "Liczba nieprzeczytanych wiadomości"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:166
+#: code:addons/hr_document_flow/models/hr_document_flow.py:175
 #, python-format
 msgid "Odoo - MJ Group Reminder: Sign document"
 msgstr "Odoo - MJ Group Przypomnienie: Podpisz dokument"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:130
+#: code:addons/hr_document_flow/models/hr_document_flow.py:133
 #, python-format
 msgid "Odoo - MJ Group Sign document"
 msgstr "Odoo - MJ Group Podpisanie dokumentu"
@@ -564,11 +579,18 @@ msgstr "Planowane"
 
 #. module: hr_document_flow
 #: selection:hr.document_flow.activity_logs,action:0
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Refuse"
-msgstr "Odrzucone"
+msgstr "Odrzuć"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:167
+#: selection:hr.document_flow,state:0
+#: selection:hr.document_flow.signers,state:0
+msgid "Refused"
+msgstr "Odrzucony"
+
+#. module: hr_document_flow
+#: code:addons/hr_document_flow/models/hr_document_flow.py:176
 #, python-format
 msgid "Reminder: New document to sign"
 msgstr "Przypomnienie: Nowy dokument do podpisu"
@@ -623,14 +645,26 @@ msgid "Sign"
 msgstr "Podpis"
 
 #. module: hr_document_flow
+#: model:ir.actions.act_window,name:hr_document_flow.hr_document_flow_config_sign_type_act
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__sign_type
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_sign_type_tree_view
+msgid "Sign type"
+msgstr "Typ podpisu"
+
+#. module: hr_document_flow
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_sign_type_tree_view
+msgid "Sign type name..."
+msgstr "Nazwa typu podpisu"
+
+#. module: hr_document_flow
+#: model:ir.ui.menu,name:hr_document_flow.menu_config_sign_type
+msgid "Sign types"
+msgstr "Typy podpisu"
+
+#. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_role_tree_view
 msgid "Signature Item Role"
 msgstr "Role"
-
-#. module: hr_document_flow
-#: selection:hr.document_flow,state:0
-msgid "Signed"
-msgstr "Podpisano"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -678,8 +712,8 @@ msgstr "Status bazuje na aktywnościach\n"
 "Zaplanowane: Przyszłe aktywności."
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:132
-#: code:addons/hr_document_flow/models/hr_document_flow.py:168
+#: code:addons/hr_document_flow/models/hr_document_flow.py:135
+#: code:addons/hr_document_flow/models/hr_document_flow.py:177
 #, python-format
 msgid "Thank you - MJ Group"
 msgstr "Dziękujemy - MJ Group"
@@ -695,16 +729,10 @@ msgid "Today"
 msgstr "Dzisiaj"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__doc_type
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_type_tree_view
 msgid "Type"
 msgstr "Typ"
-
-#. module: hr_document_flow
-#: model:ir.ui.menu,name:hr_document_flow.menu_config_doc_type
-msgid "Types"
-msgstr "Typy"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_unread
@@ -733,6 +761,11 @@ msgid "Valid until"
 msgstr "Ważne do"
 
 #. module: hr_document_flow
+#: selection:hr.document_flow,state:0
+msgid "Verified"
+msgstr "Zweryfikowane"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__website_message_ids
 msgid "Website Messages"
 msgstr "Wiadomości"
@@ -743,7 +776,7 @@ msgid "Website communication history"
 msgstr "Historia komunikacji"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:72
+#: code:addons/hr_document_flow/models/hr_document_flow.py:75
 #, python-format
 msgid "You cannot modify rows when the form is in this state!"
 msgstr "Nie można modyfikować wierszy, gdy formularz jest w tym stanie!"

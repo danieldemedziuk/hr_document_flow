@@ -16,14 +16,16 @@ class DocumentFlow(models.Model):
     name = fields.Char(string='Name', required=True)
     user_signer_ids = fields.Many2many('res.users', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
-    doc_type = fields.Many2one('hr.document_flow.type', string='Type', required=True)
+    doc_type = fields.Many2one('hr.document_flow.type', string='Document type', required=True)
+    sign_type = fields.Many2one('hr.document_flow.sign_type', string='Sign type', required=True)
     validity = fields.Date(string='Valid until', track_visibility='onchange')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('new', 'New'),
         ('sent', 'Sent'),
-        ('signed', 'Signed'),
-        ('canceled', 'Cancelled'),
+        ('verified', 'Verified'),
+        ('archived', 'Archived'),
+        ('refused', 'Refused'),
         ('expired', 'Expired')], string='State', default='draft')
     signers_lines = fields.One2many('hr.document_flow.signers', 'document_id', required=True)
     employee_cc_ids = fields.One2many('hr.document_flow.employee_cc', 'document_id')
@@ -45,6 +47,7 @@ class DocumentFlow(models.Model):
         vals['state'] = 'new'
         res = super(DocumentFlow, self).create(vals)
         res.archive_activity_log('create', res.create_date, res.creator_id)
+        # res.add_follower(res.)
 
         if 'attachment_ids' in vals:
             attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
@@ -94,8 +97,8 @@ class DocumentFlow(models.Model):
     def action_approve(self):
         self.state = 'signed'
 
-    def action_cancel(self):
-        self.state = 'canceled'
+    def action_archived(self):
+        self.state = 'archived'
 
     def action_expired(self):
         self.state = 'expired'
@@ -144,8 +147,14 @@ class DocumentFlow(models.Model):
 
         if all(check_list):
             self.complete_flow = True
+
         else:
             self.complete_flow = False
+
+    @api.onchange('complete_flow')
+    def complete_request(self):
+        if self.complete_flow and self.state != 'verified':
+            self.state = 'verified'
 
     def action_change_state_signers_lines(self, vals):
         for item in vals:
@@ -179,6 +188,12 @@ class DocumentFlow(models.Model):
     def compute_doc_number(self):
         self.doc_count = self.env['ir.attachment'].search_count([('res_model', '=', self._name), ('res_id', 'in', self.ids)])
 
+    @api.multi
+    def add_follower(self, employee_id):
+        employee = self.env['hr.employee'].browse(employee_id)
+        if employee.user_id:
+            self.message_subscribe(partner_ids=employee.user_id.partner_id.ids)
+
 
 class Role(models.Model):
     _name = 'hr.document_flow.role'
@@ -200,7 +215,7 @@ class Signers(models.Model):
     role_id = fields.Many2one('hr.document_flow.role', string='Role')
     signing_date = fields.Date(string='Signing date')
     color = fields.Integer(string='Color', default=0)
-    state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('canceled', 'Canceled')], string='State', default='await', readonly=True)
+    state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('archived', 'Archived'), ('refused', 'Refused')], string='State', default='await', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
     rel_state = fields.Selection(related='document_id.state')
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
@@ -223,6 +238,11 @@ class Signers(models.Model):
         self.document_id.prepare_message(self.signer_email)
         self.document_id.archive_activity_log('resent', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
+    def action_refuse(self):
+        self.state = 'refused'
+        self.document_id.state = 'refused'
+        self.document_id.archive_activity_log('refuse', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+
 
 class ContactsInCopy(models.Model):
     _name = 'hr.document_flow.employee_cc'
@@ -237,7 +257,7 @@ class ActivityLogs(models.Model):
     _name = 'hr.document_flow.activity_logs'
     _description = 'HR Document Flow: Activity logs'
 
-    action = fields.Selection([('create', 'Create'), ('sent', 'Sent'), ('resent', 'Resent'), ('sign', 'Sign'), ('refuse', 'Refuse'), ('cancel', 'Cancel')], string='Action performed')
+    action = fields.Selection([('create', 'Create'), ('sent', 'Sent'), ('resent', 'Resent'), ('sign', 'Sign'), ('refuse', 'Refuse'), ('archived', 'Archived')], string='Action performed')
     log_date = fields.Datetime(string='Log date')
     employee_id = fields.Many2one('hr.employee', string='Contact')
     document_id = fields.Many2one('hr.document_flow')
@@ -246,6 +266,13 @@ class ActivityLogs(models.Model):
 class DocumentType(models.Model):
     _name = 'hr.document_flow.type'
     _description = 'HR Document flow: Type'
+
+    name = fields.Char(string='Name', required=True)
+
+
+class SignType(models.Model):
+    _name = 'hr.document_flow.sign_type'
+    _description = 'HR Document flow: Sign type'
 
     name = fields.Char(string='Name', required=True)
 

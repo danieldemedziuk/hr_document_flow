@@ -28,7 +28,7 @@
         <record id="users_own_documents_rule" model="ir.rule">
             <field name="name">HR Document flow: User see documents to sign</field>
             <field name="model_id" ref="model_hr_document_flow"/>
-            <field name="domain_force">['|', '|', ('create_uid', '=', user.id), ('user_signer_ids', 'in', [user.id]), ('state', 'in', ['sent', 'signed', 'expired'])]</field>
+            <field name="domain_force">['|', '|', ('create_uid', '=', user.id), ('user_signer_ids', 'in', [user.id]), ('state', 'in', ['sent', 'verified', 'expired'])]</field>
             <field name="groups" eval="[(4, ref('group_hr_document_flow_user'))]"/>
         </record>
 
@@ -36,7 +36,7 @@
         <record id="users_restrict_sign_lines_rule" model="ir.rule">
             <field name="name">HR Document flow: User see documents to sign</field>
             <field name="model_id" ref="model_hr_document_flow_signers"/>
-            <field name="domain_force">['|', ('document_id.create_uid', '=', user.id), ('document_id.state', 'in', ['sent', 'signed', 'expired'])]</field>
+            <field name="domain_force">['|', ('document_id.create_uid', '=', user.id), ('document_id.state', 'in', ['sent', 'verified', 'refused', 'expired'])]</field>
             <field name="groups" eval="[(4, ref('group_hr_document_flow_user'))]"/>
         </record>
 
