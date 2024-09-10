@@ -24,7 +24,7 @@
                 <form string='Document flow' duplicate="0">
                     <header>
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('current_employee', '=', False), ('state', '!=', 'new')]}"/>
-                        <button string="Approve" name='action_approve' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('complete_flow', '!=', True), ('state', 'not in', ['sent'])]}"
+                        <button string="Verified" name='action_verified' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('complete_flow', '!=', True), ('state', 'not in', ['sent'])]}"
                                 groups="hr_document_flow.group_hr_document_flow_officer"/>
                         <button string="Archive" name='action_archived' type="object" attrs="{'invisible': ['|', ('state', '!=', 'sent'), ('complete_flow', '=', False)]}" groups="hr_document_flow.group_hr_document_flow_officer"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,sent,verified"/>

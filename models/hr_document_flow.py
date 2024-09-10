@@ -47,7 +47,7 @@ class DocumentFlow(models.Model):
         vals['state'] = 'new'
         res = super(DocumentFlow, self).create(vals)
         res.archive_activity_log('create', res.create_date, res.creator_id)
-        # res.add_follower(res.)
+        res.add_follower()
 
         if 'attachment_ids' in vals:
             attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
@@ -94,8 +94,8 @@ class DocumentFlow(models.Model):
 
         return action
 
-    def action_approve(self):
-        self.state = 'signed'
+    def action_verified(self):
+        self.state = 'verified'
 
     def action_archived(self):
         self.state = 'archived'
@@ -147,14 +147,13 @@ class DocumentFlow(models.Model):
 
         if all(check_list):
             self.complete_flow = True
-
+            self.complete_request()
         else:
             self.complete_flow = False
 
-    @api.onchange('complete_flow')
     def complete_request(self):
         if self.complete_flow and self.state != 'verified':
-            self.state = 'verified'
+            self.write({'state': 'verified'})
 
     def action_change_state_signers_lines(self, vals):
         for item in vals:
@@ -189,10 +188,18 @@ class DocumentFlow(models.Model):
         self.doc_count = self.env['ir.attachment'].search_count([('res_model', '=', self._name), ('res_id', 'in', self.ids)])
 
     @api.multi
-    def add_follower(self, employee_id):
-        employee = self.env['hr.employee'].browse(employee_id)
+    def add_follower(self):
+        partner_ids = []
+        employee = self.env['hr.employee'].browse(self.creator_id.id)
+
         if employee.user_id:
-            self.message_subscribe(partner_ids=employee.user_id.partner_id.ids)
+            partner_ids.append(employee.user_id.partner_id.id)
+        for line in self.signers_lines:
+            partner_ids.append(line.employee_id.user_id.partner_id.id)
+        for line in self.employee_cc_ids:
+            partner_ids.append(line.employee_id.user_id.partner_id.id)
+
+        self.message_subscribe(partner_ids=partner_ids)
 
 
 class Role(models.Model):
