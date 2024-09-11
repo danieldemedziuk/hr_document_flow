@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-10 11:42+0000\n"
-"PO-Revision-Date: 2024-09-10 11:42+0000\n"
+"POT-Creation-Date: 2024-09-11 10:03+0000\n"
+"PO-Revision-Date: 2024-09-11 10:03+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:179
+#: code:addons/hr_document_flow/models/hr_document_flow.py:190
 #, python-format
 msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "                            <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
@@ -28,7 +28,7 @@ msgstr "<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do p
 "                                        </p>"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:137
+#: code:addons/hr_document_flow/models/hr_document_flow.py:148
 #, python-format
 msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "        <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
@@ -77,11 +77,6 @@ msgstr "Wszystkie dokumenty"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
-msgid "Approve"
-msgstr "Aprobuj"
-
-#. module: hr_document_flow
-#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Archive"
 msgstr "Archiwizuj"
 
@@ -109,7 +104,17 @@ msgid "Await"
 msgstr "Oczekuje"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:118
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
+msgid "Cancel"
+msgstr "Anuluj"
+
+#. module: hr_document_flow
+#: selection:hr.document_flow,state:0
+msgid "Canceled"
+msgstr "Anulowane"
+
+#. module: hr_document_flow
+#: code:addons/hr_document_flow/models/hr_document_flow.py:129
 #, python-format
 msgid "Cannot send form for signature because required fields are missing. Check if you are sure you have added the document for signature or the list of signers is complete."
 msgstr "Nie można wysłać formularza do podpisu, ponieważ brakuje wymaganych pól. Sprawdź, czy na pewno dodałeś dokument do podpisu lub czy lista sygnatariuszy jest kompletna."
@@ -369,7 +374,7 @@ msgstr "HR Obieg dokumentów"
 #: model:ir.cron,cron_name:hr_document_flow.ir_cron_check_validity_days_action
 #: model:ir.cron,name:hr_document_flow.ir_cron_check_validity_days_action
 msgid "HR Document flow: Check validity days"
-msgstr "HR Obieg dokumentów: "
+msgstr "HR Obieg dokumentów: Sprawdź ile dni ważności"
 
 #. module: hr_document_flow
 #: model:ir.model,name:hr_document_flow.model_hr_document_flow_config
@@ -500,7 +505,7 @@ msgid "New"
 msgstr "Nowy"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:134
+#: code:addons/hr_document_flow/models/hr_document_flow.py:145
 #, python-format
 msgid "New document to sign"
 msgstr "Nowy dokument do podpisu"
@@ -546,13 +551,13 @@ msgid "Number of unread messages"
 msgstr "Liczba nieprzeczytanych wiadomości"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:175
+#: code:addons/hr_document_flow/models/hr_document_flow.py:186
 #, python-format
 msgid "Odoo - MJ Group Reminder: Sign document"
 msgstr "Odoo - MJ Group Przypomnienie: Podpisz dokument"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:133
+#: code:addons/hr_document_flow/models/hr_document_flow.py:144
 #, python-format
 msgid "Odoo - MJ Group Sign document"
 msgstr "Odoo - MJ Group Podpisanie dokumentu"
@@ -590,7 +595,7 @@ msgid "Refused"
 msgstr "Odrzucony"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:176
+#: code:addons/hr_document_flow/models/hr_document_flow.py:187
 #, python-format
 msgid "Reminder: New document to sign"
 msgstr "Przypomnienie: Nowy dokument do podpisu"
@@ -712,8 +717,8 @@ msgstr "Status bazuje na aktywnościach\n"
 "Zaplanowane: Przyszłe aktywności."
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:135
-#: code:addons/hr_document_flow/models/hr_document_flow.py:177
+#: code:addons/hr_document_flow/models/hr_document_flow.py:146
+#: code:addons/hr_document_flow/models/hr_document_flow.py:188
 #, python-format
 msgid "Thank you - MJ Group"
 msgstr "Dziękujemy - MJ Group"
@@ -761,9 +766,14 @@ msgid "Valid until"
 msgstr "Ważne do"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Verified"
-msgstr "Zweryfikowane"
+msgstr "Zwerifikowane"
+
+#. module: hr_document_flow
+#: selection:hr.document_flow,state:0
+msgid "Verified and done"
+msgstr "Zweryfikowane i zakończone"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__website_message_ids
@@ -776,7 +786,7 @@ msgid "Website communication history"
 msgstr "Historia komunikacji"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:75
+#: code:addons/hr_document_flow/models/hr_document_flow.py:83
 #, python-format
 msgid "You cannot modify rows when the form is in this state!"
 msgstr "Nie można modyfikować wierszy, gdy formularz jest w tym stanie!"
