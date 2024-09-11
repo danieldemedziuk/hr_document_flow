@@ -27,7 +27,8 @@
                         <button string="Verified" name='action_verified' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('complete_flow', '!=', True), ('state', 'not in', ['sent'])]}"
                                 groups="hr_document_flow.group_hr_document_flow_officer"/>
                         <button string="Archive" name='action_archived' type="object" attrs="{'invisible': ['|', ('state', '!=', 'sent'), ('complete_flow', '=', False)]}" groups="hr_document_flow.group_hr_document_flow_officer"/>
-                        <field name="state" widget="statusbar" statusbar_visible="new,sent,verified"/>
+                        <button string="Cancel" name='action_canceled' type="object" attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('current_employee', '=', False)]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state', '=', 'draft')]}" groups="hr_document_flow.group_hr_document_flow_officer">
@@ -59,7 +60,7 @@
 
                         <notebook>
                             <page string="Signer">
-                                <field name="signers_lines" attrs="{'readonly': [('state', 'in', ['verified', 'archived', 'expired', 'refused'])]}">
+                                <field name="signers_lines" attrs="{'readonly': [('state', 'in', ['verified-done', 'archived', 'expired', 'refused'])]}">
                                     <tree editable="bottom">
                                         <field name="sequence" widget="handle" attrs="{'invisible': [('rel_state', 'not in', ['draft', 'new'])]}"/>
                                         <field name="employee_id" options="{'no_create': True, 'no_create_edit': True}" attrs="{'readonly': [('rel_state', 'not in', ['draft', 'new'])]}"/>
@@ -88,7 +89,7 @@
                                 </field>
                             </page>
                             <page string="Contacts in copy">
-                                <field name="employee_cc_ids" attrs="{'readonly': [('state', 'in', ['verified', 'archived', 'expired', 'refused'])]}">
+                                <field name="employee_cc_ids" attrs="{'readonly': [('state', 'in', ['verified-done', 'archived', 'expired', 'refused'])]}">
                                     <tree editable="bottom">
                                         <field name="employee_id" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
                                         <field name="email"/>
@@ -197,7 +198,7 @@
                         <filter name="group_state" string="State" context="{'group_by':'state'}"/>
                     </group>
                     <filter name="open_docs" string="Open documents" domain="[('state', 'in', ['new', 'sent'])]"/>
-                    <filter name="sign_docs" string="Signed documents" domain="[('state', '=', 'verified')]"/>
+                    <filter name="sign_docs" string="Signed documents" domain="[('state', '=', 'verified-done')]"/>
                     <filter name="expired_docs" string="Expired documents" domain="[('validity', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
                 </search>
             </field>

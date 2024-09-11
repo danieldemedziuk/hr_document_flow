@@ -23,9 +23,10 @@ class DocumentFlow(models.Model):
         ('draft', 'Draft'),
         ('new', 'New'),
         ('sent', 'Sent'),
-        ('verified', 'Verified'),
+        ('verified-done', 'Verified and done'),
         ('archived', 'Archived'),
         ('refused', 'Refused'),
+        ('canceled', 'Canceled'),
         ('expired', 'Expired')], string='State', default='draft')
     signers_lines = fields.One2many('hr.document_flow.signers', 'document_id', required=True)
     employee_cc_ids = fields.One2many('hr.document_flow.employee_cc', 'document_id')
@@ -64,10 +65,17 @@ class DocumentFlow(models.Model):
             self.check_if_row_deleted(vals.get('signers_lines'))
             self.action_change_state_signers_lines(vals.get('signers_lines'))
             self.add_document_to_attachment(vals.get('signers_lines'))
+            self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
 
         return res
+
+    def check_signer_list_complete(self):
+        singer_ids = self.signers_lines.filtered(lambda lm: lm.state in ['await', 'sent']).sorted(key=lambda r: r.sequence)
+
+        if self.state == 'sent' and not singer_ids:
+            self.complete_request()
 
     def check_if_row_deleted(self, vals):
         for item in vals:
@@ -95,7 +103,10 @@ class DocumentFlow(models.Model):
         return action
 
     def action_verified(self):
-        self.state = 'verified'
+        self.state = 'verified-done'
+
+    def action_canceled(self):
+        self.state = 'canceled'
 
     def action_archived(self):
         self.state = 'archived'
@@ -140,20 +151,23 @@ class DocumentFlow(models.Model):
                     </p>""")
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
-        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list)
+        attachment_ids = self.attachment_ids
+
+        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, files=[attachment_ids])
 
     def _check_current_flow(self):
         check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
 
-        if all(check_list):
+        if check_list and all(check_list):
             self.complete_flow = True
             self.complete_request()
         else:
             self.complete_flow = False
 
     def complete_request(self):
-        if self.complete_flow and self.state != 'verified':
-            self.write({'state': 'verified'})
+        if self.state != 'verified-done':
+            self.state = 'verified-done'
+            self.write({'state': 'verified-done'})
 
     def action_change_state_signers_lines(self, vals):
         for item in vals:
