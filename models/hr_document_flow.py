@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import base64
 from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
@@ -114,15 +115,18 @@ class DocumentFlow(models.Model):
     def action_expired(self):
         self.state = 'expired'
 
-    def action_send_message(self):
+    def action_send_message(self, files=False):
         if self.signers_lines and self.attachment_ids:
             self.state = 'sent'
-
             self.archive_activity_log('sent', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
-                self.prepare_message(line.signer_email)
+
+                if isinstance(files, dict):
+                    self.prepare_message(line.signer_email, self.attachment_ids)
+                else:
+                    self.prepare_message(line.signer_email, files)
                 break
         else:
             raise UserError(
@@ -140,7 +144,7 @@ class DocumentFlow(models.Model):
             'document_id': self.id,
         })]
 
-    def prepare_message(self, target_email):
+    def prepare_message(self, target_email, files):
         subject = _('Odoo - MJ Group Sign document')
         title = _('New document to sign')
         footer = _('Thank you - MJ Group')
@@ -151,9 +155,7 @@ class DocumentFlow(models.Model):
                     </p>""")
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
-        attachment_ids = self.attachment_ids
-
-        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, files=[attachment_ids])
+        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
         check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
@@ -174,7 +176,9 @@ class DocumentFlow(models.Model):
             if item[0] == 1:
                 item[2]['state'] = 'completed'
                 self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
-                self.action_send_message()
+
+                attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][2])
+                self.action_send_message(attachment_ids)
 
     @api.model
     def check_validity_days(self):
@@ -256,7 +260,12 @@ class Signers(models.Model):
         return res
 
     def resend_email(self):
-        self.document_id.prepare_message(self.signer_email)
+        prev_line = self.document_id.signers_lines.filtered(lambda lm: lm.state == 'completed')
+
+        if prev_line:
+            self.document_id.prepare_message(self.signer_email, prev_line[-1].attachment_ids)
+        else:
+            self.document_id.prepare_message(self.signer_email, self.document_id.attachment_ids)
         self.document_id.archive_activity_log('resent', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
     def action_refuse(self):
