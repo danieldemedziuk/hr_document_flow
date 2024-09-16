@@ -26,7 +26,8 @@
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('current_employee', '=', False), ('state', '!=', 'new')]}"/>
                         <button string="Verified" name='action_verified' class="oe_highlight" type="object" attrs="{'invisible': ['|', ('complete_flow', '!=', True), ('state', 'not in', ['sent'])]}"
                                 groups="hr_document_flow.group_hr_document_flow_officer"/>
-                        <button string="Archive" name='action_archived' type="object" attrs="{'invisible': ['|', ('state', '!=', 'sent'), ('complete_flow', '=', False)]}" groups="hr_document_flow.group_hr_document_flow_officer"/>
+                        <button string="Archive" name='action_archived' type="object" attrs="{'invisible': ['|', ('state', '!=', 'sent'), ('complete_flow', '=', False)]}"
+                                groups="hr_document_flow.group_hr_document_flow_officer"/>
                         <button string="Cancel" name='action_canceled' type="object" attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('current_employee', '=', False)]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done"/>
                     </header>
@@ -54,6 +55,11 @@
                                 <field name="current_employee" string='User' invisible="1"/>
                             </group>
                             <group col="2">
+                                <div class="alert alert-info" role="alert">
+                                    In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format
+                                    <strong>!</strong>
+                                    <br/>
+                                </div>
                                 <field name="attachment_ids" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" attrs="{'readonly': [('state', 'not in', ['draft', 'new'])]}"/>
                             </group>
                         </group>

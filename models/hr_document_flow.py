@@ -219,6 +219,13 @@ class DocumentFlow(models.Model):
 
         self.message_subscribe(partner_ids=partner_ids)
 
+    @api.constrains('attachment_ids')
+    def _check_attachment_type(self):
+        for record in self:
+            for attachment in record.attachment_ids:
+                if attachment.mimetype != 'application/pdf':
+                    raise ValidationError(_("Only PDF files are allowed!"))
+
 
 class Role(models.Model):
     _name = 'hr.document_flow.role'
@@ -272,6 +279,13 @@ class Signers(models.Model):
         self.state = 'refused'
         self.document_id.state = 'refused'
         self.document_id.archive_activity_log('refuse', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+
+    @api.constrains('attachment_ids')
+    def _check_attachment_type(self):
+        for record in self:
+            for attachment in record.attachment_ids:
+                if attachment.mimetype != 'application/pdf':
+                    raise ValidationError("Only PDF files are allowed!")
 
 
 class ContactsInCopy(models.Model):
