@@ -29,13 +29,13 @@ To install the HR Document flow module in your Odoo 12 instance:
 1. Navigate to the **Document flow** app in Odoo.
 2. Click **Create** to upload a new document for signature.
 3. Fill out the necessary details, including:
-4. - Name
+   - Name
    - Document type
    - Signature type
    - List of recipients for signing
    - Optional: Add CC recipients for signature updates
-5. Submit the document for approval.
-6. Track the progress of the document’s signatures and receive email notifications as the signatures are completed.
+4. Submit the document for approval.
+5. Track the progress of the document’s signatures and receive email notifications as the signatures are completed.
 
 ## Dependencies
 
