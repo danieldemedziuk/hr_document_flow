@@ -52,7 +52,9 @@ class DocumentFlow(models.Model):
         res.add_follower()
 
         if 'attachment_ids' in vals:
-            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
+            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][1])
+            print("VALS", vals)
+            # attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
             attachments.write({
                 'res_model': self._name,
                 'res_id': res.id,
@@ -60,7 +62,6 @@ class DocumentFlow(models.Model):
 
         return res
 
-    @api.multi
     def write(self, vals):
         if vals.get('signers_lines'):
             self.check_if_row_deleted(vals.get('signers_lines'))
@@ -92,7 +93,6 @@ class DocumentFlow(models.Model):
                     'res_id': self.id,
                 })
 
-    @api.multi
     def action_get_attachment_tree_view(self):
         action = self.env.ref('base.action_attachment').read()[0]
         action['context'] = {
@@ -102,6 +102,18 @@ class DocumentFlow(models.Model):
         action['domain'] = str(["&", ('res_model', '=', self._name), ('res_id', 'in', self.ids)])
 
         return action
+
+    def trigger_notification(self):
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Test Notification',
+                'message': 'This is a test notification from Odoo 17',
+                'sticky': False,
+                'type': 'success',
+            },
+        }
 
     def action_verified(self):
         self.state = 'verified-done'
@@ -173,11 +185,14 @@ class DocumentFlow(models.Model):
 
     def action_change_state_signers_lines(self, vals):
         for item in vals:
+            print("ITEM", item)
+            print("ITEM 02|", item[0], item[2])
             if item[0] == 1:
                 item[2]['state'] = 'completed'
                 self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
                 attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][2])
+                print("ATT IDS", attachment_ids)
                 self.action_send_message(attachment_ids)
 
     @api.model
@@ -205,7 +220,6 @@ class DocumentFlow(models.Model):
     def compute_doc_number(self):
         self.doc_count = self.env['ir.attachment'].search_count([('res_model', '=', self._name), ('res_id', 'in', self.ids)])
 
-    @api.multi
     def add_follower(self):
         partner_ids = []
         employee = self.env['hr.employee'].browse(self.creator_id.id)
@@ -252,7 +266,6 @@ class Signers(models.Model):
     rel_state = fields.Selection(related='document_id.state')
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
 
-    @api.multi
     def get_current_employee(self):
         for rec in self:
             if rec.employee_id.user_id == self.env.user:

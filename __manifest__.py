@@ -2,7 +2,7 @@
 
 {
     'name': 'HR Document Flow',
-    'version': '1.0',
+    'version': '17.0.0.0.1',
     'author': 'DSquare Net',
     'sequence': 135,
     'summary': 'HR Document Flow.',
