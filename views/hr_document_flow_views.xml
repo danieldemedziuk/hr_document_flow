@@ -43,31 +43,46 @@
                                 <field name="name" placeholder="Document title..." readonly="state != 'draft'"/>
                             </h2>
                         </div>
-                        <div class="row">
-                            <div class="col-md-7">
-                                <group col="2">
-                                    <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ['draft', 'new']"/>
-                                    <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ['draft', 'new']"/>
-                                    <field name="validity" readonly="state not in ['draft', 'new']"/>
-                                    <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
-                                    <field name="complete_flow" invisible="1"/>
-                                    <field name="creator_id" string='Employee' invisible="1"/>
-                                    <field name="current_employee" string='User' invisible="1"/>
-                                </group>
-                            </div>
-                            <group>
-                                <div class="col-md-7">
-                                    <p class="alert alert-info" role="alert">
-                                        In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format
-                                        <strong>!</strong>
-                                    </p>
-                                </div>
-                                <group col="2">
-                                    <field name="attachment_ids" float="right" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" readonly="state not in ['draft', 'new']"/>
-                                </group>
+                        <group>
+                            <group col="2">
+                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ['draft', 'new']"/>
+                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ['draft', 'new']"/>
+                                <field name="validity" readonly="state not in ['draft', 'new']"/>
+                                <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="complete_flow" invisible="1"/>
+                                <field name="creator_id" string='Employee' invisible="1"/>
+                                <field name="current_employee" string='User' invisible="1"/>
                             </group>
-                        </div>
+                            <group col="2">
+                                <div class="alert alert-info" role="alert" colspan="2">
+                                    In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format
+                                    <strong>!</strong>
+                                </div>
+                                <field name="attachment_ids" float="right" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" readonly="state not in ['draft', 'new']"/>
+                            </group>
+                        </group>
+<!--                        <group col="4">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <group col="2">-->
 
+<!--                                    </group>-->
+<!--                                </div>-->
+<!--                                <group col="2">-->
+    <!--                                <group>-->
+    <!--                                    <div class="col-md-8">-->
+<!--                                    <div>-->
+<!--                                        <p class="alert alert-info" role="alert">-->
+
+
+<!--                                        </p>-->
+<!--                                    </div>-->
+
+
+    <!--                                </group>-->
+<!--                                </group>-->
+<!--                            </div>-->
+<!--                        </group>-->
                         <notebook>
                             <page string="Signer">
                                 <field name="signers_lines" readonly="state in ['verified-done', 'archived', 'expired', 'refused']">

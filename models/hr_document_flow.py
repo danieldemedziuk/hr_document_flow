@@ -52,14 +52,11 @@ class DocumentFlow(models.Model):
         res.add_follower()
 
         if 'attachment_ids' in vals:
-            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][1])
-            print("VALS", vals)
-            # attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
+            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
             attachments.write({
                 'res_model': self._name,
                 'res_id': res.id,
             })
-
         return res
 
     def write(self, vals):
@@ -70,7 +67,6 @@ class DocumentFlow(models.Model):
             self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
-
         return res
 
     def check_signer_list_complete(self):
@@ -103,17 +99,6 @@ class DocumentFlow(models.Model):
 
         return action
 
-    def trigger_notification(self):
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Test Notification',
-                'message': 'This is a test notification from Odoo 17',
-                'sticky': False,
-                'type': 'success',
-            },
-        }
 
     def action_verified(self):
         self.state = 'verified-done'
@@ -134,7 +119,6 @@ class DocumentFlow(models.Model):
 
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
-
                 if isinstance(files, dict):
                     self.prepare_message(line.signer_email, self.attachment_ids)
                 else:
@@ -186,13 +170,11 @@ class DocumentFlow(models.Model):
     def action_change_state_signers_lines(self, vals):
         for item in vals:
             print("ITEM", item)
-            print("ITEM 02|", item[0], item[2])
             if item[0] == 1:
                 item[2]['state'] = 'completed'
                 self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
                 attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][2])
-                print("ATT IDS", attachment_ids)
                 self.action_send_message(attachment_ids)
 
     @api.model
@@ -276,6 +258,11 @@ class Signers(models.Model):
     @api.model
     def create(self, vals):
         res = super(Signers, self).create(vals)
+
+        return res
+
+    def write(self, vals):
+        res = super(Signers, self).write(vals)
 
         return res
 
