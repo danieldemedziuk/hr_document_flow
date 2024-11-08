@@ -50,13 +50,15 @@ class DocumentFlow(models.Model):
         res = super(DocumentFlow, self).create(vals)
         res.archive_activity_log('create', res.create_date, res.creator_id)
         res.add_follower()
-
         if 'attachment_ids' in vals:
-            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][1])
-            attachments.write({
-                'res_model': self._name,
-                'res_id': res.id,
-            })
+            index = 0
+            for item in vals['attachment_ids']:
+                attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][index][1])
+                attachments.write({
+                    'res_model': self._name,
+                    'res_id': res.id,
+                })
+                index += 1
 
         return res
 
