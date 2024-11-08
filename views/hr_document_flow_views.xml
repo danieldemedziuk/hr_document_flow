@@ -24,11 +24,11 @@
                 <form string='Document flow' duplicate="0">
                     <header>
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" invisible="current_employee == False or state != 'new'"/>
-                        <button string="Verified" name='action_verified' class="oe_highlight" type="object" invisible="complete_flow != True or state not in ('sent')"
+                        <button string="Verified" name='action_verified' class="oe_highlight" type="object" invisible="complete_flow != True or state not in ['sent']"
                                 groups="hr_document_flow.group_hr_document_flow_officer"/>
-                        <button string="Archive" name='action_archived' type="object" invisible="complete_flow == False or state != 'sent'"
+                        <button string="Archive" name='action_archived' type="object" invisible="state != 'sent' or complete_flow == False"
                                 groups="hr_document_flow.group_hr_document_flow_officer"/>
-                        <button string="Cancel" name='action_canceled' type="object" invisible="current_employee == False or state not in ('sent')"/>
+                        <button string="Cancel" name='action_canceled' type="object" invisible="state not in ['sent'] or current_employee == False"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done"/>
                     </header>
                     <sheet>
@@ -45,9 +45,9 @@
                         </div>
                         <group>
                             <group col="2">
-                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
-                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
-                                <field name="validity" readonly="state not in ('draft', 'new')"/>
+                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ['draft', 'new']"/>
+                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ['draft', 'new']"/>
+                                <field name="validity" readonly="state not in ['draft', 'new']"/>
                                 <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
                                 <field name="complete_flow" invisible="1"/>
                                 <field name="creator_id" string='Employee' invisible="1"/>
@@ -57,24 +57,44 @@
                                 <div class="alert alert-info" role="alert" colspan="2">
                                     In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format
                                     <strong>!</strong>
-                                    <br/>
                                 </div>
-                                <field name="attachment_ids" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" readonly="state not in ('draft', 'new')"/>
+                                <field name="attachment_ids" float="right" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" readonly="state not in ['draft', 'new']"/>
                             </group>
                         </group>
+<!--                        <group col="4">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <group col="2">-->
 
+<!--                                    </group>-->
+<!--                                </div>-->
+<!--                                <group col="2">-->
+    <!--                                <group>-->
+    <!--                                    <div class="col-md-8">-->
+<!--                                    <div>-->
+<!--                                        <p class="alert alert-info" role="alert">-->
+
+
+<!--                                        </p>-->
+<!--                                    </div>-->
+
+
+    <!--                                </group>-->
+<!--                                </group>-->
+<!--                            </div>-->
+<!--                        </group>-->
                         <notebook>
                             <page string="Signer">
-                                <field name="signers_lines" readonly="state in ('verified-done', 'archived', 'expired', 'refused')">
+                                <field name="signers_lines" readonly="state in ['verified-done', 'archived', 'expired', 'refused']">
                                     <tree editable="bottom">
-                                        <field name="sequence" widget="handle" invisible="rel_state not in ('draft', 'new')"/>
-                                        <field name="employee_id" options="{'no_create': True, 'no_create_edit': True}" readonly="rel_state not in ('draft', 'new')"/>
+                                        <field name="sequence" widget="handle" invisible="rel_state not in ['draft', 'new']"/>
+                                        <field name="employee_id" options="{'no_create': True, 'no_create_edit': True}" readonly="rel_state not in ['draft', 'new']"/>
                                         <field name="signer_email"/>
                                         <field name="mobile_phone"/>
-                                        <field name="attachment_ids" widget="many2many_binary" invisible="state not in ('sent', 'completed')" readonly="current_employee == False or state in ('completed', 'archived')"/>
+                                        <field name="attachment_ids" widget="many2many_binary" invisible="state not in ['sent', 'completed']" readonly="current_employee == False or state in ['completed', 'archived']"/>
                                         <field name="state"/>
-                                        <button string='Resend' name="resend_email" type="object" invisible="state not in ('sent') or rel_state not in ('sent') or current_employee == True"/>
-                                        <button string='Refuse' name="action_refuse" type="object" invisible="state not in ('sent') or rel_state not in ('sent') or current_employee != True"/>
+                                        <button string='Resend' name="resend_email" type="object" invisible="state not in ['sent'] or rel_state not in ['sent'] or current_employee == True"/>
+                                        <button string='Refuse' name="action_refuse" type="object" invisible="current_employee != True or (rel_state not in ['sent'] or state not in ['sent'])"/>
                                         <field name="current_employee" invisible="1"/>
                                         <field name="rel_state" invisible="1"/>
                                         <field name="document_id" invisible="1"/>
@@ -91,7 +111,7 @@
                                 </field>
                             </page>
                             <page string="Contacts in copy">
-                                <field name="employee_cc_ids" readonly="state in ('verified-done', 'archived', 'expired', 'refused')">
+                                <field name="employee_cc_ids" readonly="state in ['verified-done', 'archived', 'expired', 'refused']">
                                     <tree editable="bottom">
                                         <field name="employee_id" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
                                         <field name="email"/>

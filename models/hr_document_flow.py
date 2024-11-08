@@ -52,12 +52,11 @@ class DocumentFlow(models.Model):
         res.add_follower()
 
         if 'attachment_ids' in vals:
-            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][1])
+            attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][0][2])
             attachments.write({
                 'res_model': self._name,
                 'res_id': res.id,
             })
-
         return res
 
     def write(self, vals):
@@ -68,7 +67,6 @@ class DocumentFlow(models.Model):
             self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
-
         return res
 
     def check_signer_list_complete(self):
@@ -85,7 +83,7 @@ class DocumentFlow(models.Model):
     def add_document_to_attachment(self, vals):
         for item in vals:
             if item[2] and 'attachment_ids' in item[2]:
-                attachments = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
+                attachments = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][2])
                 attachments.write({
                     'res_model': self._name,
                     'res_id': self.id,
@@ -100,6 +98,7 @@ class DocumentFlow(models.Model):
         action['domain'] = str(["&", ('res_model', '=', self._name), ('res_id', 'in', self.ids)])
 
         return action
+
 
     def action_verified(self):
         self.state = 'verified-done'
@@ -120,8 +119,7 @@ class DocumentFlow(models.Model):
 
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
-
-                if not files:
+                if isinstance(files, dict):
                     self.prepare_message(line.signer_email, self.attachment_ids)
                 else:
                     self.prepare_message(line.signer_email, files)
@@ -171,11 +169,12 @@ class DocumentFlow(models.Model):
 
     def action_change_state_signers_lines(self, vals):
         for item in vals:
+            print("ITEM", item)
             if item[0] == 1:
                 item[2]['state'] = 'completed'
                 self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
 
-                attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
+                attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][2])
                 self.action_send_message(attachment_ids)
 
     @api.model
@@ -259,6 +258,11 @@ class Signers(models.Model):
     @api.model
     def create(self, vals):
         res = super(Signers, self).create(vals)
+
+        return res
+
+    def write(self, vals):
+        res = super(Signers, self).write(vals)
 
         return res
 
