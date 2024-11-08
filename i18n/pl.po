@@ -1,14 +1,14 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* hr_document_flow
+# 	* hr_document_flow
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 12.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-16 06:52+0000\n"
-"PO-Revision-Date: 2024-09-16 06:52+0000\n"
-"Last-Translator: <>\n"
+"POT-Creation-Date: 2024-11-08 08:40+0000\n"
+"PO-Revision-Date: 2024-11-08 08:40+0000\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,25 +16,31 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:196
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
-msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
+msgid ""
+"<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "                            <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
 "                                        <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
 "                                        </p>"
-msgstr "<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
+msgstr ""
+"<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
 "                            <span style=\"font-size: 14px;\">Natychmiast przejdź do odpowiedniego modułu, pobierz, podpisz i prześlij podpisany dokument w odpowiednie miejsce.</span>\n"
 "                                        <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">więcej szczegółów w Odoo.</span>\n"
 "                                        </p>"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:152
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
-msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
+msgid ""
+"<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "        <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
 "                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
 "                    </p>"
-msgstr "<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
+msgstr ""
+"<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
 "        <span style=\"font-size: 14px;\">Natychmiast przejdź do odpowiedniego modułu, pobierz, podpisz i prześlij podpisany dokument w odpowiednie miejsce.</span>\n"
 "                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">więcej szczegółów w Odoo.</span>\n"
 "                    </p>"
@@ -55,6 +61,11 @@ msgid "Activities"
 msgstr "Czynności"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Dekoracja wyjątku aktywności"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_log_ids
 msgid "Activity Log"
 msgstr "Dziennik aktywności"
@@ -70,6 +81,11 @@ msgid "Activity State"
 msgstr "Stan czynności"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Ikona typu aktywności"
+
+#. module: hr_document_flow
 #: model:ir.actions.act_window,name:hr_document_flow.all_hr_document_flow_act
 #: model:ir.ui.menu,name:hr_document_flow.menu_all_document_flow
 msgid "All documents"
@@ -81,9 +97,9 @@ msgid "Archive"
 msgstr "Archiwizuj"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
-#: selection:hr.document_flow.activity_logs,action:0
-#: selection:hr.document_flow.signers,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__archived
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__archived
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_signers__state__archived
 msgid "Archived"
 msgstr "Zarchiwizowane"
 
@@ -99,9 +115,9 @@ msgid "Attachments"
 msgstr "Załączniki"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.signers,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_signers__state__await
 msgid "Await"
-msgstr "Oczekuje"
+msgstr "Oczekujące"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
@@ -109,15 +125,22 @@ msgid "Cancel"
 msgstr "Anuluj"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__canceled
 msgid "Canceled"
 msgstr "Anulowane"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:133
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
-msgid "Cannot send form for signature because required fields are missing. Check if you are sure you have added the document for signature or the list of signers is complete."
-msgstr "Nie można wysłać formularza do podpisu, ponieważ brakuje wymaganych pól. Sprawdź, czy na pewno dodałeś dokument do podpisu lub czy lista sygnatariuszy jest kompletna."
+msgid ""
+"Cannot send form for signature because required fields are missing. Check if"
+" you are sure you have added the document for signature or the list of "
+"signers is complete."
+msgstr ""
+"Nie można wysłać formularza do podpisu, ponieważ brakuje wymaganych pól. "
+"Sprawdź, czy na pewno dodałeś dokument do podpisu lub czy lista "
+"sygnatariuszy jest kompletna."
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__color
@@ -130,9 +153,9 @@ msgid "Complete flow"
 msgstr "Pełny przepływ"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.signers,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_signers__state__completed
 msgid "Completed"
-msgstr "Zakończono"
+msgstr "Zakończony"
 
 #. module: hr_document_flow
 #: model:ir.actions.act_window,name:hr_document_flow.hr_document_flow_config_act
@@ -159,7 +182,7 @@ msgid "Contacts in copy"
 msgstr "Kontakty w kopii"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.activity_logs,action:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__create
 msgid "Create"
 msgstr "Utwórz"
 
@@ -279,7 +302,7 @@ msgid "Documents"
 msgstr "Dokumenty"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__draft
 msgid "Draft"
 msgstr "Szkic"
 
@@ -305,9 +328,9 @@ msgid "Employee Cc"
 msgstr "Pracownik DW"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__expired
 msgid "Expired"
-msgstr "Wygasł"
+msgstr "Wygasły"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -320,14 +343,14 @@ msgid "Followers"
 msgstr "Obserwatorzy"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_channel_ids
-msgid "Followers (Channels)"
-msgstr "Obserwatorzy (kanały)"
-
-#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Obserwatorzy (partnerzy)"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -371,8 +394,6 @@ msgstr "HR Obieg dokumentów"
 
 #. module: hr_document_flow
 #: model:ir.actions.server,name:hr_document_flow.ir_cron_check_validity_days_action_ir_actions_server
-#: model:ir.cron,cron_name:hr_document_flow.ir_cron_check_validity_days_action
-#: model:ir.cron,name:hr_document_flow.ir_cron_check_validity_days_action
 msgid "HR Document flow: Check validity days"
 msgstr "HR Obieg dokumentów: Sprawdzenie ważności"
 
@@ -392,6 +413,11 @@ msgid "HR Document flow: Type"
 msgstr "HR Obieg dokumentów: Typ"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_activity_logs__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__id
@@ -404,9 +430,14 @@ msgid "ID"
 msgstr ""
 
 #. module: hr_document_flow
-#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_unread
-msgid "If checked new messages require your attention."
-msgstr "Jeśli zaznaczone, to wiadomość wymaga twojej uwagi"
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_exception_icon
+msgid "Icon"
+msgstr "Ikona"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ikona identyfikująca wyjątek aktywności."
 
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_needaction
@@ -415,15 +446,18 @@ msgstr "Jeśli zaznaczone, to nowa wiadomość wymaga twojej uwagi."
 
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_has_error
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Jesli zaznaczone, część wiadomości napotkało na błąd przy próbie doręczenia."
+msgstr "Jeśli zaznaczone, część wiadomości napotkało na błąd przy próbie doręczenia."
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
-msgid "In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format\n"
+msgid ""
+"In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format\n"
 "                                    <strong>!</strong>\n"
 "                                    <br/>"
-msgstr "Aby uniknąć konfliktów podczas podpisywania dokumentu, co może skutkować wydłużeniem procesu, zalecamy przesłanie dokumentu w formacie PDF\n"
+msgstr ""
+"Aby uniknąć konfliktów podczas podpisywania dokumentu, co może skutkować wydłużeniem procesu, zalecamy przesłanie dokumentu w formacie PDF\n"
 "                                    <strong>!</strong>\n"
 "                                    <br/>"
 
@@ -431,18 +465,6 @@ msgstr "Aby uniknąć konfliktów podczas podpisywania dokumentu, co może skutk
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_is_follower
 msgid "Is Follower"
 msgstr "Jest obserwatorem"
-
-#. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_activity_logs____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers____last_update
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type____last_update
-msgid "Last Modified on"
-msgstr "Data ostatniej modyfikacji"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__write_uid
@@ -474,11 +496,6 @@ msgid "Log date"
 msgstr "Data dziennika"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "Główny Załącznik"
-
-#. module: hr_document_flow
 #: model:res.groups,name:hr_document_flow.group_hr_document_flow_manager
 msgid "Manager"
 msgstr "Menedżer"
@@ -492,6 +509,11 @@ msgstr "Błąd Doręczenia wiadomości"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_ids
 msgid "Messages"
 msgstr "Wiadomości"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Termin końcowy moich aktywności"
 
 #. module: hr_document_flow
 #: model:ir.actions.act_window,name:hr_document_flow.my_hr_document_flow_act
@@ -509,15 +531,21 @@ msgid "Name"
 msgstr "Nazwa"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__new
 msgid "New"
 msgstr "Nowy"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:149
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "New document to sign"
 msgstr "Nowy dokument do podpisu"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_date_deadline
@@ -541,12 +569,12 @@ msgstr "Liczba akcji"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_error_counter
-msgid "Number of error"
+msgid "Number of errors"
 msgstr "Numer błędu"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr "Liczba wiadomości wymagających akcji"
 
 #. module: hr_document_flow
@@ -555,24 +583,22 @@ msgid "Number of messages with delivery error"
 msgstr "Ilośc wiadomości z błedami przy doręczeniu"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_unread_counter
-msgid "Number of unread messages"
-msgstr "Liczba nieprzeczytanych wiadomości"
-
-#. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:192
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "Odoo - MJ Group Reminder: Sign document"
 msgstr "Odoo - MJ Group Przypomnienie: Podpisz dokument"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:148
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "Odoo - MJ Group Sign document"
 msgstr "Odoo - MJ Group Podpisanie dokumentu"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:227
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "Only PDF files are allowed!"
 msgstr "Dozwolone są tylko pliki PDF!"
@@ -583,34 +609,30 @@ msgid "Open documents"
 msgstr "Otwarte dokumenty"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,activity_state:0
-msgid "Overdue"
-msgstr "Zaległe"
-
-#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__mobile_phone
 msgid "Phone number"
 msgstr "Numer telefonu"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,activity_state:0
-msgid "Planned"
-msgstr "Planowane"
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__rating_ids
+msgid "Ratings"
+msgstr "Oceny"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.activity_logs,action:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__refuse
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Refuse"
 msgstr "Odrzuć"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
-#: selection:hr.document_flow.signers,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__refused
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_signers__state__refused
 msgid "Refused"
 msgstr "Odrzucony"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:193
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "Reminder: New document to sign"
 msgstr "Przypomnienie: Nowy dokument do podpisu"
@@ -621,9 +643,9 @@ msgid "Resend"
 msgstr "Wyślij ponownie"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.activity_logs,action:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__resent
 msgid "Resent"
-msgstr "Wysłane ponownie"
+msgstr "Wysłany ponownie"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_user_id
@@ -642,16 +664,21 @@ msgid "Roles"
 msgstr "Role"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Błąd doręczenia SMS"
+
+#. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Send"
 msgstr "Wyślij"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
-#: selection:hr.document_flow.activity_logs,action:0
-#: selection:hr.document_flow.signers,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__sent
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__sent
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_signers__state__sent
 msgid "Sent"
-msgstr "Wysłane"
+msgstr "Wysłany"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__sequence
@@ -660,7 +687,7 @@ msgid "Sequence"
 msgstr "Numeracja"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow.activity_logs,action:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__sign
 msgid "Sign"
 msgstr "Podpis"
 
@@ -722,31 +749,33 @@ msgstr "Stan"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__activity_state
-msgid "Status based on activities\n"
+msgid ""
+"Status based on activities\n"
 "Overdue: Due date is already passed\n"
 "Today: Activity date is today\n"
 "Planned: Future activities."
-msgstr "Status bazuje na aktywnościach\n"
+msgstr ""
+"Status bazuje na aktywnościach\n"
 "Opóźnione: Data \"do\" minęła\n"
 "Dziś: Aktywnośc przewidziana na dziś\n"
 "Zaplanowane: Przyszłe aktywności."
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:150
-#: code:addons/hr_document_flow/models/hr_document_flow.py:194
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "Thank you - MJ Group"
 msgstr "Dziękujemy - MJ Group"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow_config__days_notifi
-msgid "The number of days after which the message will be sent if a document circulation expiration date has been defined in the form."
-msgstr "Liczba dni, po których wiadomość zostanie wysłana, jeśli w formularzu zdefiniowano datę wygaśnięcia obiegu dokumentu."
-
-#. module: hr_document_flow
-#: selection:hr.document_flow,activity_state:0
-msgid "Today"
-msgstr "Dzisiaj"
+msgid ""
+"The number of days after which the message will be sent if a document "
+"circulation expiration date has been defined in the form."
+msgstr ""
+"Liczba dni, po których wiadomość zostanie wysłana, jeśli w formularzu "
+"zdefiniowano datę wygaśnięcia obiegu dokumentu."
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -755,14 +784,9 @@ msgid "Type"
 msgstr "Typ"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_unread
-msgid "Unread Messages"
-msgstr "Nieprzeczytane wiadomości"
-
-#. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_unread_counter
-msgid "Unread Messages Counter"
-msgstr "Licznik nieprzeczytanych wiadomości"
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Typ wyjątku aktywności w rekordzie."
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
@@ -770,8 +794,8 @@ msgid "Upload files"
 msgstr "Prześlij pliki"
 
 #. module: hr_document_flow
-#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 #: model:res.groups,name:hr_document_flow.group_hr_document_flow_user
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "User"
 msgstr "Użytkownik"
 
@@ -786,9 +810,9 @@ msgid "Verified"
 msgstr "Zwerifikowane"
 
 #. module: hr_document_flow
-#: selection:hr.document_flow,state:0
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__verified-done
 msgid "Verified and done"
-msgstr "Zweryfikowane i zakończone"
+msgstr "Zweryfikowane i wykonane"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__website_message_ids
@@ -801,8 +825,8 @@ msgid "Website communication history"
 msgstr "Historia komunikacji"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:84
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid "You cannot modify rows when the form is in this state!"
 msgstr "Nie można modyfikować wierszy, gdy formularz jest w tym stanie!"
-
