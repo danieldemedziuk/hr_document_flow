@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-16 06:52+0000\n"
-"PO-Revision-Date: 2024-09-16 06:52+0000\n"
+"POT-Creation-Date: 2024-12-11 12:54+0000\n"
+"PO-Revision-Date: 2024-12-11 12:54+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:196
+#: code:addons/hr_document_flow/models/hr_document_flow.py:210
 #, python-format
 msgid "<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
 "                            <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
@@ -40,6 +40,18 @@ msgstr "<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do p
 "                    </p>"
 
 #. module: hr_document_flow
+#: code:addons/hr_document_flow/models/hr_document_flow.py:174
+#, python-format
+msgid "<span style=\"font-size: 14px;\">Your document flow has been completed.</span><br/>\n"
+"        <span style=\"font-size: 14px;\">The document signed by the persons indicated is waiting to be downloaded in the module</span>\n"
+"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
+"                    </p>"
+msgstr "<span style=\"font-size: 14px;\">Twój obieg dokumentu został zakończony.</span><br/>\n"
+"        <span style=\"font-size: 14px;\">Dokument podpisany przez wskazane przez Ciebie osoby jest gotowy do pobrania w module</span>\n"
+"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">więcej szczegółów w Odoo.</span>\n"
+"                    </p>"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_needaction
 msgid "Action Needed"
 msgstr "Wymagana akcja"
@@ -52,7 +64,7 @@ msgstr "Wykonane działanie"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_ids
 msgid "Activities"
-msgstr "Czynności"
+msgstr "Aktywności"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_log_ids
@@ -67,7 +79,7 @@ msgstr "Dziennik aktywności"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_state
 msgid "Activity State"
-msgstr "Stan czynności"
+msgstr "Status aktywności"
 
 #. module: hr_document_flow
 #: model:ir.actions.act_window,name:hr_document_flow.all_hr_document_flow_act
@@ -233,6 +245,12 @@ msgstr "Licznik dokumentów"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__document_id
 msgid "Document"
 msgstr "Dokument"
+
+#. module: hr_document_flow
+#: code:addons/hr_document_flow/models/hr_document_flow.py:171
+#, python-format
+msgid "Document Flow completed"
+msgstr "Obieg dokumentu zakończony"
 
 #. module: hr_document_flow
 #: model:ir.ui.menu,name:hr_document_flow.menu_root
@@ -532,7 +550,7 @@ msgstr "Następne podsumowanie aktywności"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_type_id
 msgid "Next Activity Type"
-msgstr "Typ następnej czynności"
+msgstr "Typ następnej aktywności"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_needaction_counter
@@ -560,7 +578,13 @@ msgid "Number of unread messages"
 msgstr "Liczba nieprzeczytanych wiadomości"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:192
+#: code:addons/hr_document_flow/models/hr_document_flow.py:170
+#, python-format
+msgid "Odoo - MJ Group Document Flow"
+msgstr ""
+
+#. module: hr_document_flow
+#: code:addons/hr_document_flow/models/hr_document_flow.py:206
 #, python-format
 msgid "Odoo - MJ Group Reminder: Sign document"
 msgstr "Odoo - MJ Group Przypomnienie: Podpisz dokument"
@@ -572,7 +596,7 @@ msgid "Odoo - MJ Group Sign document"
 msgstr "Odoo - MJ Group Podpisanie dokumentu"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:227
+#: code:addons/hr_document_flow/models/hr_document_flow.py:241
 #, python-format
 msgid "Only PDF files are allowed!"
 msgstr "Dozwolone są tylko pliki PDF!"
@@ -610,7 +634,7 @@ msgid "Refused"
 msgstr "Odrzucony"
 
 #. module: hr_document_flow
-#: code:addons/hr_document_flow/models/hr_document_flow.py:193
+#: code:addons/hr_document_flow/models/hr_document_flow.py:207
 #, python-format
 msgid "Reminder: New document to sign"
 msgstr "Przypomnienie: Nowy dokument do podpisu"
@@ -726,14 +750,15 @@ msgid "Status based on activities\n"
 "Overdue: Due date is already passed\n"
 "Today: Activity date is today\n"
 "Planned: Future activities."
-msgstr "Status bazuje na aktywnościach\n"
-"Opóźnione: Data \"do\" minęła\n"
-"Dziś: Aktywnośc przewidziana na dziś\n"
-"Zaplanowane: Przyszłe aktywności."
+msgstr "Status na podstawie aktywności\n"
+"Zaległe: Termin już minął\n"
+"Dzisiaj: Data aktywności to dzisiaj\n"
+"Zaplanowane: Przyszłe działania."
 
 #. module: hr_document_flow
 #: code:addons/hr_document_flow/models/hr_document_flow.py:150
-#: code:addons/hr_document_flow/models/hr_document_flow.py:194
+#: code:addons/hr_document_flow/models/hr_document_flow.py:172
+#: code:addons/hr_document_flow/models/hr_document_flow.py:208
 #, python-format
 msgid "Thank you - MJ Group"
 msgstr "Dziękujemy - MJ Group"
