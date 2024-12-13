@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-08 08:40+0000\n"
-"PO-Revision-Date: 2024-11-08 08:40+0000\n"
+"POT-Creation-Date: 2024-12-13 10:56+0000\n"
+"PO-Revision-Date: 2024-12-13 10:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -43,6 +43,21 @@ msgstr ""
 "<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
 "        <span style=\"font-size: 14px;\">Natychmiast przejdź do odpowiedniego modułu, pobierz, podpisz i prześlij podpisany dokument w odpowiednie miejsce.</span>\n"
 "                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">więcej szczegółów w Odoo.</span>\n"
+"                    </p>"
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#, python-format
+msgid ""
+"<span style=\"font-size: 14px;\">Your document flow has been completed.</span><br/>\n"
+"        <span style=\"font-size: 14px;\">The document signed by the persons indicated is waiting to be downloaded in the module</span>\n"
+"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
+"                    </p>"
+msgstr ""
+"<span style=\"font-size: 14px;\">Twój obieg dokumentu został zakończony.</span><br/>\n"
+"        <span style=\"font-size: 14px;\">Dokument podpisany przez wskazane przez Ciebie osoby jest gotowy do pobrania w module.</span>\n"
+"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">Więcej szczegółów w Odoo.</span>\n"
 "                    </p>"
 
 #. module: hr_document_flow
@@ -258,6 +273,13 @@ msgid "Document"
 msgstr "Dokument"
 
 #. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#, python-format
+msgid "Document Flow completed"
+msgstr "Obieg dokumentów zakończony."
+
+#. module: hr_document_flow
 #: model:ir.ui.menu,name:hr_document_flow.menu_root
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view
@@ -356,11 +378,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
 msgid "Group By"
 msgstr "Grupuj wg"
-
-#. module: hr_document_flow
-#: model:res.groups,name:hr_document_flow.group_hr_document_flow_officer
-msgid "HR"
-msgstr ""
 
 #. module: hr_document_flow
 #: model:ir.model,name:hr_document_flow.model_hr_document_flow
@@ -586,6 +603,13 @@ msgstr "Ilośc wiadomości z błedami przy doręczeniu"
 #. odoo-python
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
+msgid "Odoo - MJ Group Document Flow"
+msgstr "Odoo - MJ Group Obieg dokumentów"
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#, python-format
 msgid "Odoo - MJ Group Reminder: Sign document"
 msgstr "Odoo - MJ Group Przypomnienie: Podpisz dokument"
 
@@ -762,6 +786,7 @@ msgstr ""
 
 #. module: hr_document_flow
 #. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format

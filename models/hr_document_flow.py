@@ -166,10 +166,23 @@ class DocumentFlow(models.Model):
         else:
             self.complete_flow = False
 
+    def prepare_final_message(self):
+        subject = _('Odoo - MJ Group Document Flow')
+        title = _('Document Flow completed')
+        footer = _('Thank you - MJ Group')
+        message = _("""<span style="font-size: 14px;">Your document flow has been completed.</span><br/>
+        <span style="font-size: 14px;">The document signed by the persons indicated is waiting to be downloaded in the module</span>
+                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
+                    </p>""")
+        email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
+        self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message,
+                        footer=footer, cc_email=email_cc_list)
+
     def complete_request(self):
         if self.state != 'verified-done':
             self.state = 'verified-done'
             self.write({'state': 'verified-done'})
+            self.prepare_final_message()
 
     def action_change_state_signers_lines(self, vals):
         for item in vals:
