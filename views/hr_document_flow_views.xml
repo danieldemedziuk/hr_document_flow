@@ -25,14 +25,16 @@
                     <header>
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" invisible="current_employee == False or state != 'new'"/>
                         <button string="Verified" name='action_verified' class="oe_highlight" type="object" invisible="complete_flow != True or state not in ('sent')"
-                                groups="hr_document_flow.group_hr_document_flow_officer"/>
+                                groups="hr_document_flow.group_hr_document_flow_manager"/>
+<!--                                groups="hr_document_flow.group_hr_document_flow_officer"/>-->
                         <button string="Archive" name='action_archived' type="object" invisible="complete_flow == False or state != 'sent'"
-                                groups="hr_document_flow.group_hr_document_flow_officer"/>
+                                groups="hr_document_flow.group_hr_document_flow_manager"/>
+<!--                                groups="hr_document_flow.group_hr_document_flow_officer"/>-->
                         <button string="Cancel" name='action_canceled' type="object" invisible="current_employee == False or state not in ('sent')"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box" invisible="state == 'draft'" groups="hr_document_flow.group_hr_document_flow_officer">
+                        <div class="oe_button_box" name="button_box" invisible="state == 'draft'" groups="hr_document_flow.group_hr_document_flow_manager"><!--groups="hr_document_flow.group_hr_document_flow_officer">-->
                             <button name="action_get_attachment_tree_view" class="oe_stat_button" icon="fa-book" type="object">
                                 <field name="doc_count" widget="statinfo" string="Documents"/>
                             </button>
@@ -255,9 +257,9 @@
     <menuitem name="Document flow" id="menu_root" web_icon="hr_document_flow,static/description/icon.png"/>
     <menuitem name="Documents" id="menu_document_flow" parent="menu_root" sequence="10"/>
     <menuitem name="My documents" id="menu_my_document_flow" action="my_hr_document_flow_act" parent="menu_document_flow" sequence="1"/>
-    <menuitem name="All documents" id="menu_all_document_flow" action="all_hr_document_flow_act" parent="menu_document_flow" sequence="5" groups="group_hr_document_flow_officer"/>
+    <menuitem name="All documents" id="menu_all_document_flow" action="all_hr_document_flow_act" parent="menu_document_flow" sequence="5" groups="hr_document_flow.group_hr_document_flow_manager"/> <!--groups="group_hr_document_flow_officer"/>-->
 
-    <menuitem name="Configuration" id="menu_config" parent="menu_root" sequence="20" groups="group_hr_document_flow_officer"/>
+    <menuitem name="Configuration" id="menu_config" parent="menu_root" sequence="20" groups="hr_document_flow.group_hr_document_flow_manager"/> <!--groups="group_hr_document_flow_officer"-->
     <menuitem name="Config" id="menu_config_config" action="hr_document_flow_config_act" parent="menu_config" sequence="1"/>
     <menuitem name="Roles" id="menu_config_roles" action="hr_document_flow_config_roles_act" parent="menu_config" sequence="5"/>
     <menuitem name="Document types" id="menu_config_doc_type" action="hr_document_flow_config_doc_type_act" parent="menu_config" sequence="15"/>
