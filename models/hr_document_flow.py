@@ -19,7 +19,7 @@ class DocumentFlow(models.Model):
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     doc_type = fields.Many2one('hr.document_flow.type', string='Document type', required=True)
     sign_type = fields.Many2one('hr.document_flow.sign_type', string='Sign type', required=True)
-    validity = fields.Date(string='Valid until', track_visibility='onchange')
+    validity = fields.Date(string='Valid until', tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('new', 'New'),
@@ -28,7 +28,7 @@ class DocumentFlow(models.Model):
         ('archived', 'Archived'),
         ('refused', 'Refused'),
         ('canceled', 'Canceled'),
-        ('expired', 'Expired')], string='State', default='draft')
+        ('expired', 'Expired')], string='State', default='draft', tracking=True)
     signers_lines = fields.One2many('hr.document_flow.signers', 'document_id', required=True)
     employee_cc_ids = fields.One2many('hr.document_flow.employee_cc', 'document_id')
     activity_log_ids = fields.One2many('hr.document_flow.activity_logs', 'document_id')
@@ -44,21 +44,22 @@ class DocumentFlow(models.Model):
             else:
                 rec.current_employee = False
 
-    @api.model
-    def create(self, vals):
-        vals['state'] = 'new'
-        res = super(DocumentFlow, self).create(vals)
-        res.archive_activity_log('create', res.create_date, res.creator_id)
-        res.add_follower()
-        if 'attachment_ids' in vals:
-            index = 0
-            for item in vals['attachment_ids']:
-                attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][index][1])
-                attachments.write({
-                    'res_model': self._name,
-                    'res_id': res.id,
-                })
-                index += 1
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['state'] = 'new'
+            res = super(DocumentFlow, self).create(vals)
+            res.archive_activity_log('create', res.create_date, res.creator_id)
+            res.add_follower()
+            if 'attachment_ids' in vals:
+                index = 0
+                for item in vals['attachment_ids']:
+                    attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][index][1])
+                    attachments.write({
+                        'res_model': self._name,
+                        'res_id': res.id,
+                    })
+                    index += 1
 
         return res
 
@@ -271,10 +272,9 @@ class Signers(models.Model):
             else:
                 rec.current_employee = False
 
-    @api.model
-    def create(self, vals):
-        res = super(Signers, self).create(vals)
-
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super(Signers, self).create(vals_list)
         return res
 
     def resend_email(self):
