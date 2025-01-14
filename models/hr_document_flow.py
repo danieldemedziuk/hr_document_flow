@@ -8,11 +8,11 @@ from odoo.exceptions import UserError, AccessError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
-
 class DocumentFlow(models.Model):
     _name = 'hr.document_flow'
     _description = 'HR Document Flow'
     _inherit = ['mail_template', 'mail.activity.mixin', 'mail.thread']
+    _order = "state asc"
 
     name = fields.Char(string='Name', required=True)
     user_signer_ids = fields.Many2many('res.users', string='Signers')
@@ -60,7 +60,6 @@ class DocumentFlow(models.Model):
                         'res_id': res.id,
                     })
                     index += 1
-
         return res
 
     def write(self, vals):
@@ -195,7 +194,23 @@ class DocumentFlow(models.Model):
                 self.action_send_message(attachment_ids)
 
     @api.model
+    def check_expired_documents(self):
+        expired_docs = self.search([
+            ('validity', '!=', False),
+            ('validity', '<', fields.Date.today()),
+            ('state', 'not in', ['expired', 'canceled', 'verified-done', 'archived', 'refused'])
+        ])
+        for doc in expired_docs:
+            doc.state = 'expired'
+            doc.archive_activity_log(
+                'expired',
+                fields.Datetime.now(),
+                doc.env['hr.employee'].search([('user_id', '=', doc.env.user.id)])
+            )
+
+    @api.model
     def check_validity_days(self):
+        self.check_expired_documents()
         for rec in self.env['hr.document_flow'].search([('state', 'in', ['sent'])]):
             if rec.validity:
                 days_notifi = self.env['hr.document_flow.config'].browse(1).days_notifi
@@ -238,7 +253,6 @@ class DocumentFlow(models.Model):
             for attachment in record.attachment_ids:
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
-
 
 class Role(models.Model):
     _name = 'hr.document_flow.role'
@@ -312,7 +326,8 @@ class ActivityLogs(models.Model):
     _name = 'hr.document_flow.activity_logs'
     _description = 'HR Document Flow: Activity logs'
 
-    action = fields.Selection([('create', 'Create'), ('sent', 'Sent'), ('resent', 'Resent'), ('sign', 'Sign'), ('refuse', 'Refuse'), ('archived', 'Archived')], string='Action performed')
+    action = fields.Selection([('create', 'Create'), ('sent', 'Sent'), ('resent', 'Resent'), ('sign', 'Sign'), ('refuse', 'Refuse'), ('archived', 'Archived'),
+                               ('expired', 'Expired')], string='Action performed')
     log_date = fields.Datetime(string='Log date')
     employee_id = fields.Many2one('hr.employee', string='Contact')
     document_id = fields.Many2one('hr.document_flow')

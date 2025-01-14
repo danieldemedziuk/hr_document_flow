@@ -199,7 +199,7 @@ msgstr "Kontakty w kopii"
 #. module: hr_document_flow
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__create
 msgid "Create"
-msgstr "Utwórz"
+msgstr "Utworzony"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view
@@ -353,6 +353,11 @@ msgstr "Pracownik DW"
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__expired
 msgid "Expired"
 msgstr "Wygasły"
+
+#. module: hr_document_flow
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__expired
+msgid "Expired"
+msgstr "Wygasł"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
