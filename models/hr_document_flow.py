@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
-import base64
 from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, AccessError, ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
+
 
 class DocumentFlow(models.Model):
     _name = 'hr.document_flow'
@@ -254,6 +254,7 @@ class DocumentFlow(models.Model):
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
 
+
 class Role(models.Model):
     _name = 'hr.document_flow.role'
     _description = 'HR Document Flow: Role'
@@ -353,4 +354,3 @@ class Config(models.Model):
 
     name = fields.Char(string='Name', required=True)
     days_notifi = fields.Integer(string='Days to notification', help='The number of days after which the message will be sent if a document circulation expiration date has been defined in the form.')
-
