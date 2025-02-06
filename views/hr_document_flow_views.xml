@@ -201,9 +201,9 @@
                         <filter name="group_create_uid" string="Created by" context="{'group_by':'create_uid'}"/>
                         <filter name="group_state" string="State" context="{'group_by':'state'}"/>
                     </group>
-                    <filter name="open_docs" string="Open documents" domain="[('state', 'in', ['new', 'sent'])]"/>
+                    <filter name="open_docs" string="Open documents" domain="['|', ('state', '=', 'expired'),('state', 'in', ['new', 'sent'])]"/>
                     <filter name="sign_docs" string="Signed documents" domain="[('state', '=', 'verified-done')]"/>
-                    <filter name="expired_docs" string="Expired documents" domain="[('validity', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                    <filter name="expired_docs" string="Expired documents" domain="[('state', '=', 'expired')]"/>
                 </search>
             </field>
         </record>
