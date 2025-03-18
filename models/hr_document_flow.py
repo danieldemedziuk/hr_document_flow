@@ -14,7 +14,8 @@ class DocumentFlow(models.Model):
     _inherit = ['mail_template', 'mail.activity.mixin', 'mail.thread']
     _order = "state asc"
 
-    name = fields.Char(string='Name', required=True)
+    # name = fields.Char(string='Name', required=True)
+    name = fields.Char(string='Document name', default=lambda self: _('New'), copy=False, readonly=True, tracking=True)
     user_signer_ids = fields.Many2many('res.users', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     doc_type = fields.Many2one('hr.document_flow.type', string='Document type', required=True)
@@ -47,6 +48,9 @@ class DocumentFlow(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = (self.env['ir.sequence'].next_by_code('hr.document_flow'))
+
             vals['state'] = 'new'
             res = super(DocumentFlow, self).create(vals)
             res.archive_activity_log('create', res.create_date, res.creator_id)

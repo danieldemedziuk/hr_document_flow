@@ -40,10 +40,10 @@
                             </button>
                         </div>
                         <div name="title-name" class="oe_title">
-                            <h2>
+                            <h1>
                                 <label for="name" class="oe_edit_only" string="Document name" invisible="state != 'draft'"/>
-                                <field name="name" placeholder="Document title..." readonly="state != 'draft'"/>
-                            </h2>
+                                <field name="name" placeholder="Document title..."/>
+                            </h1>
                         </div>
                         <group>
                             <group col="2">

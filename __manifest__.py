@@ -22,6 +22,7 @@ Additionally, the module supports adding CC (carbon copy) recipients who will be
         'security/ir.model.access.csv',
         'data/config_data.xml',
         'data/cron_data.xml',
+        'data/document_flow_sequence.xml',
         'views/hr_document_flow_views.xml',
     ],
     'auto_install': False,
