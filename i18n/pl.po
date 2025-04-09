@@ -643,7 +643,7 @@ msgstr "Otwarte dokumenty"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__partner_id
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Partner"
-msgstr ""
+msgstr "Klient"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__mobile_phone
