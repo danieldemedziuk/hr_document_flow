@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <tree string='Document flow'>
                     <field name="name"/>
+                    <field name="title"/>
+                    <field name="partner_id"/>
                     <field name="doc_type"/>
                     <field name="validity"/>
                     <field name="create_uid" string="Create by"/>
@@ -47,13 +49,8 @@
                         </div>
                         <group>
                             <group col="2">
-                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
-                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
-                                <field name="validity" readonly="state not in ('draft', 'new')"/>
-                                <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
-                                <field name="complete_flow" invisible="1"/>
-                                <field name="creator_id" string='Employee' invisible="1"/>
-                                <field name="current_employee" string='User' invisible="1"/>
+                                <field name="title"/>
+                                <field name="partner_id"/>
                             </group>
                             <group col="2">
                                 <div class="alert alert-info" role="alert" colspan="2">
@@ -62,6 +59,15 @@
                                     <br/>
                                 </div>
                                 <field name="attachment_ids" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" readonly="state not in ('draft', 'new')"/>
+                            </group>
+                            <group col="2">
+                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
+                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
+                                <field name="validity" readonly="state not in ('draft', 'new')"/>
+                                <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="complete_flow" invisible="1"/>
+                                <field name="creator_id" string='Employee' invisible="1"/>
+                                <field name="current_employee" string='User' invisible="1"/>
                             </group>
                         </group>
 
@@ -215,6 +221,7 @@
             <field name="search_view_id" ref="hr_document_flow_tree_view_search"/>
             <field name="context">{
                 'search_default_open_docs': 1,
+                'group_by': 'state'
                 }
             </field>
             <field name="view_mode">tree,form</field>
