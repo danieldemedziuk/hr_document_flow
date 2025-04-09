@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <tree string='Document flow'>
                     <field name="name"/>
+                    <field name="title"/>
+                    <field name="partner_id"/>
                     <field name="doc_type"/>
                     <field name="validity"/>
                     <field name="create_uid" string="Create by"/>
@@ -47,6 +49,8 @@
                         </div>
                         <group>
                             <group col="2">
+                                <field name="title" string="Title"/>
+                                <field name="partner_id" string="Partner"/>
                                 <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="validity" readonly="state not in ('draft', 'new')"/>
@@ -215,6 +219,7 @@
             <field name="search_view_id" ref="hr_document_flow_tree_view_search"/>
             <field name="context">{
                 'search_default_open_docs': 1,
+                'group_by': 'state'
                 }
             </field>
             <field name="view_mode">tree,form</field>
