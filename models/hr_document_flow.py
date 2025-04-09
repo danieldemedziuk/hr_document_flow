@@ -37,8 +37,8 @@ class DocumentFlow(models.Model):
     complete_flow = fields.Boolean(string='Complete flow', compute="_check_current_flow", default=False)
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
     doc_count = fields.Integer(compute='compute_doc_number')
-    title = fields.Char(string='Title')
-    partner_id = fields.Many2one('res.partner', string='Partner')
+    title = fields.Char(string='Title', tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', tracking=True)
 
     def get_current_employee(self):
         for rec in self:
