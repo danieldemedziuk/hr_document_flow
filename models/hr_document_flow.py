@@ -39,6 +39,24 @@ class DocumentFlow(models.Model):
     doc_count = fields.Integer(compute='compute_doc_number')
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+
+    is_visible_to_user = fields.Boolean(
+        string="Is Visible to User",
+        compute="_compute_is_visible_to_user",
+        store=True
+    )
+
+    @api.depends('doc_type')
+    def _compute_is_visible_to_user(self):
+        current_user = self.env.user
+        for record in self:
+            visibility_settings = self.env['hr.document_flow.visibility_settings'].search([
+                ('users', 'in', [current_user.id]),
+                ('doc_type', 'in', [record.doc_type.id])
+            ])
+            print('VISIBILITY SETTINGS:', visibility_settings)
+            record.is_visible_to_user = bool(visibility_settings)
 
     def get_current_employee(self):
         for rec in self:
@@ -360,3 +378,12 @@ class Config(models.Model):
 
     name = fields.Char(string='Name', required=True)
     days_notifi = fields.Integer(string='Days to notification', help='The number of days after which the message will be sent if a document circulation expiration date has been defined in the form.')
+
+
+class VisibilitySettings(models.Model):
+    _name = 'hr.document_flow.visibility_settings'
+    _description = 'HR Document flow: Visibility settings'
+
+    users = fields.Many2many('res.users', string='Users')
+    doc_type = fields.Many2many('hr.document_flow.type', string='Document type')
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)

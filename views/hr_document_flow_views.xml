@@ -213,6 +213,17 @@
             </field>
         </record>
 
+        <record id="hr_document_flow_visibility_tree_view" model="ir.ui.view">
+            <field name="name">Visibility Settings Tree</field>
+            <field name="model">hr.document_flow.visibility_settings</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="users" widget="many2many_tags"/>
+                    <field name="doc_type" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="my_hr_document_flow_act" model="ir.actions.act_window">
             <field name="name">My documents</field>
             <field name="res_model">hr.document_flow</field>
@@ -262,6 +273,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="hr_document_flow_visibility_settings" model="ir.actions.act_window">
+            <field name="name">Visibility settings</field>
+            <field name="res_model">hr.document_flow.visibility_settings</field>
+            <field name="view_mode">tree</field>
+        </record>
+
     </data>
 
     <menuitem name="Document flow" id="menu_root" web_icon="hr_document_flow,static/description/icon.png"/>
@@ -274,5 +291,6 @@
     <menuitem name="Roles" id="menu_config_roles" action="hr_document_flow_config_roles_act" parent="menu_config" sequence="5"/>
     <menuitem name="Document types" id="menu_config_doc_type" action="hr_document_flow_config_doc_type_act" parent="menu_config" sequence="15"/>
     <menuitem name="Sign types" id="menu_config_sign_type" action="hr_document_flow_config_sign_type_act" parent="menu_config" sequence="19"/>
+    <menuitem name="Visibility settings" id="menu_config_visibility_settings" action="hr_document_flow_visibility_settings" parent="menu_config" sequence="20"/>
 
 </odoo>
