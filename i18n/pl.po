@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 07:52+0000\n"
-"PO-Revision-Date: 2025-04-09 07:52+0000\n"
+"POT-Creation-Date: 2025-04-09 10:05+0000\n"
+"PO-Revision-Date: 2025-04-09 10:05+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -156,6 +156,12 @@ msgstr ""
 "Nie można wysłać formularza do podpisu, ponieważ brakuje wymaganych pól. "
 "Sprawdź, czy na pewno dodałeś dokument do podpisu lub czy lista "
 "sygnatariuszy jest kompletna."
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__partner_id
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
+msgid "Client"
+msgstr "Klient"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__color
@@ -817,7 +823,6 @@ msgstr ""
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__title
-#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Title"
 msgstr "Tytuł"
 

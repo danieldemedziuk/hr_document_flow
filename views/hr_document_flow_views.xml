@@ -201,11 +201,12 @@
                     <field name="doc_type"/>
                     <field name="validity"/>
                     <field name="create_uid"/>
-                    <field name="state"/>
+                    <field name="title"/>
                     <group expand="0" string="Group By">
                         <filter name="group_type" string="Type" context="{'group_by':'doc_type'}"/>
                         <filter name="group_create_uid" string="Created by" context="{'group_by':'create_uid'}"/>
                         <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                        <filter name="group_partner_id" string="Client" context="{'group_by':'partner_id'}"/>
                     </group>
                     <filter name="open_docs" string="Open documents" domain="['|', ('state', '=', 'expired'),('state', 'in', ['new', 'sent'])]"/>
                     <filter name="sign_docs" string="Signed documents" domain="[('state', '=', 'verified-done')]"/>
