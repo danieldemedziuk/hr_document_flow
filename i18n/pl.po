@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-17 07:49+0000\n"
-"PO-Revision-Date: 2024-12-17 07:49+0000\n"
+"POT-Creation-Date: 2025-04-09 10:05+0000\n"
+"PO-Revision-Date: 2025-04-09 10:05+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -158,6 +158,12 @@ msgstr ""
 "sygnatariuszy jest kompletna."
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__partner_id
+#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
+msgid "Client"
+msgstr "Klient"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__color
 msgid "Color"
 msgstr "Kolor"
@@ -287,9 +293,10 @@ msgid "Document flow"
 msgstr "Obieg dokumentów"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__name
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Document name"
-msgstr "Nazwa dokumentu"
+msgstr "Nazwa"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
@@ -351,13 +358,9 @@ msgstr "Pracownik DW"
 
 #. module: hr_document_flow
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__expired
-msgid "Expired"
-msgstr "Wygasły"
-
-#. module: hr_document_flow
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__expired
 msgid "Expired"
-msgstr "Wygasł"
+msgstr "Wygasły"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -470,7 +473,8 @@ msgstr "Jeśli zaznaczone, to nowa wiadomość wymaga twojej uwagi."
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_has_error
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Jeśli zaznaczone, część wiadomości napotkało na błąd przy próbie doręczenia."
+msgstr ""
+"Jeśli zaznaczone, część wiadomości napotkało na błąd przy próbie doręczenia."
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
@@ -544,7 +548,6 @@ msgid "My documents"
 msgstr "Moje dokumenty"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_role__name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__name
@@ -553,7 +556,12 @@ msgid "Name"
 msgstr "Nazwa"
 
 #. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__new
+#, python-format
 msgid "New"
 msgstr "Nowy"
 
@@ -806,6 +814,11 @@ msgid ""
 msgstr ""
 "Liczba dni, po których wiadomość zostanie wysłana, jeśli w formularzu "
 "zdefiniowano datę wygaśnięcia obiegu dokumentu."
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__title
+msgid "Title"
+msgstr "Tytuł"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
