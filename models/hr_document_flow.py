@@ -270,13 +270,11 @@ class DocumentFlow(models.Model):
         for rec in self:
             if rec.doc_type and rec.company_id:
                 settings = self.env['hr.document_flow.visibility_settings'].search([
-                    ('doc_type', 'in', rec.doc_type.id),
-                    ('users', 'in', self.env.user.id),
-                    # ('company_id', '=', rec.company_id.id)
+                    ('doc_type', 'in', [rec.doc_type.id]),
+                    ('company_id', '=', rec.company_id.id)
                 ], limit=1)
-
                 rec.sudo().with_context(bypass_visibility_update=True).write({
-                    'visibility_settings_id': settings.id
+                    'visibility_settings_id': settings.id if settings else False
                 })
 
 

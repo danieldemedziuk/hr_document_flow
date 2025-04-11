@@ -54,6 +54,7 @@
                                 <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="validity" readonly="state not in ('draft', 'new')"/>
+
                                 <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
                                 <field name="complete_flow" invisible="1"/>
                                 <field name="creator_id" string='Employee' invisible="1"/>
