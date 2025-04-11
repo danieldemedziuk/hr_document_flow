@@ -41,6 +41,7 @@ class DocumentFlow(models.Model):
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings',string="Visibility Settings")
+    single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
 
     def get_current_employee(self):
         for rec in self:
@@ -270,13 +271,11 @@ class DocumentFlow(models.Model):
         for rec in self:
             if rec.doc_type and rec.company_id:
                 settings = self.env['hr.document_flow.visibility_settings'].search([
-                    ('doc_type', 'in', rec.doc_type.id),
-                    ('users', 'in', self.env.user.id),
-                    # ('company_id', '=', rec.company_id.id)
+                    ('doc_type', 'in', [rec.doc_type.id]),
+                    ('company_id', '=', rec.company_id.id)
                 ], limit=1)
-
                 rec.sudo().with_context(bypass_visibility_update=True).write({
-                    'visibility_settings_id': settings.id
+                    'visibility_settings_id': settings.id if settings else False
                 })
 
 

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 10:13+0000\n"
-"PO-Revision-Date: 2025-04-11 10:13+0000\n"
+"POT-Creation-Date: 2025-04-11 11:15+0000\n"
+"PO-Revision-Date: 2025-04-11 11:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -795,6 +795,11 @@ msgid "Signing date"
 msgstr "Data podpisania"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__single_signature
+msgid "Single signature"
+msgstr "Pojedyńczy podpis"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__state
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__rel_state
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__state
@@ -832,6 +837,11 @@ msgid ""
 msgstr ""
 "Liczba dni, po których wiadomość zostanie wysłana, jeśli w formularzu "
 "zdefiniowano datę wygaśnięcia obiegu dokumentu."
+
+#. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__single_signature
+msgid "This button accepts documents signed by only one signer."
+msgstr "Ten przycisk akceptuje dokumenty podpisane tylko przez jedną osobę."
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__title
