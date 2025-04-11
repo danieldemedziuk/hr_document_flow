@@ -40,23 +40,7 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-
-    is_visible_to_user = fields.Boolean(
-        string="Is Visible to User",
-        compute="_compute_is_visible_to_user",
-        store=True
-    )
-
-    @api.depends('doc_type')
-    def _compute_is_visible_to_user(self):
-        current_user = self.env.user
-        for record in self:
-            visibility_settings = self.env['hr.document_flow.visibility_settings'].search([
-                ('users', 'in', [current_user.id]),
-                ('doc_type', 'in', [record.doc_type.id])
-            ])
-            print('VISIBILITY SETTINGS:', visibility_settings)
-            record.is_visible_to_user = bool(visibility_settings)
+    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings',string="Visibility Settings")
 
     def get_current_employee(self):
         for rec in self:
@@ -75,6 +59,7 @@ class DocumentFlow(models.Model):
             res = super(DocumentFlow, self).create(vals)
             res.archive_activity_log('create', res.create_date, res.creator_id)
             res.add_follower()
+            res._update_visibility_settings()
             if 'attachment_ids' in vals:
                 index = 0
                 for item in vals['attachment_ids']:
@@ -94,6 +79,9 @@ class DocumentFlow(models.Model):
             self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
+
+        if not self.env.context.get('bypass_visibility_update'):
+            self._update_visibility_settings()
 
         return res
 
@@ -278,6 +266,19 @@ class DocumentFlow(models.Model):
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
 
+    def _update_visibility_settings(self):
+        for rec in self:
+            if rec.doc_type and rec.company_id:
+                settings = self.env['hr.document_flow.visibility_settings'].search([
+                    ('doc_type', 'in', rec.doc_type.id),
+                    ('users', 'in', self.env.user.id),
+                    # ('company_id', '=', rec.company_id.id)
+                ], limit=1)
+
+                rec.sudo().with_context(bypass_visibility_update=True).write({
+                    'visibility_settings_id': settings.id
+                })
+
 
 class Role(models.Model):
     _name = 'hr.document_flow.role'
@@ -387,3 +388,32 @@ class VisibilitySettings(models.Model):
     users = fields.Many2many('res.users', string='Users')
     doc_type = fields.Many2many('hr.document_flow.type', string='Document type')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+
+    def _update_document_flows(self):
+        for settings in self:
+            linked_documents = self.env['hr.document_flow'].search([('visibility_settings_id', '=', settings.id)])
+            matching_documents = self.env['hr.document_flow'].search([
+                ('doc_type', 'in', settings.doc_type.ids),
+                ('user_signer_ids', 'in', settings.users.ids),
+                ('company_id', '=', settings.company_id.id),
+            ])
+
+            if matching_documents:
+                matching_documents.sudo().with_context(bypass_visibility_update=True).write({'visibility_settings_id': settings.id})
+
+            documents_to_clear = linked_documents - matching_documents
+            if documents_to_clear:
+                documents_to_clear.sudo().with_context(bypass_visibility_update=True).write({'visibility_settings_id': False})
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(VisibilitySettings, self).create(vals_list)
+        if not self.env.context.get('bypass_visibility_update'):
+            records._update_document_flows()
+        return records
+
+    def write(self, vals):
+        result = super(VisibilitySettings, self).write(vals)
+        if not self.env.context.get('bypass_visibility_update'):
+            self._update_document_flows()
+        return result

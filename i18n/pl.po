@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 10:05+0000\n"
-"PO-Revision-Date: 2025-04-09 10:05+0000\n"
+"POT-Creation-Date: 2025-04-11 10:13+0000\n"
+"PO-Revision-Date: 2025-04-11 10:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -169,6 +169,12 @@ msgid "Color"
 msgstr "Kolor"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__company_id
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__company_id
+msgid "Company"
+msgstr "Firma"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__complete_flow
 msgid "Complete flow"
 msgstr "Pełny przepływ"
@@ -227,6 +233,7 @@ msgstr "Data utworzenia"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__create_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__create_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__create_uid
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__create_uid
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
 msgid "Created by"
 msgstr "Utworzona przez"
@@ -240,6 +247,7 @@ msgstr "Utworzona przez"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__create_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__create_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__create_date
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__create_date
 msgid "Created on"
 msgstr "Data utworzenia"
 
@@ -263,6 +271,7 @@ msgstr "Dni do powiadomienia"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__display_name
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__display_name
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__display_name
 msgid "Display Name"
 msgstr "Nazwa wyświetlana"
 
@@ -310,6 +319,7 @@ msgstr "Dokument do podpisu"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__doc_type
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__doc_type
 msgid "Document type"
 msgstr "Typ dokumentu"
 
@@ -438,6 +448,11 @@ msgid "HR Document flow: Type"
 msgstr "HR Obieg dokumentów: Typ"
 
 #. module: hr_document_flow
+#: model:ir.model,name:hr_document_flow.model_hr_document_flow_visibility_settings
+msgid "HR Document flow: Visibility settings"
+msgstr ""
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__has_message
 msgid "Has Message"
 msgstr ""
@@ -451,6 +466,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__id
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__id
 msgid "ID"
 msgstr ""
 
@@ -501,6 +517,7 @@ msgstr "Jest obserwatorem"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__write_uid
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__write_uid
 msgid "Last Updated by"
 msgstr "Ostatnio aktualizowane przez"
 
@@ -513,6 +530,7 @@ msgstr "Ostatnio aktualizowane przez"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_sign_type__write_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__write_date
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__write_date
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__write_date
 msgid "Last Updated on"
 msgstr "Data ostatniej aktualizacji"
 
@@ -843,6 +861,11 @@ msgid "User"
 msgstr "Użytkownik"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_visibility_settings__users
+msgid "Users"
+msgstr "Użytkownicy"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__validity
 msgid "Valid until"
 msgstr "Ważne do"
@@ -856,6 +879,17 @@ msgstr "Zwerifikowane"
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__verified-done
 msgid "Verified and done"
 msgstr "Zweryfikowane i wykonane"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__visibility_settings_id
+msgid "Visibility Settings"
+msgstr "Ustawienia widoczności"
+
+#. module: hr_document_flow
+#: model:ir.actions.act_window,name:hr_document_flow.hr_document_flow_visibility_settings
+#: model:ir.ui.menu,name:hr_document_flow.menu_config_visibility_settings
+msgid "Visibility settings"
+msgstr "Ustawienia widoczności"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__website_message_ids
