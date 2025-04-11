@@ -29,7 +29,11 @@
         <record id="users_own_documents_rule" model="ir.rule">
             <field name="name">HR Document flow: User see documents to sign</field>
             <field name="model_id" ref="model_hr_document_flow"/>
-            <field name="domain_force">['|', '|', ('create_uid', '=', user.id), ('user_signer_ids', 'in', [user.id]), ('state', 'not in', ['draft', 'new'])]</field>
+            <field name="domain_force">['|', '|',
+                ('create_uid', '=', user.id),
+                ('user_signer_ids', 'in', [user.id]),
+                ('state', 'not in', ['draft', 'new']),
+                ('visibility_settings_id.users', 'in', [user.id])]</field>
             <field name="groups" eval="[(4, ref('group_hr_document_flow_user'))]"/>
         </record>
 
