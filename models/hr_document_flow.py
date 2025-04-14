@@ -171,13 +171,19 @@ class DocumentFlow(models.Model):
         self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
-        check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
-
-        if check_list and all(check_list):
-            self.complete_flow = True
-            self.complete_request()
+        if self.single_signature:
+            if self.signers_lines.filtered(lambda lm: lm.state == 'completed'):
+                self.complete_flow = True
+                self.complete_request()
+            else:
+                self.complete_flow = False
         else:
-            self.complete_flow = False
+            check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
+            if check_list and all(check_list):
+                self.complete_flow = True
+                self.complete_request()
+            else:
+                self.complete_flow = False
 
     def prepare_final_message(self):
         subject = _('Odoo - MJ Group Document Flow')
