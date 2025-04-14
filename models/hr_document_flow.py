@@ -392,7 +392,7 @@ class VisibilitySettings(models.Model):
             linked_documents = self.env['hr.document_flow'].search([('visibility_settings_id', '=', settings.id)])
             matching_documents = self.env['hr.document_flow'].search([
                 ('doc_type', 'in', settings.doc_type.ids),
-                ('user_signer_ids', 'in', settings.users.ids),
+                # ('user_signer_ids', 'in', settings.users.ids),
                 ('company_id', '=', settings.company_id.id),
             ])
 
