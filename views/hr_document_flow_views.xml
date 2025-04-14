@@ -15,6 +15,7 @@
                     <field name="create_uid" string="Create by"/>
                     <field name="create_date" string="Create date"/>
                     <field name="state"/>
+                    <field name="visibility_settings_id"/>
                 </tree>
             </field>
         </record>
@@ -228,7 +229,7 @@
         <record id="my_hr_document_flow_act" model="ir.actions.act_window">
             <field name="name">My documents</field>
             <field name="res_model">hr.document_flow</field>
-<!--            <field name="domain">['|', ('create_uid', '=', uid), ('user_signer_ids', '=', uid)]</field>-->
+            <field name="domain">['|', '|', ('create_uid', '=', uid), ('user_signer_ids', '=', uid), ('visibility_settings_id.users', 'in', [uid])]</field>
             <field name="search_view_id" ref="hr_document_flow_tree_view_search"/>
             <field name="context">{
                 'search_default_open_docs': 1,
