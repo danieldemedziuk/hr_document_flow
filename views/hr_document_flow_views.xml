@@ -15,7 +15,6 @@
                     <field name="create_uid" string="Create by"/>
                     <field name="create_date" string="Create date"/>
                     <field name="state"/>
-                    <field name="visibility_settings_id"/>
                 </tree>
             </field>
         </record>
@@ -51,7 +50,14 @@
                         <group>
                             <group col="2">
                                 <field name="title"/>
-                                <field name="partner_id"/>
+                                <field name="partner_id" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
+                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
+                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
+                                <field name="validity" readonly="state not in ('draft', 'new')"/>
+                                <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="complete_flow" invisible="1"/>
+                                <field name="creator_id" string='Employee' invisible="1"/>
+                                <field name="current_employee" string='User' invisible="1"/>
                             </group>
                             <group col="2">
                                 <div class="alert alert-info" role="alert" colspan="2">
@@ -60,15 +66,6 @@
                                     <br/>
                                 </div>
                                 <field name="attachment_ids" widget="many2many_binary" colspan="2" string="Upload files" nolabel="1" readonly="state not in ('draft', 'new')"/>
-                            </group>
-                            <group col="2">
-                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
-                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
-                                <field name="validity" readonly="state not in ('draft', 'new')"/>
-                                <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
-                                <field name="complete_flow" invisible="1"/>
-                                <field name="creator_id" string='Employee' invisible="1"/>
-                                <field name="current_employee" string='User' invisible="1"/>
                             </group>
                         </group>
 
@@ -230,7 +227,7 @@
         <record id="my_hr_document_flow_act" model="ir.actions.act_window">
             <field name="name">My documents</field>
             <field name="res_model">hr.document_flow</field>
-<!--            <field name="domain">['|', ('create_uid', '=', uid), ('user_signer_ids', '=', uid)]</field>-->
+            <field name="domain">['|', '|', ('create_uid', '=', uid), ('user_signer_ids', '=', uid), ('visibility_settings_id.users', 'in', [uid])]</field>
             <field name="search_view_id" ref="hr_document_flow_tree_view_search"/>
             <field name="context">{
                 'search_default_open_docs': 1,
