@@ -797,7 +797,7 @@ msgstr "Data podpisania"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__single_signature
 msgid "Single signature"
-msgstr "Pojedyńczy podpis"
+msgstr "Wymagany 1 podpis"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__state
