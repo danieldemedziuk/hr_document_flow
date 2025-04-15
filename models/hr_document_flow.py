@@ -80,9 +80,7 @@ class DocumentFlow(models.Model):
             self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
-
-        if not self.env.context.get('bypass_visibility_update'):
-            self._update_visibility_settings()
+        self._update_visibility_settings()
 
         return res
 
@@ -98,8 +96,6 @@ class DocumentFlow(models.Model):
                 raise UserError(_("You cannot modify rows when the form is in this state!"))
 
     def add_document_to_attachment(self, vals):
-        print('SELF: ', self)
-        print(vals)
         for item in vals:
             if len(item) < 3:
                 continue
@@ -208,16 +204,6 @@ class DocumentFlow(models.Model):
             self.write({'state': 'verified-done'})
             self.prepare_final_message()
 
-    # def action_change_state_signers_lines(self, vals):
-    #     for item in vals:
-    #         if item[0] == 1:
-    #             item[2]['state'] = 'completed'
-    #             self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
-    #
-    #             attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
-    #             self.action_send_message(attachment_ids)
-
-
     def action_change_state_signers_lines(self, vals):
         for item in vals:
             if item[0] == 1:
@@ -305,9 +291,10 @@ class DocumentFlow(models.Model):
                     ('doc_type', 'in', [rec.doc_type.id]),
                     ('company_id', '=', rec.company_id.id)
                 ], limit=1)
-                rec.sudo().with_context(bypass_visibility_update=True).write({
-                    'visibility_settings_id': settings.id if settings else False
-                })
+                if rec.visibility_settings_id != settings:
+                    rec.sudo().write({
+                        'visibility_settings_id': settings.id if settings else False
+                    })
 
 
 class Role(models.Model):
@@ -424,26 +411,25 @@ class VisibilitySettings(models.Model):
             linked_documents = self.env['hr.document_flow'].search([('visibility_settings_id', '=', settings.id)])
             matching_documents = self.env['hr.document_flow'].search([
                 ('doc_type', 'in', settings.doc_type.ids),
-                # ('user_signer_ids', 'in', settings.users.ids),
                 ('company_id', '=', settings.company_id.id),
             ])
 
-            if matching_documents:
-                matching_documents.sudo().with_context(bypass_visibility_update=True).write({'visibility_settings_id': settings.id})
+            documents_to_assign = matching_documents.filtered(lambda d: d.visibility_settings_id != settings)
+            if documents_to_assign:
+                documents_to_assign.sudo().write({'visibility_settings_id': settings.id})
 
             documents_to_clear = linked_documents - matching_documents
+            documents_to_clear = documents_to_clear.filtered(lambda d: d.visibility_settings_id == settings)
             if documents_to_clear:
-                documents_to_clear.sudo().with_context(bypass_visibility_update=True).write({'visibility_settings_id': False})
+                documents_to_clear.sudo().write({'visibility_settings_id': False})
 
     @api.model_create_multi
     def create(self, vals_list):
         records = super(VisibilitySettings, self).create(vals_list)
-        if not self.env.context.get('bypass_visibility_update'):
-            records._update_document_flows()
+        records._update_document_flows()
         return records
 
     def write(self, vals):
         result = super(VisibilitySettings, self).write(vals)
-        if not self.env.context.get('bypass_visibility_update'):
-            self._update_document_flows()
+        self._update_document_flows()
         return result
