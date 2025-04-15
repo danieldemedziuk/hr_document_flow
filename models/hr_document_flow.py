@@ -98,7 +98,12 @@ class DocumentFlow(models.Model):
                 raise UserError(_("You cannot modify rows when the form is in this state!"))
 
     def add_document_to_attachment(self, vals):
+        print('SELF: ', self)
+        print(vals)
         for item in vals:
+            if len(item) < 3:
+                continue
+
             if item[2] and 'attachment_ids' in item[2]:
                 attachments = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
                 attachments.write({
@@ -203,14 +208,34 @@ class DocumentFlow(models.Model):
             self.write({'state': 'verified-done'})
             self.prepare_final_message()
 
+    # def action_change_state_signers_lines(self, vals):
+    #     for item in vals:
+    #         if item[0] == 1:
+    #             item[2]['state'] = 'completed'
+    #             self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+    #
+    #             attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
+    #             self.action_send_message(attachment_ids)
+
+
     def action_change_state_signers_lines(self, vals):
         for item in vals:
             if item[0] == 1:
-                item[2]['state'] = 'completed'
-                self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+                item_data = item[2]
 
-                attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
-                self.action_send_message(attachment_ids)
+                if item_data and 'attachment_ids' in item_data and item_data['attachment_ids']:
+                    attachment_ids_data = item_data['attachment_ids']
+
+                    if attachment_ids_data and len(attachment_ids_data[0]) >= 2:
+                        if attachment_ids_data[0][0] in (4, 6):
+                            if attachment_ids_data[0][0] == 6:
+                                attachment_ids = self.env['ir.attachment'].browse(attachment_ids_data[0][2])
+                            else:
+                                attachment_ids = self.env['ir.attachment'].browse([line[1] for line in attachment_ids_data])
+
+                            item_data['state'] = 'completed'
+                            self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+                            self.action_send_message(attachment_ids)
 
     @api.model
     def check_expired_documents(self):
