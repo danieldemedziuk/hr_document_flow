@@ -62,6 +62,7 @@
         <record id="manager_documents_rule" model="ir.rule">
             <field name="name">HR Document flow: Manager rule</field>
             <field name="model_id" ref="model_hr_document_flow"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_hr_document_flow_manager'))]"/>
         </record>
     </data>

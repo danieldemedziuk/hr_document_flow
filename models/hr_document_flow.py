@@ -40,7 +40,7 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings',string="Visibility Settings")
+    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings', string="Visibility Settings")
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
 
     def get_current_employee(self):
@@ -232,11 +232,7 @@ class DocumentFlow(models.Model):
         ])
         for doc in expired_docs:
             doc.state = 'expired'
-            doc.archive_activity_log(
-                'expired',
-                fields.Datetime.now(),
-                doc.env['hr.employee'].search([('user_id', '=', doc.env.user.id)])
-            )
+            doc.archive_activity_log('expired', fields.Datetime.now(), doc.env['hr.employee'].search([('user_id', '=', doc.env.user.id)]))
 
     @api.model
     def check_validity_days(self):
@@ -287,13 +283,14 @@ class DocumentFlow(models.Model):
     def _update_visibility_settings(self):
         for rec in self:
             if rec.doc_type and rec.company_id:
-                settings = self.env['hr.document_flow.visibility_settings'].search([
+                settings_id = self.env['hr.document_flow.visibility_settings'].search([
                     ('doc_type', 'in', [rec.doc_type.id]),
-                    ('company_id', '=', rec.company_id.id)
+                    ('company_id', '=', rec.company_id.id),
                 ], limit=1)
-                if rec.visibility_settings_id != settings:
+                
+                if rec.visibility_settings_id != settings_id:
                     rec.sudo().write({
-                        'visibility_settings_id': settings.id if settings else False
+                        'visibility_settings_id': settings_id.id if settings_id else False
                     })
 
 
