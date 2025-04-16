@@ -891,11 +891,6 @@ msgid "Verified and done"
 msgstr "Zweryfikowane i wykonane"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__visibility_settings_id
-msgid "Visibility Settings"
-msgstr "Ustawienia widoczności"
-
-#. module: hr_document_flow
 #: model:ir.actions.act_window,name:hr_document_flow.hr_document_flow_visibility_settings
 #: model:ir.ui.menu,name:hr_document_flow.menu_config_visibility_settings
 msgid "Visibility settings"
