@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError, AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings',string="Visibility Settings")
+    is_visibility = fields.Boolean(compute='update_visibility_settings')
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
 
     def get_current_employee(self):
@@ -60,7 +60,6 @@ class DocumentFlow(models.Model):
             res = super(DocumentFlow, self).create(vals)
             res.archive_activity_log('create', res.create_date, res.creator_id)
             res.add_follower()
-            res._update_visibility_settings()
             if 'attachment_ids' in vals:
                 index = 0
                 for item in vals['attachment_ids']:
@@ -80,8 +79,6 @@ class DocumentFlow(models.Model):
             self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
-        self._update_visibility_settings()
-
         return res
 
     def check_signer_list_complete(self):
@@ -284,17 +281,22 @@ class DocumentFlow(models.Model):
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
 
-    def _update_visibility_settings(self):
-        for rec in self:
-            if rec.doc_type and rec.company_id:
-                settings = self.env['hr.document_flow.visibility_settings'].search([
-                    ('doc_type', 'in', [rec.doc_type.id]),
-                    ('company_id', '=', rec.company_id.id)
-                ], limit=1)
-                if rec.visibility_settings_id != settings:
-                    rec.sudo().write({
-                        'visibility_settings_id': settings.id if settings else False
-                    })
+    @api.depends('doc_type', 'company_id')
+    def update_visibility_settings(self):
+        for document in self:
+            user_visibility_settings = self.env['hr.document_flow.visibility_settings'].search([
+                ('users', 'in', self.env.uid),
+                ('doc_type', 'in', [document.doc_type.id]),
+                ('company_id', '=', document.company_id.id),
+            ])
+            document.is_visibility = bool(user_visibility_settings)
+
+    def read(self, fields=None, load='_classic_read'):
+        uid = self.env.uid
+        records = self.filtered(lambda lm: lm.is_visibility or lm.create_uid.id == uid or uid in lm.user_signer_ids.ids)
+        if not records and not self.id:
+            return super().read(fields=fields, load=load)
+        return super(DocumentFlow, records).read(fields=fields, load=load)
 
 
 class Role(models.Model):
@@ -405,31 +407,3 @@ class VisibilitySettings(models.Model):
     users = fields.Many2many('res.users', string='Users')
     doc_type = fields.Many2many('hr.document_flow.type', string='Document type')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-
-    def _update_document_flows(self):
-        for settings in self:
-            linked_documents = self.env['hr.document_flow'].search([('visibility_settings_id', '=', settings.id)])
-            matching_documents = self.env['hr.document_flow'].search([
-                ('doc_type', 'in', settings.doc_type.ids),
-                ('company_id', '=', settings.company_id.id),
-            ])
-
-            documents_to_assign = matching_documents.filtered(lambda d: d.visibility_settings_id != settings)
-            if documents_to_assign:
-                documents_to_assign.sudo().write({'visibility_settings_id': settings.id})
-
-            documents_to_clear = linked_documents - matching_documents
-            documents_to_clear = documents_to_clear.filtered(lambda d: d.visibility_settings_id == settings)
-            if documents_to_clear:
-                documents_to_clear.sudo().write({'visibility_settings_id': False})
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        records = super(VisibilitySettings, self).create(vals_list)
-        records._update_document_flows()
-        return records
-
-    def write(self, vals):
-        result = super(VisibilitySettings, self).write(vals)
-        self._update_document_flows()
-        return result
