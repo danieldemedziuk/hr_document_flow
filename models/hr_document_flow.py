@@ -40,7 +40,7 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    is_visibility = fields.Boolean(compute='update_visibility_settings')
+    is_visibility = fields.Boolean(compute='update_visibility_settings', default=False)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
 
     def get_current_employee(self):
@@ -284,19 +284,21 @@ class DocumentFlow(models.Model):
     @api.depends('doc_type', 'company_id')
     def update_visibility_settings(self):
         for document in self:
+            document.is_visibility = False
             user_visibility_settings = self.env['hr.document_flow.visibility_settings'].search([
                 ('users', 'in', self.env.uid),
                 ('doc_type', 'in', [document.doc_type.id]),
                 ('company_id', '=', document.company_id.id),
-            ])
-            document.is_visibility = bool(user_visibility_settings)
+            ], limit=1)
+            if user_visibility_settings:
+                document.is_visibility = True
 
-    def read(self, fields=None, load='_classic_read'):
-        uid = self.env.uid
-        records = self.filtered(lambda lm: lm.is_visibility or lm.create_uid.id == uid or uid in lm.user_signer_ids.ids)
-        if not records and not self.id:
-            return super().read(fields=fields, load=load)
-        return super(DocumentFlow, records).read(fields=fields, load=load)
+    # def read(self, fields=None, load='_classic_read'):
+    #     uid = self.env.uid
+    #     records = self.filtered(lambda lm: lm.is_visibility or lm.create_uid.id == uid or uid in lm.user_signer_ids.ids)
+    #     if not records and not self.id:
+    #         return super().read(fields=fields, load=load)
+    #     return super(DocumentFlow, records).read(fields=fields, load=load)
 
 
 class Role(models.Model):
