@@ -40,6 +40,7 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings', string="Visibility Settings")
     is_visibility = fields.Boolean(compute='update_visibility_settings', default=False)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
 
@@ -289,11 +290,11 @@ class DocumentFlow(models.Model):
         #     ])
         #     rec.is_visibility = bool(user_visibility_settings)
 
-    def read(self, fields=None, load='_classic_read'):
+    # def read(self, fields=None, load='_classic_read'):
         # uid = self.env.uid
         # records = self.filtered(lambda lm: lm.is_visibility or lm.create_uid.id == uid or uid in lm.user_signer_ids.ids)
         # if not records and not self.id:
-        return super().read(fields=fields, load=load)
+             # return super().read(fields=fields, load=load)
         # return super(DocumentFlow, records).read(fields=fields, load=load)
 
 
