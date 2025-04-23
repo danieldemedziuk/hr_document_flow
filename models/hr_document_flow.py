@@ -19,6 +19,7 @@ class DocumentFlow(models.Model):
     user_signer_ids = fields.Many2many('res.users', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     doc_type = fields.Many2one('hr.document_flow.type', string='Document type', required=True)
+    rel_visible_officer = fields.Boolean(string='Rel visible to officer', related='doc_type.visible_officer')
     sign_type = fields.Many2one('hr.document_flow.sign_type', string='Sign type', required=True)
     validity = fields.Date(string='Valid until', tracking=True)
     state = fields.Selection([
@@ -40,10 +41,9 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings', string="Visibility Settings")
-    is_visibility = fields.Boolean(compute='update_visibility_settings', default=False)
+    is_visible_for_user = fields.Boolean(compute='_compute_is_visible_for_user')
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
-
+    
     def get_current_employee(self):
         for rec in self:
             if rec.creator_id.user_id == self.env.user or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
@@ -278,25 +278,6 @@ class DocumentFlow(models.Model):
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
 
-    # @api.depends('doc_type', 'company_id')
-    def update_visibility_settings(self):
-        print("UPDATE VISIBILITY")
-        # for rec in self:
-        #     print("")
-        #     user_visibility_settings = self.env['hr.document_flow.visibility_settings'].search([
-        #         ('users', 'in', self._uid),
-        #         ('doc_type', 'in', [rec.doc_type.id]),
-        #         ('company_id', '=', rec.company_id.id),
-        #     ])
-        #     rec.is_visibility = bool(user_visibility_settings)
-
-    # def read(self, fields=None, load='_classic_read'):
-        # uid = self.env.uid
-        # records = self.filtered(lambda lm: lm.is_visibility or lm.create_uid.id == uid or uid in lm.user_signer_ids.ids)
-        # if not records and not self.id:
-             # return super().read(fields=fields, load=load)
-        # return super(DocumentFlow, records).read(fields=fields, load=load)
-
 
 class Role(models.Model):
     _name = 'hr.document_flow.role'
@@ -320,7 +301,7 @@ class Signers(models.Model):
     color = fields.Integer(string='Color', default=0)
     state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('archived', 'Archived'), ('refused', 'Refused')], string='State', default='await', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
-    rel_state = fields.Selection(related='document_id.state')
+    rel_state = fields.Selection(related='document_id.state', store=True, readonly=True)
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
 
     def get_current_employee(self):
@@ -382,6 +363,7 @@ class DocumentType(models.Model):
     _description = 'HR Document flow: Type'
 
     name = fields.Char(string='Name', required=True)
+    visible_officer = fields.Boolean(string='Visible to officer', default=False)
 
 
 class SignType(models.Model):
@@ -398,11 +380,3 @@ class Config(models.Model):
     name = fields.Char(string='Name', required=True)
     days_notifi = fields.Integer(string='Days to notification', help='The number of days after which the message will be sent if a document circulation expiration date has been defined in the form.')
 
-
-class VisibilitySettings(models.Model):
-    _name = 'hr.document_flow.visibility_settings'
-    _description = 'HR Document flow: Visibility settings'
-
-    users = fields.Many2many('res.users', string='Users')
-    doc_type = fields.Many2many('hr.document_flow.type', string='Document type')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
