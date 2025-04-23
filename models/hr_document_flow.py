@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError, AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -19,6 +19,7 @@ class DocumentFlow(models.Model):
     user_signer_ids = fields.Many2many('res.users', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     doc_type = fields.Many2one('hr.document_flow.type', string='Document type', required=True)
+    rel_visible_officer = fields.Boolean(string='Rel visible to officer', related='doc_type.visible_officer')
     sign_type = fields.Many2one('hr.document_flow.sign_type', string='Sign type', required=True)
     validity = fields.Date(string='Valid until', tracking=True)
     state = fields.Selection([
@@ -39,7 +40,10 @@ class DocumentFlow(models.Model):
     doc_count = fields.Integer(compute='compute_doc_number')
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
-
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    is_visible_for_user = fields.Boolean(compute='_compute_is_visible_for_user')
+    single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
+    
     def get_current_employee(self):
         for rec in self:
             if rec.creator_id.user_id == self.env.user or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
@@ -76,7 +80,6 @@ class DocumentFlow(models.Model):
             self.check_signer_list_complete()
 
         res = super(DocumentFlow, self).write(vals)
-
         return res
 
     def check_signer_list_complete(self):
@@ -92,6 +95,9 @@ class DocumentFlow(models.Model):
 
     def add_document_to_attachment(self, vals):
         for item in vals:
+            if len(item) < 3:
+                continue
+
             if item[2] and 'attachment_ids' in item[2]:
                 attachments = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
                 attachments.write({
@@ -164,13 +170,19 @@ class DocumentFlow(models.Model):
         self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
-        check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
-
-        if check_list and all(check_list):
-            self.complete_flow = True
-            self.complete_request()
+        if self.single_signature:
+            if self.signers_lines.filtered(lambda lm: lm.state == 'completed'):
+                self.complete_flow = True
+                self.complete_request()
+            else:
+                self.complete_flow = False
         else:
-            self.complete_flow = False
+            check_list = [True if state == 'completed' else False for state in self.signers_lines.mapped('state')]
+            if check_list and all(check_list):
+                self.complete_flow = True
+                self.complete_request()
+            else:
+                self.complete_flow = False
 
     def prepare_final_message(self):
         subject = _('Odoo - MJ Group Document Flow')
@@ -193,11 +205,21 @@ class DocumentFlow(models.Model):
     def action_change_state_signers_lines(self, vals):
         for item in vals:
             if item[0] == 1:
-                item[2]['state'] = 'completed'
-                self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+                item_data = item[2]
 
-                attachment_ids = self.env['ir.attachment'].browse(item[2]['attachment_ids'][0][1])
-                self.action_send_message(attachment_ids)
+                if item_data and 'attachment_ids' in item_data and item_data['attachment_ids']:
+                    attachment_ids_data = item_data['attachment_ids']
+
+                    if attachment_ids_data and len(attachment_ids_data[0]) >= 2:
+                        if attachment_ids_data[0][0] in (4, 6):
+                            if attachment_ids_data[0][0] == 6:
+                                attachment_ids = self.env['ir.attachment'].browse(attachment_ids_data[0][2])
+                            else:
+                                attachment_ids = self.env['ir.attachment'].browse([line[1] for line in attachment_ids_data])
+
+                            item_data['state'] = 'completed'
+                            self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+                            self.action_send_message(attachment_ids)
 
     @api.model
     def check_expired_documents(self):
@@ -208,11 +230,7 @@ class DocumentFlow(models.Model):
         ])
         for doc in expired_docs:
             doc.state = 'expired'
-            doc.archive_activity_log(
-                'expired',
-                fields.Datetime.now(),
-                doc.env['hr.employee'].search([('user_id', '=', doc.env.user.id)])
-            )
+            doc.archive_activity_log('expired', fields.Datetime.now(), doc.env['hr.employee'].search([('user_id', '=', doc.env.user.id)]))
 
     @api.model
     def check_validity_days(self):
@@ -283,7 +301,7 @@ class Signers(models.Model):
     color = fields.Integer(string='Color', default=0)
     state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('archived', 'Archived'), ('refused', 'Refused')], string='State', default='await', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
-    rel_state = fields.Selection(related='document_id.state')
+    rel_state = fields.Selection(related='document_id.state', store=True, readonly=True)
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
 
     def get_current_employee(self):
@@ -345,6 +363,7 @@ class DocumentType(models.Model):
     _description = 'HR Document flow: Type'
 
     name = fields.Char(string='Name', required=True)
+    visible_officer = fields.Boolean(string='Visible to officer', default=False)
 
 
 class SignType(models.Model):
@@ -360,3 +379,4 @@ class Config(models.Model):
 
     name = fields.Char(string='Name', required=True)
     days_notifi = fields.Integer(string='Days to notification', help='The number of days after which the message will be sent if a document circulation expiration date has been defined in the form.')
+

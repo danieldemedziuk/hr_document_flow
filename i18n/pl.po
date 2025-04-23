@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0\n"
+"Project-Id-Version: Odoo Server 17.0-20250207\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 10:05+0000\n"
-"PO-Revision-Date: 2025-04-09 10:05+0000\n"
+"POT-Creation-Date: 2025-04-23 10:56+0000\n"
+"PO-Revision-Date: 2025-04-23 10:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -167,6 +167,11 @@ msgstr "Klient"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__color
 msgid "Color"
 msgstr "Kolor"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__company_id
+msgid "Company"
+msgstr "Firma"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__complete_flow
@@ -493,6 +498,11 @@ msgid "Is Follower"
 msgstr "Jest obserwatorem"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__is_visible_for_user
+msgid "Is Visible For User"
+msgstr "Widoczne dla użytkownika"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_activity_logs__write_uid
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_config__write_uid
@@ -634,6 +644,11 @@ msgid "Odoo - MJ Group Sign document"
 msgstr "Odoo - MJ Group Podpisanie dokumentu"
 
 #. module: hr_document_flow
+#: model:res.groups,name:hr_document_flow.group_hr_document_flow_officer
+msgid "Officer"
+msgstr "Urzędnik"
+
+#. module: hr_document_flow
 #. odoo-python
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
@@ -666,6 +681,11 @@ msgstr "Odrzuć"
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_signers__state__refused
 msgid "Refused"
 msgstr "Odrzucony"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__rel_visible_officer
+msgid "Rel visible to officer"
+msgstr "Rel widoczne dla urzędnika"
 
 #. module: hr_document_flow
 #. odoo-python
@@ -777,6 +797,11 @@ msgid "Signing date"
 msgstr "Data podpisania"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__single_signature
+msgid "Single signature"
+msgstr "Wymagany 1 podpis"
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__state
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__rel_state
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__state
@@ -814,6 +839,11 @@ msgid ""
 msgstr ""
 "Liczba dni, po których wiadomość zostanie wysłana, jeśli w formularzu "
 "zdefiniowano datę wygaśnięcia obiegu dokumentu."
+
+#. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__single_signature
+msgid "This button accepts documents signed by only one signer."
+msgstr "Ten przycisk akceptuje dokumenty podpisane tylko przez jedną osobę."
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__title
@@ -856,6 +886,11 @@ msgstr "Zwerifikowane"
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__verified-done
 msgid "Verified and done"
 msgstr "Zweryfikowane i wykonane"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__visible_officer
+msgid "Visible to officer"
+msgstr "Widoczne dla urzędnika"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__website_message_ids
