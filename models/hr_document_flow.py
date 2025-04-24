@@ -19,6 +19,7 @@ class DocumentFlow(models.Model):
     user_signer_ids = fields.Many2many('res.users', string='Signers')
     attachment_ids = fields.Many2many('ir.attachment', string='Attachments', required=True)
     doc_type = fields.Many2one('hr.document_flow.type', string='Document type', required=True)
+    rel_visible_officer = fields.Boolean(string='Rel visible to officer', related='doc_type.visible_officer')
     sign_type = fields.Many2one('hr.document_flow.sign_type', string='Sign type', required=True)
     validity = fields.Date(string='Valid until', tracking=True)
     state = fields.Selection([
@@ -40,28 +41,7 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    is_visible_for_user = fields.Boolean(compute='_compute_is_visible_for_user', default=False)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
-
-    # @api.depends('doc_type')
-    def _compute_is_visible_for_user(self):
-        print("COMPUTE IS VISIBLE FOR USER")
-        visible_doc_type_ids = self._get_user_visible_doc_types()
-        
-        for rec in self.env['hr.document_flow'].sudo().search([]):
-            print("COMPUTE", rec.doc_type.id in visible_doc_type_ids)
-            rec.is_visible_for_user = rec.doc_type.id in visible_doc_type_ids
-            rec.write({'is_visible_for_user': rec.doc_type.id in visible_doc_type_ids})
-
-    @api.model
-    def _get_user_visible_doc_types(self):
-        print("GET USER VISIBLE DOC TYPES")
-        settings = self.env['hr.document_flow.visibility_settings'].search([
-            ('users', 'in', self._uid),
-            ('company_id', '=', self.env.company.id)
-        ])
-        print("SETTINGS", settings)
-        return settings.mapped('doc_type.id')
     
     def get_current_employee(self):
         for rec in self:
@@ -320,7 +300,7 @@ class Signers(models.Model):
     color = fields.Integer(string='Color', default=0)
     state = fields.Selection([('await', 'Await'), ('sent', 'Sent'), ('completed', 'Completed'), ('archived', 'Archived'), ('refused', 'Refused')], string='State', default='await', readonly=True)
     document_id = fields.Many2one('hr.document_flow')
-    rel_state = fields.Selection(related='document_id.state')
+    rel_state = fields.Selection(related='document_id.state', store=True, readonly=True)
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
 
     def get_current_employee(self):
@@ -382,6 +362,7 @@ class DocumentType(models.Model):
     _description = 'HR Document flow: Type'
 
     name = fields.Char(string='Name', required=True)
+    visible_officer = fields.Boolean(string='Visible to officer', default=False)
 
 
 class SignType(models.Model):
@@ -398,11 +379,3 @@ class Config(models.Model):
     name = fields.Char(string='Name', required=True)
     days_notifi = fields.Integer(string='Days to notification', help='The number of days after which the message will be sent if a document circulation expiration date has been defined in the form.')
 
-
-class VisibilitySettings(models.Model):
-    _name = 'hr.document_flow.visibility_settings'
-    _description = 'HR Document flow: Visibility settings'
-
-    users = fields.Many2many('res.users', string='Users')
-    doc_type = fields.Many2many('hr.document_flow.type', string='Document type')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)

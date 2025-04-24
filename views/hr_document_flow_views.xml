@@ -15,7 +15,8 @@
                     <field name="create_uid" string="Create by"/>
                     <field name="create_date" string="Create date"/>
                     <field name="state"/>
-                    <field name="is_visible_for_user"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="rel_visible_officer" column_invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -28,16 +29,14 @@
                     <header>
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" invisible="current_employee == False or state != 'new'"/>
                         <button string="Verified" name='action_verified' class="oe_highlight" type="object" invisible="complete_flow != True or state not in ('sent')"
-                                groups="hr_document_flow.group_hr_document_flow_manager"/>
-<!--                                groups="hr_document_flow.group_hr_document_flow_officer"/>-->
+                                groups="hr_document_flow.group_hr_document_flow_officer"/>
                         <button string="Archive" name='action_archived' type="object" invisible="complete_flow == False or state != 'sent'"
-                                groups="hr_document_flow.group_hr_document_flow_manager"/>
-<!--                                groups="hr_document_flow.group_hr_document_flow_officer"/>-->
+                                groups="hr_document_flow.group_hr_document_flow_officer"/>
                         <button string="Cancel" name='action_canceled' type="object" invisible="current_employee == False or state not in ('sent')"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box" invisible="state == 'draft'" groups="hr_document_flow.group_hr_document_flow_manager"><!--groups="hr_document_flow.group_hr_document_flow_officer">-->
+                        <div class="oe_button_box" name="button_box" invisible="state == 'draft'" groups="hr_document_flow.group_hr_document_flow_officer">
                             <button name="action_get_attachment_tree_view" class="oe_stat_button" icon="fa-book" type="object">
                                 <field name="doc_count" widget="statinfo" string="Documents"/>
                             </button>
@@ -48,7 +47,7 @@
                                 <field name="name" placeholder="Document title..."/>
                             </h1>
                         </div>
-                        <field name="is_visible_for_user"/>
+                        <field name="rel_visible_officer" invisible="1"/>
                         <group>
                             <group col="2">
                                 <field name="title"/>
@@ -56,7 +55,8 @@
                                 <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="validity" readonly="state not in ('draft', 'new')"/>
-                                <field name="single_signature"/>
+                                <field name="single_signature" readonly="state not in ('draft', 'new')"/>
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                                 <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
                                 <field name="complete_flow" invisible="1"/>
                                 <field name="creator_id" string='Employee' invisible="1"/>
@@ -76,6 +76,7 @@
                             <page string="Signer">
                                 <field name="signers_lines" readonly="state in ('verified-done', 'archived', 'expired', 'refused')">
                                     <tree editable="bottom">
+                                        <field name="rel_state" column_invisible="1"/>
                                         <field name="sequence" widget="handle" invisible="rel_state not in ('draft', 'new')"/>
                                         <field name="employee_id" options="{'no_create': True, 'no_create_edit': True}" readonly="rel_state not in ('draft', 'new')"/>
                                         <field name="signer_email"/>
@@ -84,9 +85,8 @@
                                         <field name="state"/>
                                         <button string='Resend' name="resend_email" type="object" invisible="state not in ('sent') or rel_state not in ('sent') or current_employee == True"/>
                                         <button string='Refuse' name="action_refuse" type="object" invisible="state not in ('sent') or rel_state not in ('sent') or current_employee != True"/>
-                                        <field name="current_employee" invisible="1"/>
-                                        <field name="rel_state" invisible="1"/>
-                                        <field name="document_id" invisible="1"/>
+                                        <field name="current_employee" column_invisible="1"/>
+                                        <field name="document_id" column_invisible="1"/>
                                     </tree>
                                     <form>
                                         <sheet>
@@ -104,7 +104,7 @@
                                     <tree editable="bottom">
                                         <field name="employee_id" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"/>
                                         <field name="email"/>
-                                        <field name="document_id" invisible="1"/>
+                                        <field name="document_id" column_invisible="1"/>
                                     </tree>
                                 </field>
                             </page>
@@ -114,7 +114,7 @@
                                         <field name="action"/>
                                         <field name="log_date"/>
                                         <field name="employee_id"/>
-                                        <field name="document_id" invisible="1"/>
+                                        <field name="document_id" column_invisible="1"/>
                                     </tree>
                                 </field>
                             </page>
@@ -136,6 +136,7 @@
             <field name="arch" type="xml">
                 <tree string='Type' editable="bottom">
                     <field name="name" placeholder="Document type name..."/>
+                    <field name="visible_officer"/>
                 </tree>
             </field>
         </record>
@@ -216,17 +217,6 @@
             </field>
         </record>
 
-        <record id="hr_document_flow_visibility_tree_view" model="ir.ui.view">
-            <field name="name">Visibility Settings Tree</field>
-            <field name="model">hr.document_flow.visibility_settings</field>
-            <field name="arch" type="xml">
-                <tree editable="bottom">
-                    <field name="users" widget="many2many_tags"/>
-                    <field name="doc_type" widget="many2many_tags"/>
-                </tree>
-            </field>
-        </record>
-
         <record id="my_hr_document_flow_act" model="ir.actions.act_window">
             <field name="name">My documents</field>
             <field name="res_model">hr.document_flow</field>
@@ -274,24 +264,17 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <record id="hr_document_flow_visibility_settings" model="ir.actions.act_window">
-            <field name="name">Visibility settings</field>
-            <field name="res_model">hr.document_flow.visibility_settings</field>
-            <field name="view_mode">tree</field>
-        </record>
-
     </data>
 
     <menuitem name="Document flow" id="menu_root" web_icon="hr_document_flow,static/description/icon.png"/>
     <menuitem name="Documents" id="menu_document_flow" parent="menu_root" sequence="10"/>
     <menuitem name="My documents" id="menu_my_document_flow" action="my_hr_document_flow_act" parent="menu_document_flow" sequence="1"/>
-    <menuitem name="All documents" id="menu_all_document_flow" action="all_hr_document_flow_act" parent="menu_document_flow" sequence="5" groups="hr_document_flow.group_hr_document_flow_manager"/> <!--groups="group_hr_document_flow_officer"/>-->
+    <menuitem name="All documents" id="menu_all_document_flow" action="all_hr_document_flow_act" parent="menu_document_flow" sequence="5" groups="hr_document_flow.group_hr_document_flow_manager"/>
 
-    <menuitem name="Configuration" id="menu_config" parent="menu_root" sequence="20" groups="hr_document_flow.group_hr_document_flow_manager"/> <!--groups="group_hr_document_flow_officer"-->
+    <menuitem name="Configuration" id="menu_config" parent="menu_root" sequence="20" groups="hr_document_flow.group_hr_document_flow_officer"/>
     <menuitem name="Config" id="menu_config_config" action="hr_document_flow_config_act" parent="menu_config" sequence="1"/>
     <menuitem name="Roles" id="menu_config_roles" action="hr_document_flow_config_roles_act" parent="menu_config" sequence="5"/>
     <menuitem name="Document types" id="menu_config_doc_type" action="hr_document_flow_config_doc_type_act" parent="menu_config" sequence="15"/>
     <menuitem name="Sign types" id="menu_config_sign_type" action="hr_document_flow_config_sign_type_act" parent="menu_config" sequence="19"/>
-    <menuitem name="Visibility settings" id="menu_config_visibility_settings" action="hr_document_flow_visibility_settings" parent="menu_config" sequence="20"/>
 
 </odoo>
