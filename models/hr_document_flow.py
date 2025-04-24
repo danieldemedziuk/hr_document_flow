@@ -41,7 +41,6 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    is_visible_for_user = fields.Boolean(compute='_compute_is_visible_for_user')
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
     
     def get_current_employee(self):

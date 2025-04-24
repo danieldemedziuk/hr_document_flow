@@ -15,6 +15,7 @@
                     <field name="create_uid" string="Create by"/>
                     <field name="create_date" string="Create date"/>
                     <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                     <field name="rel_visible_officer" column_invisible="1"/>
                 </tree>
             </field>
@@ -55,6 +56,7 @@
                                 <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')"/>
                                 <field name="validity" readonly="state not in ('draft', 'new')"/>
                                 <field name="single_signature" readonly="state not in ('draft', 'new')"/>
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                                 <field name="user_signer_ids" widget="many2many_tags" invisible="1"/>
                                 <field name="complete_flow" invisible="1"/>
                                 <field name="creator_id" string='Employee' invisible="1"/>
