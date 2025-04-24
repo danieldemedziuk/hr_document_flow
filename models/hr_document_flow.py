@@ -40,10 +40,29 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    visibility_settings_id = fields.Many2one('hr.document_flow.visibility_settings', string="Visibility Settings")
-    is_visibility = fields.Boolean(compute='update_visibility_settings', default=False)
+    is_visible_for_user = fields.Boolean(compute='_compute_is_visible_for_user', default=False)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
 
+    # @api.depends('doc_type')
+    def _compute_is_visible_for_user(self):
+        print("COMPUTE IS VISIBLE FOR USER")
+        visible_doc_type_ids = self._get_user_visible_doc_types()
+        
+        for rec in self.env['hr.document_flow'].sudo().search([]):
+            print("COMPUTE", rec.doc_type.id in visible_doc_type_ids)
+            rec.is_visible_for_user = rec.doc_type.id in visible_doc_type_ids
+            rec.write({'is_visible_for_user': rec.doc_type.id in visible_doc_type_ids})
+
+    @api.model
+    def _get_user_visible_doc_types(self):
+        print("GET USER VISIBLE DOC TYPES")
+        settings = self.env['hr.document_flow.visibility_settings'].search([
+            ('users', 'in', self._uid),
+            ('company_id', '=', self.env.company.id)
+        ])
+        print("SETTINGS", settings)
+        return settings.mapped('doc_type.id')
+    
     def get_current_employee(self):
         for rec in self:
             if rec.creator_id.user_id == self.env.user or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
@@ -277,25 +296,6 @@ class DocumentFlow(models.Model):
             for attachment in record.attachment_ids:
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
-
-    # @api.depends('doc_type', 'company_id')
-    def update_visibility_settings(self):
-        print("UPDATE VISIBILITY")
-        # for rec in self:
-        #     print("")
-        #     user_visibility_settings = self.env['hr.document_flow.visibility_settings'].search([
-        #         ('users', 'in', self._uid),
-        #         ('doc_type', 'in', [rec.doc_type.id]),
-        #         ('company_id', '=', rec.company_id.id),
-        #     ])
-        #     rec.is_visibility = bool(user_visibility_settings)
-
-    # def read(self, fields=None, load='_classic_read'):
-        # uid = self.env.uid
-        # records = self.filtered(lambda lm: lm.is_visibility or lm.create_uid.id == uid or uid in lm.user_signer_ids.ids)
-        # if not records and not self.id:
-             # return super().read(fields=fields, load=load)
-        # return super(DocumentFlow, records).read(fields=fields, load=load)
 
 
 class Role(models.Model):
