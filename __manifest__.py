@@ -16,6 +16,7 @@ Additionally, the module supports adding CC (carbon copy) recipients who will be
     'depends': [
         'hr',
         'mail_template',
+        'document_hub',
     ],
     'data': [
         'security/hr_document_flow_security.xml',
