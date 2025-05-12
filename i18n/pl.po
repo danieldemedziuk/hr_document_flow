@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 08:46+0000\n"
-"PO-Revision-Date: 2025-05-06 08:46+0000\n"
+"POT-Creation-Date: 2025-05-12 12:01+0000\n"
+"PO-Revision-Date: 2025-05-12 12:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -283,6 +283,11 @@ msgid "Document"
 msgstr "Dokument"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_document_hub_document__document_flow_id
+msgid "Document Flow"
+msgstr "Obieg dokumentów"
+
+#. module: hr_document_flow
 #. odoo-python
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
@@ -290,11 +295,17 @@ msgid "Document Flow completed"
 msgstr "Obieg dokumentów zakończony."
 
 #. module: hr_document_flow
+#: model:ir.ui.menu,name:hr_document_flow.menu_config_document_flow
 #: model:ir.ui.menu,name:hr_document_flow.menu_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view
 msgid "Document flow"
 msgstr "Obieg dokumentów"
+
+#. module: hr_document_flow
+#: model:ir.model,name:hr_document_flow.model_document_hub_document
+msgid "Document hub: Document"
+msgstr "Centrum dokumentów: Dokument"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__name
@@ -532,6 +543,11 @@ msgid "Manager"
 msgstr "Menedżer"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__secret_doc
+msgid "Mark if document is secret."
+msgstr "Oznacz jeśli dokument jest dyskretny."
+
+#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_error
 msgid "Message Delivery error"
 msgstr "Błąd Doręczenia wiadomości"
@@ -719,6 +735,11 @@ msgstr "Role"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "Błąd doręczenia SMS"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__secret_doc
+msgid "Secret"
+msgstr "Dyskretny"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
