@@ -203,8 +203,7 @@ class DocumentFlow(models.Model):
 
     def complete_request(self):
         if self.state != 'verified-done':
-            self.state = 'verified-done'
-            self.write({'state': 'verified-done'})
+            self.action_verified()
             self.prepare_final_message()
 
     def action_change_state_signers_lines(self, vals):
@@ -293,7 +292,7 @@ class DocumentFlow(models.Model):
                 'company_id': self.company_id.id,
                 'document_flow_id': self.id,
                 'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
-                'folder_id': self.env['document_hub.folder'].sudo().search([('name', '=', 'Inbox')], limit=1).id,
+                'folder_id': 23,
             }
             
             self.env['document_hub.document'].sudo().create(vals)
