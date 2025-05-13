@@ -42,6 +42,7 @@ class DocumentFlow(models.Model):
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
+    secret_doc = fields.Boolean(string="Secret", default=False, help="Mark if document is secret.", copy=False)
     
     def get_current_employee(self):
         for rec in self:
@@ -69,6 +70,7 @@ class DocumentFlow(models.Model):
                         'res_id': res.id,
                     })
                     index += 1
+            
         return res
 
     def write(self, vals):
@@ -116,6 +118,9 @@ class DocumentFlow(models.Model):
 
     def action_verified(self):
         self.state = 'verified-done'
+        
+        if not self.env['document_hub.document'].sudo().search([('document_flow_id', '=', self.id)]):
+                self.create_related_document()
 
     def action_canceled(self):
         self.state = 'canceled'
@@ -130,7 +135,7 @@ class DocumentFlow(models.Model):
         if self.signers_lines and self.attachment_ids:
             self.state = 'sent'
             self.archive_activity_log('sent', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
-
+            
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
 
@@ -139,6 +144,7 @@ class DocumentFlow(models.Model):
                 else:
                     self.prepare_message(line.signer_email, files)
                 break
+            
         else:
             raise UserError(
                 _('Cannot send form for signature because required fields are missing. Check if you are sure you have added the document for signature or the list of signers is complete.'))
@@ -276,6 +282,21 @@ class DocumentFlow(models.Model):
             for attachment in record.attachment_ids:
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
+
+    def create_related_document(self):
+        if not self.secret_doc:
+            last_signer = self.signers_lines.sorted(key=lambda r: r.sequence or r.id)[-1] if self.signers_lines else False
+            
+            vals = {
+                'name': self.title or 'NEW',
+                'partner_id': self.partner_id.id or False,
+                'company_id': self.company_id.id,
+                'document_flow_id': self.id,
+                'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
+                'folder_id': self.env['document_hub.folder'].sudo().search([('name', '=', 'Inbox')], limit=1).id,
+            }
+            
+            self.env['document_hub.document'].sudo().create(vals)
 
 
 class Role(models.Model):

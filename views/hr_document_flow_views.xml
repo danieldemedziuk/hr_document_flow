@@ -51,28 +51,21 @@
                         </div>
                         <div name="title-name" class="oe_title">
                             <h1>
-                                <label for="name" class="oe_edit_only" string="Document name"
-                                    invisible="state != 'draft'" />
+                                <label for="name" class="oe_edit_only" string="Document name" invisible="state != 'draft'" />
                                 <field name="name" placeholder="Document title..." />
                             </h1>
                         </div>
                         <field name="rel_visible_officer" invisible="1" />
                         <group>
                             <group col="2">
-                                <field name="title" />
-                                <field name="partner_id"
-                                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" />
-                                <field name="doc_type"
-                                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"
-                                    readonly="state not in ('draft', 'new')" />
-                                <field name="sign_type"
-                                    options="{'no_open': True, 'no_create': True, 'no_create_edit': True}"
-                                    readonly="state not in ('draft', 'new')" />
+                                <field name="title" readonly="state not in ('draft', 'new')"/>
+                                <field name="secret_doc" readonly="state not in ('draft', 'new')" />
+                                <field name="partner_id" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')" />
+                                <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')" />
+                                <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')" />
                                 <field name="validity" readonly="state not in ('draft', 'new')" />
-                                <field name="single_signature"
-                                    readonly="state not in ('draft', 'new')" />
-                                <field name="company_id" groups="base.group_multi_company"
-                                    options="{'no_create': True}" />
+                                <field name="single_signature" readonly="state not in ('draft', 'new')" />
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" />
                                 <field name="user_signer_ids" widget="many2many_tags" invisible="1" />
                                 <field name="complete_flow" invisible="1" />
                                 <field name="creator_id" string='Employee' invisible="1" />

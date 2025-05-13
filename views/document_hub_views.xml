@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id='hr_document_flow_document_hub_document_flow_inherit' model='ir.ui.view'>
+            <field name="name">hr_document_flow.document_hub_document.form.inherit</field>
+            <field name="model">document_hub.document</field>
+            <field name="inherit_id" ref="document_hub.document_hub_document_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='folder_id']" position="after">
+                    <field name="document_flow_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
