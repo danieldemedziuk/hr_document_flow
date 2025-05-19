@@ -292,7 +292,7 @@ class DocumentFlow(models.Model):
                 'company_id': self.company_id.id,
                 'document_flow_id': self.id,
                 'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
-                'folder_id': 23,
+                'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
             }
             
             self.env['document_hub.document'].sudo().create(vals)
