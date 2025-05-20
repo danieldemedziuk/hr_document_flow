@@ -287,7 +287,7 @@ class DocumentFlow(models.Model):
             last_signer = self.signers_lines.sorted(key=lambda r: r.sequence or r.id)[-1] if self.signers_lines else False
             
             vals = {
-                'name': self.title or 'NEW',
+                'topic': self.title,
                 'partner_id': self.partner_id.id or False,
                 'company_id': self.company_id.id,
                 'document_flow_id': self.id,
