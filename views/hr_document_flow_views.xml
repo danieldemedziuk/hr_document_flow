@@ -15,8 +15,7 @@
                     <field name="create_uid" string="Create by" />
                     <field name="create_date" string="Create date" />
                     <field name="state" />
-                    <field name="company_id" groups="base.group_multi_company"
-                        options="{'no_create': True}" />
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" />
                     <field name="rel_visible_officer" column_invisible="1" />
                 </tree>
             </field>
@@ -28,24 +27,15 @@
             <field name="arch" type="xml">
                 <form string='Document flow' duplicate="0">
                     <header>
-                        <button string="Send" name='action_send_message' class="oe_highlight"
-                            type="object" invisible="current_employee == False or state != 'new'" />
-                        <button string="Verified" name='action_verified' class="oe_highlight"
-                            type="object" invisible="complete_flow != True or state not in ('sent')"
-                            groups="hr_document_flow.group_hr_document_flow_officer" />
-                        <button string="Archive" name='action_archived' type="object"
-                            invisible="complete_flow == False or state != 'sent'"
-                            groups="hr_document_flow.group_hr_document_flow_officer" />
-                        <button string="Cancel" name='action_canceled' type="object"
-                            invisible="current_employee == False or state not in ('sent')" />
-                        <field name="state" widget="statusbar"
-                            statusbar_visible="new,sent,verified-done" />
+                        <button string="Send" name='action_send_message' class="oe_highlight" type="object" invisible="current_employee == False or state != 'new'" />
+                        <button string="Verified" name='action_verified' class="oe_highlight" type="object" invisible="complete_flow != True or state not in ('sent')" groups="hr_document_flow.group_hr_document_flow_officer" />
+                        <button string="Archive" name='action_archived' type="object" invisible="complete_flow == False or state != 'sent'" groups="hr_document_flow.group_hr_document_flow_officer" />
+                        <button string="Cancel" name='action_canceled' type="object" invisible="current_employee == False or state not in ('sent')" />
+                        <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done" />
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box" invisible="state == 'draft'"
-                            groups="hr_document_flow.group_hr_document_flow_officer">
-                            <button name="action_get_attachment_tree_view" class="oe_stat_button"
-                                icon="fa-book" type="object">
+                        <div class="oe_button_box" name="button_box" invisible="state == 'draft'" groups="hr_document_flow.group_hr_document_flow_officer">
+                            <button name="action_get_attachment_tree_view" class="oe_stat_button" icon="fa-book" type="object">
                                 <field name="doc_count" widget="statinfo" string="Documents" />
                             </button>
                         </div>
@@ -230,18 +220,13 @@
                     <field name="title" />
                     <group expand="0" string="Group By">
                         <filter name="group_type" string="Type" context="{'group_by':'doc_type'}" />
-                        <filter name="group_create_uid" string="Created by"
-                            context="{'group_by':'create_uid'}" />
+                        <filter name="group_create_uid" string="Created by" context="{'group_by':'create_uid'}" />
                         <filter name="group_state" string="State" context="{'group_by':'state'}" />
-                        <filter name="group_partner_id" string="Client"
-                            context="{'group_by':'partner_id'}" />
+                        <filter name="group_partner_id" string="Client" context="{'group_by':'partner_id'}" />
                     </group>
-                    <filter name="open_docs" string="Open documents"
-                        domain="['|', ('state', '=', 'expired'),('state', 'in', ['new', 'sent'])]" />
-                    <filter name="sign_docs" string="Signed documents"
-                        domain="[('state', '=', 'verified-done')]" />
-                    <filter name="expired_docs" string="Expired documents"
-                        domain="[('state', '=', 'expired')]" />
+                    <filter name="open_docs" string="Open documents" domain="['|', ('state', '=', 'expired'),('state', 'in', ['new', 'sent'])]" />
+                    <filter name="sign_docs" string="Signed documents" domain="[('state', '=', 'verified-done')]" />
+                    <filter name="expired_docs" string="Expired documents" domain="[('state', '=', 'expired')]" />
                 </search>
             </field>
         </record>

@@ -2,7 +2,7 @@
 import logging
 from datetime import datetime, timedelta
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, http, _
 from odoo.exceptions import UserError, ValidationError, AccessError
 
 _logger = logging.getLogger(__name__)
@@ -162,14 +162,21 @@ class DocumentFlow(models.Model):
         })]
 
     def prepare_message(self, target_email, files):
+        url = ''
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        db_name = self.env.cr.dbname
+        record_id = self.id
+        model_name = self._name
+        url = "{}{}web?db={}#id={}&view_type=form&model={}".format(base_url if base_url.endswith('/') else base_url + '/', '', db_name, record_id, model_name)
+        
         subject = _('Odoo - MJ Group Sign document')
         title = _('New document to sign')
         footer = _('Thank you - MJ Group')
 
         message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
         <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
-                    </p>""")
+                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+                    </p>""") % url
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
         self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
@@ -190,21 +197,27 @@ class DocumentFlow(models.Model):
                 self.complete_flow = False
 
     def prepare_final_message(self):
+        url = ''
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        db_name = self.env.cr.dbname
+        record_id = self.id
+        model_name = self._name
+        url = "{}{}web?db={}#id={}&view_type=form&model={}".format(base_url if base_url.endswith('/') else base_url + '/', '', db_name, record_id, model_name)
+                
         subject = _('Odoo - MJ Group Document Flow')
         title = _('Document Flow completed')
         footer = _('Thank you - MJ Group')
         message = _("""<span style="font-size: 14px;">Your document flow has been completed.</span><br/>
         <span style="font-size: 14px;">The document signed by the persons indicated is waiting to be downloaded in the module</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
-                    </p>""")
+                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+                    </p>""") % url
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
         self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message,
                         footer=footer, cc_email=email_cc_list)
 
     def complete_request(self):
         if self.state != 'verified-done':
-            self.state = 'verified-done'
-            self.write({'state': 'verified-done'})
+            self.action_verified()
             self.prepare_final_message()
 
     def action_change_state_signers_lines(self, vals):
@@ -245,6 +258,13 @@ class DocumentFlow(models.Model):
                 days_notifi = self.env['hr.document_flow.config'].browse(1).days_notifi
 
                 if rec.validity == (datetime.today() + timedelta(days=days_notifi)).date():
+                    url = ''
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    db_name = self.env.cr.dbname
+                    record_id = self.id
+                    model_name = self._name
+                    url = "{}{}web?db={}#id={}&view_type=form&model={}".format(base_url if base_url.endswith('/') else base_url + '/', '', db_name, record_id, model_name)
+            
                     signer_id = rec.signers_lines.filtered(lambda lm: lm.state == 'sent').sorted(key=lambda r: r.sequence)
 
                     subject = _('Odoo - MJ Group Reminder: Sign document')
@@ -253,8 +273,8 @@ class DocumentFlow(models.Model):
 
                     message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
                             <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                                        <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
-                                        </p>""")
+                                        <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+                                        </p>""") % url
 
                     email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
@@ -288,12 +308,12 @@ class DocumentFlow(models.Model):
             last_signer = self.signers_lines.sorted(key=lambda r: r.sequence or r.id)[-1] if self.signers_lines else False
             
             vals = {
-                'name': self.title or 'NEW',
+                'topic': self.title,
                 'partner_id': self.partner_id.id or False,
                 'company_id': self.company_id.id,
                 'document_flow_id': self.id,
                 'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
-                'folder_id': self.env['document_hub.folder'].sudo().search([('name', '=', 'Inbox')], limit=1).id,
+                'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
             }
             
             self.env['document_hub.document'].sudo().create(vals)
