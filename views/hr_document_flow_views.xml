@@ -30,7 +30,7 @@
                         <button string="Send" name='action_send_message' class="oe_highlight" type="object" invisible="current_employee == False or state != 'new'" />
                         <button string="Verified" name='action_verified' class="oe_highlight" type="object" invisible="complete_flow != True or state not in ('sent')" groups="hr_document_flow.group_hr_document_flow_officer" />
                         <button string="Archive" name='action_archived' type="object" invisible="complete_flow == False or state != 'sent'" groups="hr_document_flow.group_hr_document_flow_officer" />
-                        <button string="Cancel" name='action_canceled' type="object" invisible="current_employee == False or state not in ('sent')" />
+                        <button string="Cancel" name='action_canceled' type="object" invisible="current_employee == False or state not in ('sent', 'expired')" />
                         <field name="state" widget="statusbar" statusbar_visible="new,sent,verified-done" />
                     </header>
                     <sheet>
@@ -224,7 +224,7 @@
                         <filter name="group_state" string="State" context="{'group_by':'state'}" />
                         <filter name="group_partner_id" string="Client" context="{'group_by':'partner_id'}" />
                     </group>
-                    <filter name="open_docs" string="Open documents" domain="['|', ('state', '=', 'expired'),('state', 'in', ['new', 'sent'])]" />
+                    <filter name="open_docs" string="Open documents" domain="[('state', 'in', ['new', 'sent'])]" />
                     <filter name="sign_docs" string="Signed documents" domain="[('state', '=', 'verified-done')]" />
                     <filter name="expired_docs" string="Expired documents" domain="[('state', '=', 'expired')]" />
                 </search>

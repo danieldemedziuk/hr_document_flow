@@ -241,7 +241,7 @@ class DocumentFlow(models.Model):
 
     @api.model
     def check_expired_documents(self):
-        expired_docs = self.search([
+        expired_docs = self.env['hr.document_flow'].search([
             ('validity', '!=', False),
             ('validity', '<', fields.Date.today()),
             ('state', 'not in', ['expired', 'canceled', 'verified-done', 'archived', 'refused'])
