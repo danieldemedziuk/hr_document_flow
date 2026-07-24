@@ -96,7 +96,7 @@ class DocumentFlow(models.Model):
 
     def add_document_to_attachment(self, vals):
         for item in vals:
-            if len(item) < 3:
+            if len(item) < 2:
                 continue
 
             if item[2] and 'attachment_ids' in item[2]:
@@ -173,12 +173,46 @@ class DocumentFlow(models.Model):
         title = _('New document to sign')
         footer = _('Thank you - MJ Group')
 
-        message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
-        <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
-                    </p>""") % url
+        # message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
+        # <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
+        #             <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+        #             </p>""") % url
+        
+        message = _("""
+            <div style="text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                <table style="background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="padding: 25px;">
+                            <h2 style="color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;">
+                                📋 Document awaiting signature
+                            </h2>
+                            <p style="color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;">
+                                A new document requiring your authorization has been placed in the Odoo system.
+                            </p>
+                            <div style="background-color: #ffffff; border-left: 4px solid #8BC24A; padding: 15px; margin: 15px 0; text-align: left;">
+                                <p style="color: #27474f; font-size: 14px; margin: 0; font-weight: 500;">
+                                    <strong>Required actions:</strong><br>
+                                    1. Log in to the Odoo system<br>
+                                    2. Go to the appropriate module<br>
+                                    3. Download and sign the document<br>
+                                    4. Submit the signed file
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin: 25px 0;">
+                    <a href="%s" style="color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;">
+                        Go to Odoo
+                    </a>
+                </div>
+            </div>
+            """) % url
+        
+        
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
-
+        
         self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
@@ -207,13 +241,38 @@ class DocumentFlow(models.Model):
         subject = _('Odoo - MJ Group Document Flow')
         title = _('Document Flow completed')
         footer = _('Thank you - MJ Group')
-        message = _("""<span style="font-size: 14px;">Your document flow has been completed.</span><br/>
-        <span style="font-size: 14px;">The document signed by the persons indicated is waiting to be downloaded in the module</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
-                    </p>""") % url
+        
+        # message = _("""<span style="font-size: 14px;">Your document flow has been completed.</span><br/>
+        # <span style="font-size: 14px;">The document signed by the persons indicated is waiting to be downloaded in the module</span>
+        #             <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+        #             </p>""") % url
+        
+        message = _("""
+            <div style="text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                <table style="background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="padding: 25px;">
+                            <h2 style="color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;">
+                                📋 Your document flow has been completed.
+                            </h2>
+                            <p style="color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;">
+                                The document signed by the persons indicated is waiting to be downloaded in the module.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin: 25px 0;">
+                    <a href="%s" style="color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;">
+                        more details in Odoo.
+                    </a>
+                </div>
+            </div>
+            """) % url
+        
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
-        self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message,
-                        footer=footer, cc_email=email_cc_list)
+        
+        self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message, footer=footer, cc_email=email_cc_list)
 
     def complete_request(self):
         if self.state != 'verified-done':
@@ -241,7 +300,7 @@ class DocumentFlow(models.Model):
 
     @api.model
     def check_expired_documents(self):
-        expired_docs = self.search([
+        expired_docs = self.env['hr.document_flow'].search([
             ('validity', '!=', False),
             ('validity', '<', fields.Date.today()),
             ('state', 'not in', ['expired', 'canceled', 'verified-done', 'archived', 'refused'])
@@ -271,10 +330,33 @@ class DocumentFlow(models.Model):
                     title = _('Reminder: New document to sign')
                     footer = _('Thank you - MJ Group')
 
-                    message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
-                            <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                                        <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
-                                        </p>""") % url
+                    # message = _("""<span style="font-size: 14px;"></span><br/>
+                    #         <span style="font-size: 14px;"></span>
+                    #                     <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn"></a></span>
+                    #                     </p>""") % url
+                    
+                    message = _("""
+                        <div style="text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                            <table style="background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="padding: 25px;">
+                                        <h2 style="color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;">
+                                            📋 There is a new document for you to sign in Odoo.
+                                        </h2>
+                                        <p style="color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;">
+                                            Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <div style="margin: 25px 0;">
+                                <a href="%s" style="color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;">
+                                    more details in Odoo.
+                                </a>
+                            </div>
+                        </div>
+                        """) % url
 
                     email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
@@ -314,6 +396,7 @@ class DocumentFlow(models.Model):
                 'document_flow_id': self.id,
                 'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
                 'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
+                'owner_id': self.creator_id.user_id.id if self.creator_id.user_id else False,
             }
             
             self.env['document_hub.document'].sudo().create(vals)
