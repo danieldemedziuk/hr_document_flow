@@ -2,7 +2,7 @@
 import logging
 from datetime import datetime, timedelta
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, http, _
 from odoo.exceptions import UserError, ValidationError, AccessError
 
 _logger = logging.getLogger(__name__)
@@ -41,8 +41,8 @@ class DocumentFlow(models.Model):
     title = fields.Char(string='Title', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    is_visible_for_user = fields.Boolean(compute='_compute_is_visible_for_user')
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
+    secret_doc = fields.Boolean(string="Secret", default=False, help="Mark if document is secret.", copy=False)
     
     def get_current_employee(self):
         for rec in self:
@@ -70,6 +70,7 @@ class DocumentFlow(models.Model):
                         'res_id': res.id,
                     })
                     index += 1
+            
         return res
 
     def write(self, vals):
@@ -95,7 +96,7 @@ class DocumentFlow(models.Model):
 
     def add_document_to_attachment(self, vals):
         for item in vals:
-            if len(item) < 3:
+            if len(item) < 2:
                 continue
 
             if item[2] and 'attachment_ids' in item[2]:
@@ -117,6 +118,9 @@ class DocumentFlow(models.Model):
 
     def action_verified(self):
         self.state = 'verified-done'
+        
+        if not self.env['document_hub.document'].sudo().search([('document_flow_id', '=', self.id)]):
+                self.create_related_document()
 
     def action_canceled(self):
         self.state = 'canceled'
@@ -131,7 +135,7 @@ class DocumentFlow(models.Model):
         if self.signers_lines and self.attachment_ids:
             self.state = 'sent'
             self.archive_activity_log('sent', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
-
+            
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
 
@@ -140,6 +144,7 @@ class DocumentFlow(models.Model):
                 else:
                     self.prepare_message(line.signer_email, files)
                 break
+            
         else:
             raise UserError(
                 _('Cannot send form for signature because required fields are missing. Check if you are sure you have added the document for signature or the list of signers is complete.'))
@@ -157,16 +162,58 @@ class DocumentFlow(models.Model):
         })]
 
     def prepare_message(self, target_email, files):
+        url = ''
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        db_name = self.env.cr.dbname
+        record_id = self.id
+        model_name = self._name
+        url = "{}{}web?db={}#id={}&view_type=form&model={}".format(base_url if base_url.endswith('/') else base_url + '/', '', db_name, record_id, model_name)
+        
         subject = _('Odoo - MJ Group Sign document')
         title = _('New document to sign')
         footer = _('Thank you - MJ Group')
 
-        message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
-        <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
-                    </p>""")
+        # message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
+        # <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
+        #             <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+        #             </p>""") % url
+        
+        message = _("""
+            <div style="text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                <table style="background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="padding: 25px;">
+                            <h2 style="color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;">
+                                📋 Document awaiting signature
+                            </h2>
+                            <p style="color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;">
+                                A new document requiring your authorization has been placed in the Odoo system.
+                            </p>
+                            <div style="background-color: #ffffff; border-left: 4px solid #8BC24A; padding: 15px; margin: 15px 0; text-align: left;">
+                                <p style="color: #27474f; font-size: 14px; margin: 0; font-weight: 500;">
+                                    <strong>Required actions:</strong><br>
+                                    1. Log in to the Odoo system<br>
+                                    2. Go to the appropriate module<br>
+                                    3. Download and sign the document<br>
+                                    4. Submit the signed file
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin: 25px 0;">
+                    <a href="%s" style="color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;">
+                        Go to Odoo
+                    </a>
+                </div>
+            </div>
+            """) % url
+        
+        
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
-
+        print("PREPARE - EMAIL SENT TO: ", target_email)
+        
         self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
@@ -185,21 +232,53 @@ class DocumentFlow(models.Model):
                 self.complete_flow = False
 
     def prepare_final_message(self):
+        url = ''
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        db_name = self.env.cr.dbname
+        record_id = self.id
+        model_name = self._name
+        url = "{}{}web?db={}#id={}&view_type=form&model={}".format(base_url if base_url.endswith('/') else base_url + '/', '', db_name, record_id, model_name)
+                
         subject = _('Odoo - MJ Group Document Flow')
         title = _('Document Flow completed')
         footer = _('Thank you - MJ Group')
-        message = _("""<span style="font-size: 14px;">Your document flow has been completed.</span><br/>
-        <span style="font-size: 14px;">The document signed by the persons indicated is waiting to be downloaded in the module</span>
-                    <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
-                    </p>""")
+        
+        # message = _("""<span style="font-size: 14px;">Your document flow has been completed.</span><br/>
+        # <span style="font-size: 14px;">The document signed by the persons indicated is waiting to be downloaded in the module</span>
+        #             <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn">more details in Odoo.</a></span>
+        #             </p>""") % url
+        
+        message = _("""
+            <div style="text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                <table style="background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="padding: 25px;">
+                            <h2 style="color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;">
+                                📋 Your document flow has been completed.
+                            </h2>
+                            <p style="color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;">
+                                The document signed by the persons indicated is waiting to be downloaded in the module.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin: 25px 0;">
+                    <a href="%s" style="color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;">
+                        more details in Odoo.
+                    </a>
+                </div>
+            </div>
+            """) % url
+        
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
-        self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message,
-                        footer=footer, cc_email=email_cc_list)
+        print("FINAL MESSAGE - EMAIL SENT TO: ", self.creator_id.work_email)
+        
+        self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message, footer=footer, cc_email=email_cc_list)
 
     def complete_request(self):
         if self.state != 'verified-done':
-            self.state = 'verified-done'
-            self.write({'state': 'verified-done'})
+            self.action_verified()
             self.prepare_final_message()
 
     def action_change_state_signers_lines(self, vals):
@@ -223,7 +302,7 @@ class DocumentFlow(models.Model):
 
     @api.model
     def check_expired_documents(self):
-        expired_docs = self.search([
+        expired_docs = self.env['hr.document_flow'].search([
             ('validity', '!=', False),
             ('validity', '<', fields.Date.today()),
             ('state', 'not in', ['expired', 'canceled', 'verified-done', 'archived', 'refused'])
@@ -240,16 +319,46 @@ class DocumentFlow(models.Model):
                 days_notifi = self.env['hr.document_flow.config'].browse(1).days_notifi
 
                 if rec.validity == (datetime.today() + timedelta(days=days_notifi)).date():
+                    url = ''
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    db_name = self.env.cr.dbname
+                    record_id = self.id
+                    model_name = self._name
+                    url = "{}{}web?db={}#id={}&view_type=form&model={}".format(base_url if base_url.endswith('/') else base_url + '/', '', db_name, record_id, model_name)
+            
                     signer_id = rec.signers_lines.filtered(lambda lm: lm.state == 'sent').sorted(key=lambda r: r.sequence)
 
                     subject = _('Odoo - MJ Group Reminder: Sign document')
                     title = _('Reminder: New document to sign')
                     footer = _('Thank you - MJ Group')
 
-                    message = _("""<span style="font-size: 14px;">There is a new document for you to sign in Odoo.</span><br/>
-                            <span style="font-size: 14px;">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>
-                                        <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;">more details in Odoo.</span>
-                                        </p>""")
+                    # message = _("""<span style="font-size: 14px;"></span><br/>
+                    #         <span style="font-size: 14px;"></span>
+                    #                     <p style="font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;"><span style="font-size: 14px;"><a href="%s" class="odoo-btn"></a></span>
+                    #                     </p>""") % url
+                    
+                    message = _("""
+                        <div style="text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                            <table style="background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="padding: 25px;">
+                                        <h2 style="color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;">
+                                            📋 There is a new document for you to sign in Odoo.
+                                        </h2>
+                                        <p style="color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;">
+                                            Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <div style="margin: 25px 0;">
+                                <a href="%s" style="color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;">
+                                    more details in Odoo.
+                                </a>
+                            </div>
+                        </div>
+                        """) % url
 
                     email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
 
@@ -277,6 +386,21 @@ class DocumentFlow(models.Model):
             for attachment in record.attachment_ids:
                 if attachment.mimetype != 'application/pdf':
                     raise ValidationError(_("Only PDF files are allowed!"))
+
+    def create_related_document(self):
+        if not self.secret_doc:
+            last_signer = self.signers_lines.sorted(key=lambda r: r.sequence or r.id)[-1] if self.signers_lines else False
+            
+            vals = {
+                'topic': self.title,
+                'partner_id': self.partner_id.id or False,
+                'company_id': self.company_id.id,
+                'document_flow_id': self.id,
+                'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
+                'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
+            }
+            
+            self.env['document_hub.document'].sudo().create(vals)
 
 
 class Role(models.Model):

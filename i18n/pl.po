@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 17.0-20250207\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-23 10:56+0000\n"
-"PO-Revision-Date: 2025-04-23 10:56+0000\n"
+"POT-Creation-Date: 2025-07-02 11:49+0000\n"
+"PO-Revision-Date: 2025-07-02 11:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,45 +20,171 @@ msgstr ""
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid ""
-"<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
-"                            <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
-"                                        <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
-"                                        </p>"
+"\n"
+"                        <div style=\"text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\">\n"
+"                            <table style=\"background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;\" cellpadding=\"0\" cellspacing=\"0\">\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 25px;\">\n"
+"                                        <h2 style=\"color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;\">\n"
+"                                            📋 There is a new document for you to sign in Odoo.\n"
+"                                        </h2>\n"
+"                                        <p style=\"color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;\">\n"
+"                                            Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.\n"
+"                                        </p>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                            \n"
+"                            <div style=\"margin: 25px 0;\">\n"
+"                                <a href=\"%s\" style=\"color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;\">\n"
+"                                    more details in Odoo.\n"
+"                                </a>\n"
+"                            </div>\n"
+"                        </div>\n"
+"                        "
 msgstr ""
-"<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
-"                            <span style=\"font-size: 14px;\">Natychmiast przejdź do odpowiedniego modułu, pobierz, podpisz i prześlij podpisany dokument w odpowiednie miejsce.</span>\n"
-"                                        <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">więcej szczegółów w Odoo.</span>\n"
-"                                        </p>"
+"\n"
+"                        <div style=\"text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\">\n"
+"                            <table style=\"background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;\" cellpadding=\"0\" cellspacing=\"0\">\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 25px;\">\n"
+"                                        <h2 style=\"color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;\">\n"
+"                                            📋 Dokument oczekuje na podpis\n"
+"                                        </h2>\n"
+"                                        <p style=\"color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;\">\n"
+"                                            W systemie Odoo został umieszczony nowy dokument wymagający Twojej autoryzacji.\n"
+"                                        </p>\n"
+"                                    </td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                            \n"
+"                            <div style=\"margin: 25px 0;\">\n"
+"                                <a href=\"%s\" style=\"color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;\">\n"
+"                                    przejdź do Odoo\n"
+"                                </a>\n"
+"                            </div>\n"
+"                        </div>\n"
+"                        "
 
 #. module: hr_document_flow
 #. odoo-python
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid ""
-"<span style=\"font-size: 14px;\">There is a new document for you to sign in Odoo.</span><br/>\n"
-"        <span style=\"font-size: 14px;\">Go immediately to the appropriate module, download, sign and re-upload the signed document in the appropriate place.</span>\n"
-"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
-"                    </p>"
+"\n"
+"            <div style=\"text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\">\n"
+"                <table style=\"background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;\" cellpadding=\"0\" cellspacing=\"0\">\n"
+"                    <tr>\n"
+"                        <td style=\"padding: 25px;\">\n"
+"                            <h2 style=\"color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;\">\n"
+"                                📋 Document awaiting signature\n"
+"                            </h2>\n"
+"                            <p style=\"color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;\">\n"
+"                                A new document requiring your authorization has been placed in the Odoo system.\n"
+"                            </p>\n"
+"                            <div style=\"background-color: #ffffff; border-left: 4px solid #8BC24A; padding: 15px; margin: 15px 0; text-align: left;\">\n"
+"                                <p style=\"color: #27474f; font-size: 14px; margin: 0; font-weight: 500;\">\n"
+"                                    <strong>Required actions:</strong><br>\n"
+"                                    1. Log in to the Odoo system<br>\n"
+"                                    2. Go to the appropriate module<br>\n"
+"                                    3. Download and sign the document<br>\n"
+"                                    4. Submit the signed file\n"
+"                                </p>\n"
+"                            </div>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                </table>\n"
+"                \n"
+"                <div style=\"margin: 25px 0;\">\n"
+"                    <a href=\"%s\" style=\"color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;\">\n"
+"                        Go to Odoo\n"
+"                    </a>\n"
+"                </div>\n"
+"            </div>\n"
+"            "
 msgstr ""
-"<span style=\"font-size: 14px;\">W Odoo pojawił się nowy dokument do podpisania.</span><br/>\n"
-"        <span style=\"font-size: 14px;\">Natychmiast przejdź do odpowiedniego modułu, pobierz, podpisz i prześlij podpisany dokument w odpowiednie miejsce.</span>\n"
-"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">więcej szczegółów w Odoo.</span>\n"
-"                    </p>"
+"\n"
+"            <div style=\"text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\">\n"
+"                <table style=\"background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;\" cellpadding=\"0\" cellspacing=\"0\">\n"
+"                    <tr>\n"
+"                        <td style=\"padding: 25px;\">\n"
+"                            <h2 style=\"color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;\">\n"
+"                                📋 Dokument oczekujący na podpis\n"
+"                            </h2>\n"
+"                            <p style=\"color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;\">\n"
+"                                Nowy dokument wymagający autoryzacji został umieszczony w systemie Odoo.\n"
+"                            </p>\n"
+"                            <div style=\"background-color: #ffffff; border-left: 4px solid #8BC24A; padding: 15px; margin: 15px 0; text-align: left;\">\n"
+"                                <p style=\"color: #27474f; font-size: 14px; margin: 0; font-weight: 500;\">\n"
+"                                    <strong>Wymagane działania:</strong><br>\n"
+"                                    1. Zaloguj się do systemu Odoo<br>\n"
+"                                    2. Przejdź do odpowiedniego modułu<br>\n"
+"                                    3. Pobierz i podpisz dokument<br>\n"
+"                                    4. Prześlij podpisany plik\n"
+"                                </p>\n"
+"                            </div>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                </table>\n"
+"                \n"
+"                <div style=\"margin: 25px 0;\">\n"
+"                    <a href=\"%s\" style=\"color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;\">\n"
+"                        Przejdź do Odoo\n"
+"                    </a>\n"
+"                </div>\n"
+"            </div>\n"
+"            "
 
 #. module: hr_document_flow
 #. odoo-python
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
 msgid ""
-"<span style=\"font-size: 14px;\">Your document flow has been completed.</span><br/>\n"
-"        <span style=\"font-size: 14px;\">The document signed by the persons indicated is waiting to be downloaded in the module</span>\n"
-"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">more details in Odoo.</span>\n"
-"                    </p>"
+"\n"
+"            <div style=\"text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\">\n"
+"                <table style=\"background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;\" cellpadding=\"0\" cellspacing=\"0\">\n"
+"                    <tr>\n"
+"                        <td style=\"padding: 25px;\">\n"
+"                            <h2 style=\"color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;\">\n"
+"                                📋 Your document flow has been completed.\n"
+"                            </h2>\n"
+"                            <p style=\"color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;\">\n"
+"                                The document signed by the persons indicated is waiting to be downloaded in the module.\n"
+"                            </p>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                </table>\n"
+"                \n"
+"                <div style=\"margin: 25px 0;\">\n"
+"                    <a href=\"%s\" style=\"color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;\">\n"
+"                        more details in Odoo.\n"
+"                    </a>\n"
+"                </div>\n"
+"            </div>\n"
+"            "
 msgstr ""
-"<span style=\"font-size: 14px;\">Twój obieg dokumentu został zakończony.</span><br/>\n"
-"        <span style=\"font-size: 14px;\">Dokument podpisany przez wskazane przez Ciebie osoby jest gotowy do pobrania w module.</span>\n"
-"                    <p style=\"font-size: 14px; line-height: 1.8; text-align: center; mso-line-height-alt: 25px; margin: 0;\"><span style=\"font-size: 14px;\">Więcej szczegółów w Odoo.</span>\n"
-"                    </p>"
+"\n"
+"            <div style=\"text-align: center; padding: 25px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\">\n"
+"                <table style=\"background-color: #fafafa; border: 1px solid #e0e0e0; margin: 20px auto; max-width: 500px;\" cellpadding=\"0\" cellspacing=\"0\">\n"
+"                    <tr>\n"
+"                        <td style=\"padding: 25px;\">\n"
+"                            <h2 style=\"color: #27474f; font-size: 20px; margin: 0 0 15px 0; font-weight: 600;\">\n"
+"                                📋 Obieg dokumentów został zakończony.\n"
+"                            </h2>\n"
+"                            <p style=\"color: #546e7a; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; text-align: left;\">\n"
+"                                Dokument podpisany przez wskazane osoby oczekuje na pobranie w module.\n"
+"                            </p>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                </table>\n"
+"                \n"
+"                <div style=\"margin: 25px 0;\">\n"
+"                    <a href=\"%s\" style=\"color: #ffffff; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 20px; border: 2px solid #8BC24A; display: inline-block;\">\n"
+"                        przejdź do Odoo\n"
+"                    </a>\n"
+"                </div>\n"
+"            </div>\n"
+"            "
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_needaction
@@ -190,7 +316,6 @@ msgid "Config"
 msgstr "Konfiguracja"
 
 #. module: hr_document_flow
-#: model:ir.ui.menu,name:hr_document_flow.menu_config
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_config_form_view
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_config_tree_view
 msgid "Configuration"
@@ -284,6 +409,11 @@ msgid "Document"
 msgstr "Dokument"
 
 #. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_document_hub_document__document_flow_id
+msgid "Document Flow"
+msgstr "Obieg dokumentów"
+
+#. module: hr_document_flow
 #. odoo-python
 #: code:addons/hr_document_flow/models/hr_document_flow.py:0
 #, python-format
@@ -291,11 +421,17 @@ msgid "Document Flow completed"
 msgstr "Obieg dokumentów zakończony."
 
 #. module: hr_document_flow
-#: model:ir.ui.menu,name:hr_document_flow.menu_root
+#: model:ir.ui.menu,name:hr_document_flow.menu_config_document_flow
+#: model:ir.ui.menu,name:hr_document_flow.menu_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view
 msgid "Document flow"
 msgstr "Obieg dokumentów"
+
+#. module: hr_document_flow
+#: model:ir.model,name:hr_document_flow.model_document_hub_document
+msgid "Document hub: Document"
+msgstr "Centrum dokumentów: Dokument"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__name
@@ -330,7 +466,6 @@ msgid "Document types"
 msgstr "Typy dokumentu"
 
 #. module: hr_document_flow
-#: model:ir.ui.menu,name:hr_document_flow.menu_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid "Documents"
 msgstr "Dokumenty"
@@ -484,8 +619,10 @@ msgstr ""
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
 msgid ""
-"In order to prevent conflicts during the signing of the document, which may result in a longer process, we recommend sending the document in PDF format\n"
-"                                    <strong>!</strong>\n"
+"In order to\n"
+"                                    prevent conflicts during the signing of the document, which may\n"
+"                                    result in a longer process, we recommend sending the document in\n"
+"                                    PDF format <strong>!</strong>\n"
 "                                    <br/>"
 msgstr ""
 "Aby uniknąć konfliktów podczas podpisywania dokumentu, co może skutkować wydłużeniem procesu, zalecamy przesłanie dokumentu w formacie PDF\n"
@@ -496,11 +633,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_is_follower
 msgid "Is Follower"
 msgstr "Jest obserwatorem"
-
-#. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__is_visible_for_user
-msgid "Is Visible For User"
-msgstr "Widoczne dla użytkownika"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__write_uid
@@ -535,6 +667,11 @@ msgstr "Data dziennika"
 #: model:res.groups,name:hr_document_flow.group_hr_document_flow_manager
 msgid "Manager"
 msgstr "Menedżer"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__secret_doc
+msgid "Mark if document is secret."
+msgstr "Oznacz jeśli dokument jest dyskretny."
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_error
@@ -724,6 +861,11 @@ msgstr "Role"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "Błąd doręczenia SMS"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__secret_doc
+msgid "Secret"
+msgstr "Dyskretny"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
