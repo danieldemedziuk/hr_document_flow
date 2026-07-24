@@ -212,7 +212,7 @@ class DocumentFlow(models.Model):
         
         
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
-
+        
         self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
@@ -271,6 +271,7 @@ class DocumentFlow(models.Model):
             """) % url
         
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
+        
         self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message, footer=footer, cc_email=email_cc_list)
 
     def complete_request(self):
@@ -395,6 +396,7 @@ class DocumentFlow(models.Model):
                 'document_flow_id': self.id,
                 'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
                 'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
+                'owner_id': self.creator_id.user_id.id if self.creator_id.user_id else False,
             }
             
             self.env['document_hub.document'].sudo().create(vals)
