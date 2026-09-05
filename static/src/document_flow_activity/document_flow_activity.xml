@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hr_document_flow.DocumentFlowActivity">
+        <div class="o_df_log">
+
+            <div t-if="state.loaded and !state.entries.length" class="o_df_empty">
+                <i class="fa fa-history me-2"/><t t-esc="emptyLabel"/>
+            </div>
+
+            <div t-foreach="state.entries" t-as="entry" t-key="entry.id" class="o_df_log_entry">
+                <div class="o_df_log_rail">
+                    <span class="o_df_log_dot" t-att-class="visual(entry).cls">
+                        <i class="fa" t-att-class="visual(entry).icon"/>
+                    </span>
+                </div>
+                <div class="o_df_log_body">
+                    <div class="o_df_log_line">
+                        <span class="o_df_log_action"><t t-esc="visual(entry).label"/></span>
+                        <span class="o_df_log_when"><t t-esc="when(entry)"/></span>
+                    </div>
+                    <div class="o_df_log_author">
+                        <img t-if="avatarUrl(entry)" class="o_df_log_avatar"
+                             t-att-src="avatarUrl(entry)" alt=""/>
+                        <t t-esc="author(entry)"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

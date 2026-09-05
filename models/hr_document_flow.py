@@ -43,7 +43,37 @@ class DocumentFlow(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
     secret_doc = fields.Boolean(string="Secret", default=False, help="Mark if document is secret.", copy=False)
-    
+
+    # Presentation-only helpers: they summarise `signers_lines` for the kanban
+    # cards and the list view. They never drive the flow itself - the signing
+    # logic keeps relying on `signers_lines.state` exactly as before.
+    signer_count = fields.Integer(string='Total signers', compute='_compute_signing_progress')
+    signed_count = fields.Integer(string='Signatures collected', compute='_compute_signing_progress')
+    progress_percent = fields.Integer(string='Progress', compute='_compute_signing_progress')
+    current_signer_id = fields.Many2one('hr.employee', string='Waiting for', compute='_compute_signing_progress')
+
+    @api.depends('signers_lines.state', 'signers_lines.sequence', 'single_signature')
+    def _compute_signing_progress(self):
+        for rec in self:
+            lines = rec.signers_lines
+            signed = lines.filtered(lambda lm: lm.state == 'completed')
+            rec.signer_count = len(lines)
+            rec.signed_count = len(signed)
+            if not lines:
+                rec.progress_percent = 0
+            elif rec.single_signature:
+                # A single signature is enough to close the flow, so any
+                # collected signature already means "done" for the progress bar.
+                rec.progress_percent = 100 if signed else 0
+            else:
+                rec.progress_percent = int(round(len(signed) * 100.0 / len(lines)))
+            # The signer the flow is currently waiting for: the one already
+            # notified, or - before sending - the first one in the queue.
+            pending = lines.filtered(lambda lm: lm.state == 'sent').sorted(key=lambda r: r.sequence)
+            if not pending:
+                pending = lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence)
+            rec.current_signer_id = pending[:1].employee_id
+
     def get_current_employee(self):
         for rec in self:
             if rec.creator_id.user_id == self.env.user or self.env.user.has_group('hr_document_flow.group_hr_document_flow_manager'):
@@ -295,6 +325,10 @@ class DocumentFlow(models.Model):
                                 attachment_ids = self.env['ir.attachment'].browse([line[1] for line in attachment_ids_data])
 
                             item_data['state'] = 'completed'
+                            # `signing_date` existed on the model but was never
+                            # filled in; stamping it here makes the signature
+                            # date available to the UI without changing the flow.
+                            item_data.setdefault('signing_date', fields.Date.context_today(self))
                             self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
                             self.action_send_message(attachment_ids)
 

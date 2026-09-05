@@ -1,0 +1,452 @@
+// HR Document Flow - presentation layer for the signature circulation UI.
+// Colours go through CSS variables with fallbacks so the module keeps working
+// with a custom Odoo theme (and with web_responsive) instead of hardcoding.
+
+$o-df-done: var(--o-df-done, #28a745);
+$o-df-running: var(--o-df-running, #2f7bd6);
+$o-df-alert: var(--o-df-alert, #d9534f);
+$o-df-muted: var(--o-df-muted, #98a2b3);
+$o-df-surface: var(--o-df-surface, rgba(0, 0, 0, 0.025));
+$o-df-border: var(--o-df-border, rgba(0, 0, 0, 0.10));
+
+// ---------------------------------------------------------------------------
+// Signature flow timeline (form header widget)
+// ---------------------------------------------------------------------------
+
+.o_df_timeline {
+    border: 1px solid #{$o-df-border};
+    border-radius: 8px;
+    border-left: 4px solid #{$o-df-muted};
+    background: #{$o-df-surface};
+    padding: 12px 16px;
+    margin-bottom: 12px;
+
+    &.o_df_status_done {
+        border-left-color: #{$o-df-done};
+    }
+    &.o_df_status_running {
+        border-left-color: #{$o-df-running};
+    }
+    &.o_df_status_alert {
+        border-left-color: #{$o-df-alert};
+    }
+}
+
+.o_df_timeline_head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.o_df_timeline_head_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.o_df_timeline_title {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #{$o-df-muted};
+    font-weight: 600;
+}
+
+.o_df_timeline_status {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.o_df_timeline_flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.o_df_flag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    border: 1px solid #{$o-df-border};
+    background: var(--o-df-flag-bg, rgba(255, 255, 255, 0.6));
+    white-space: nowrap;
+
+    &.o_df_flag_secret {
+        border-color: #{$o-df-alert};
+        color: #{$o-df-alert};
+    }
+    &.o_df_validity_soon {
+        border-color: #e0a800;
+        color: #a07800;
+    }
+    &.o_df_validity_over {
+        border-color: #{$o-df-alert};
+        color: #{$o-df-alert};
+        font-weight: 600;
+    }
+}
+
+// --- overall progress bar ---------------------------------------------------
+
+.o_df_progress_row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.o_df_progress {
+    flex: 1 1 auto;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--o-df-track, rgba(0, 0, 0, 0.08));
+    overflow: hidden;
+}
+
+.o_df_progress_bar {
+    height: 100%;
+    border-radius: 999px;
+    background: #{$o-df-running};
+    transition: width 0.3s ease;
+
+    .o_df_status_done & {
+        background: #{$o-df-done};
+    }
+    .o_df_status_alert & {
+        background: #{$o-df-alert};
+    }
+}
+
+.o_df_progress_counter {
+    font-size: 12px;
+    font-weight: 600;
+    color: #{$o-df-muted};
+    white-space: nowrap;
+}
+
+// --- the signer chain -------------------------------------------------------
+
+.o_df_chain {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    gap: 4px 0;
+}
+
+.o_df_step {
+    position: relative;
+    flex: 1 1 130px;
+    min-width: 120px;
+    max-width: 200px;
+    text-align: center;
+    padding: 0 6px 4px;
+
+    // Connector drawn behind the avatars, linking one step to the next.
+    .o_df_connector {
+        position: absolute;
+        top: 24px;
+        left: -50%;
+        width: 100%;
+        height: 2px;
+        background: var(--o-df-track, rgba(0, 0, 0, 0.12));
+        z-index: 0;
+    }
+    &:first-child .o_df_connector {
+        display: none;
+    }
+}
+
+.o_df_avatar_wrap {
+    position: relative;
+    display: inline-block;
+    z-index: 1;
+}
+
+.o_df_avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--o-df-track, rgba(0, 0, 0, 0.08));
+    border: 2px solid var(--o-df-avatar-ring, #fff);
+    box-shadow: 0 0 0 1px #{$o-df-border};
+}
+
+.o_df_avatar_empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #{$o-df-muted};
+}
+
+.o_df_badge {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #fff;
+    border: 2px solid var(--o-df-avatar-ring, #fff);
+    background: #{$o-df-muted};
+
+    &.o_df_done {
+        background: #{$o-df-done};
+    }
+    &.o_df_current {
+        background: #{$o-df-running};
+    }
+    &.o_df_refused {
+        background: #{$o-df-alert};
+    }
+}
+
+.o_df_step_name {
+    margin-top: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_df_step_role,
+.o_df_step_date {
+    font-size: 11px;
+    color: #{$o-df-muted};
+    line-height: 1.3;
+}
+
+.o_df_step_state {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #{$o-df-muted};
+
+    &.o_df_done {
+        color: #{$o-df-done};
+    }
+    &.o_df_current {
+        color: #{$o-df-running};
+    }
+    &.o_df_refused {
+        color: #{$o-df-alert};
+    }
+}
+
+// The signer everybody is waiting for gets a soft pulse to draw the eye.
+.o_df_step_current .o_df_avatar {
+    border-color: #{$o-df-running};
+    animation: o_df_pulse 2s ease-in-out infinite;
+}
+
+@keyframes o_df_pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 1px #{$o-df-border};
+    }
+    50% {
+        box-shadow: 0 0 0 5px rgba(47, 123, 214, 0.18);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_df_step_current .o_df_avatar {
+        animation: none;
+    }
+    .o_df_progress_bar {
+        transition: none;
+    }
+}
+
+.o_df_empty {
+    margin-top: 10px;
+    font-style: italic;
+    color: #{$o-df-muted};
+    font-size: 13px;
+}
+
+// ---------------------------------------------------------------------------
+// Activity log timeline (notebook page widget)
+// ---------------------------------------------------------------------------
+
+.o_df_log {
+    padding: 6px 4px;
+}
+
+.o_df_log_entry {
+    display: flex;
+    gap: 12px;
+
+    &:last-child .o_df_log_rail::after {
+        display: none;
+    }
+}
+
+.o_df_log_rail {
+    position: relative;
+    flex: 0 0 28px;
+    display: flex;
+    justify-content: center;
+
+    // Vertical line running down to the next entry.
+    &::after {
+        content: "";
+        position: absolute;
+        top: 28px;
+        bottom: -6px;
+        width: 2px;
+        background: var(--o-df-track, rgba(0, 0, 0, 0.10));
+    }
+}
+
+.o_df_log_dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    background: #{$o-df-muted};
+    z-index: 1;
+
+    &.o_df_log_create {
+        background: #{$o-df-muted};
+    }
+    &.o_df_log_sent {
+        background: #{$o-df-running};
+    }
+    &.o_df_log_sign {
+        background: #{$o-df-done};
+    }
+    &.o_df_log_refuse {
+        background: #{$o-df-alert};
+    }
+}
+
+.o_df_log_body {
+    flex: 1 1 auto;
+    padding-bottom: 16px;
+    min-width: 0;
+}
+
+.o_df_log_line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.o_df_log_action {
+    font-weight: 600;
+}
+
+.o_df_log_when {
+    font-size: 12px;
+    color: #{$o-df-muted};
+}
+
+.o_df_log_author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #{$o-df-muted};
+    margin-top: 2px;
+}
+
+.o_df_log_avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+// ---------------------------------------------------------------------------
+// Kanban cards
+// ---------------------------------------------------------------------------
+
+.o_df_kanban {
+    .o_df_card_top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .o_df_card_ref {
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        color: #{$o-df-muted};
+        font-weight: 600;
+    }
+
+    .o_df_card_title {
+        font-weight: 600;
+        line-height: 1.3;
+        margin-top: 2px;
+    }
+
+    .o_df_card_meta {
+        font-size: 12px;
+        color: #{$o-df-muted};
+        margin-top: 4px;
+
+        > div {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .o_df_card_progress_row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .o_df_card_footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #{$o-df-muted};
+    }
+
+    .o_df_card_waiting {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+
+        img {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex: 0 0 auto;
+        }
+
+        span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
