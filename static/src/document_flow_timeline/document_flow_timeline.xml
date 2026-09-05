@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hr_document_flow.DocumentFlowTimeline">
+        <div class="o_df_timeline" t-att-class="statusClass">
+
+            <!-- Headline: where the flow stands + overall progress -->
+            <div class="o_df_timeline_head">
+                <div class="o_df_timeline_head_text">
+                    <span class="o_df_timeline_title"><t t-esc="progressTitle"/></span>
+                    <span class="o_df_timeline_status"><t t-esc="statusLine"/></span>
+                </div>
+                <div class="o_df_timeline_flags">
+                    <span t-if="record.data.single_signature" class="o_df_flag" t-att-title="singleSignatureLabel">
+                        <i class="fa fa-pencil-square-o me-1"/><t t-esc="singleSignatureLabel"/>
+                    </span>
+                    <span t-if="record.data.secret_doc" class="o_df_flag o_df_flag_secret" t-att-title="secretLabel">
+                        <i class="fa fa-lock me-1"/><t t-esc="secretLabel"/>
+                    </span>
+                    <span t-if="validityDate" class="o_df_flag" t-att-class="validityClass">
+                        <i class="fa fa-calendar-o me-1"/><t t-esc="validityLabel"/>
+                    </span>
+                </div>
+            </div>
+
+            <div t-if="signers.length" class="o_df_progress_row">
+                <div class="o_df_progress">
+                    <div class="o_df_progress_bar" t-attf-style="width: {{ progress }}%;"/>
+                </div>
+                <span class="o_df_progress_counter"><t t-esc="counterLabel"/></span>
+            </div>
+
+            <!-- The signer chain, in signing order -->
+            <div t-if="signers.length" class="o_df_chain">
+                <div t-foreach="signers" t-as="signer" t-key="signer.id"
+                     class="o_df_step"
+                     t-att-class="{ 'o_df_step_current': isCurrent(signer) }">
+                    <div class="o_df_connector"/>
+                    <div class="o_df_avatar_wrap">
+                        <img t-if="signerAvatarUrl(signer)" class="o_df_avatar"
+                             t-att-src="signerAvatarUrl(signer)" alt=""/>
+                        <span t-else="" class="o_df_avatar o_df_avatar_empty">
+                            <i class="fa fa-user"/>
+                        </span>
+                        <span class="o_df_badge" t-att-class="signerVisual(signer).cls"
+                              t-att-title="signerVisual(signer).label">
+                            <i class="fa" t-att-class="signerVisual(signer).icon"/>
+                        </span>
+                    </div>
+                    <div class="o_df_step_name" t-att-title="signerName(signer)">
+                        <t t-esc="signerName(signer)"/>
+                    </div>
+                    <div t-if="signerRole(signer)" class="o_df_step_role">
+                        <t t-esc="signerRole(signer)"/>
+                    </div>
+                    <div class="o_df_step_state" t-att-class="signerVisual(signer).cls">
+                        <t t-esc="signerVisual(signer).label"/>
+                    </div>
+                    <div t-if="signerDate(signer)" class="o_df_step_date">
+                        <t t-esc="signerDate(signer)"/>
+                    </div>
+                </div>
+            </div>
+
+            <div t-else="" class="o_df_empty">
+                <i class="fa fa-user-plus me-2"/><t t-esc="emptyLabel"/>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

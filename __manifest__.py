@@ -27,6 +27,11 @@ Additionally, the module supports adding CC (carbon copy) recipients who will be
         'views/hr_document_flow_views.xml',
         'views/document_hub_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'hr_document_flow/static/src/**/*',
+        ],
+    },
     'auto_install': False,
     'application': True,
     'installable': True,
