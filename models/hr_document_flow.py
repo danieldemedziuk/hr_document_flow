@@ -34,7 +34,7 @@ class DocumentFlow(models.Model):
     signers_lines = fields.One2many('hr.document_flow.signers', 'document_id', required=True)
     employee_cc_ids = fields.One2many('hr.document_flow.employee_cc', 'document_id')
     activity_log_ids = fields.One2many('hr.document_flow.activity_logs', 'document_id')
-    creator_id = fields.Many2one('hr.employee', string='Created by', default=lambda lm: lm.env['hr.employee'].search([('user_id', '=', lm.env.user.id)]))
+    creator_id = fields.Many2one('hr.employee', string='Created by', default=lambda self: self._get_current_employee())
     complete_flow = fields.Boolean(string='Complete flow', compute="_check_current_flow", default=False)
     current_employee = fields.Boolean(string='Current user', compute='get_current_employee', default=False)
     doc_count = fields.Integer(compute='compute_doc_number')
@@ -164,7 +164,7 @@ class DocumentFlow(models.Model):
     def action_send_message(self, files=False):
         if self.signers_lines and self.attachment_ids:
             self.state = 'sent'
-            self.archive_activity_log('sent', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+            self.archive_activity_log('sent', self.write_date, self._get_current_employee())
             
             for line in self.signers_lines.filtered(lambda lm: lm.state == 'await').sorted(key=lambda r: r.sequence):
                 line.state = 'sent'
@@ -182,6 +182,13 @@ class DocumentFlow(models.Model):
     @api.onchange('signers_lines')
     def fill_signer_lines(self):
         self.user_signer_ids = self.signers_lines.mapped('employee_id.user_id')
+
+    def _get_current_employee(self):
+        # A user can own one employee per company; core's employee_id picks
+        # the one of the active company, so a plain search by user_id would
+        # return several records and break singleton access.
+        user = self.env.user
+        return user.employee_id or user.employee_ids[:1]
 
     def archive_activity_log(self, action, log_date, employee_id):
         self.activity_log_ids = [(0, 0, {
@@ -329,7 +336,7 @@ class DocumentFlow(models.Model):
                             # filled in; stamping it here makes the signature
                             # date available to the UI without changing the flow.
                             item_data.setdefault('signing_date', fields.Date.context_today(self))
-                            self.archive_activity_log('sign', self.write_date, self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+                            self.archive_activity_log('sign', self.write_date, self._get_current_employee())
                             self.action_send_message(attachment_ids)
 
     @api.model
@@ -341,7 +348,7 @@ class DocumentFlow(models.Model):
         ])
         for doc in expired_docs:
             doc.state = 'expired'
-            doc.archive_activity_log('expired', fields.Datetime.now(), doc.env['hr.employee'].search([('user_id', '=', doc.env.user.id)]))
+            doc.archive_activity_log('expired', fields.Datetime.now(), doc._get_current_employee())
 
     @api.model
     def check_validity_days(self):
@@ -480,12 +487,12 @@ class Signers(models.Model):
             self.document_id.prepare_message(self.signer_email, prev_line[-1].attachment_ids)
         else:
             self.document_id.prepare_message(self.signer_email, self.document_id.attachment_ids)
-        self.document_id.archive_activity_log('resent', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+        self.document_id.archive_activity_log('resent', datetime.now(), self.document_id._get_current_employee())
 
     def action_refuse(self):
         self.state = 'refused'
         self.document_id.state = 'refused'
-        self.document_id.archive_activity_log('refuse', datetime.now(), self.env['hr.employee'].search([('user_id', '=', self.env.user.id)]))
+        self.document_id.archive_activity_log('refuse', datetime.now(), self.document_id._get_current_employee())
 
     @api.constrains('attachment_ids')
     def _check_attachment_type(self):
