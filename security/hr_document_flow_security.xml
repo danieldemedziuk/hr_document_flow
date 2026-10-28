@@ -43,7 +43,7 @@
         <record id="officer_visibility_documents_rule" model="ir.rule">
             <field name="name">HR Document flow: Officer see visibility documents</field>
             <field name="model_id" ref="model_hr_document_flow" />
-            <field name="domain_force">[('rel_visible_officer', '=', True)]</field>
+            <field name="domain_force">[('rel_visible_officer', '=', True), ('confidentiality', '!=', 'strictly_confidential')]</field>
             <field name="groups" eval="[(4, ref('group_hr_document_flow_officer'))]" />
             <field name="perm_read" eval="True" />
             <field name="perm_write" eval="False" />

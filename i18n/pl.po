@@ -559,7 +559,7 @@ msgstr "Termin upływa dziś (%s)"
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_employee_cc__email
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__signer_email
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_config_form_view
@@ -606,7 +606,7 @@ msgstr "Obserwatorzy (partnerzy)"
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
+msgstr "Ikona Font Awesome, np. fa-tasks"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_tree_view_search
@@ -616,7 +616,7 @@ msgstr "Grupuj wg"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "Ma wiadomość"
 
 #. module: hr_document_flow
 #: model:ir.model,name:hr_document_flow.model_hr_document_flow
@@ -688,7 +688,7 @@ msgstr "Ikona identyfikująca wyjątek aktywności."
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__id
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_type__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__message_needaction
@@ -742,11 +742,6 @@ msgid "Manager"
 msgstr "Menedżer"
 
 #. module: hr_document_flow
-#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__secret_doc
-msgid "Mark if document is secret."
-msgstr "Oznacz jeśli dokument jest dyskretny."
-
-#. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__message_has_error
 msgid "Message Delivery error"
 msgstr "Błąd Doręczenia wiadomości"
@@ -795,7 +790,7 @@ msgstr "Nowy dokument do podpisu"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr ""
+msgstr "Następne wydarzenie w kalendarzu"
 
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__activity_date_deadline
@@ -984,18 +979,6 @@ msgstr "Rola"
 #: model:ir.ui.menu,name:hr_document_flow.menu_config_roles
 msgid "Roles"
 msgstr "Role"
-
-#. module: hr_document_flow
-#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__secret_doc
-msgid "Secret"
-msgstr "Dyskretny"
-
-#. module: hr_document_flow
-#. odoo-javascript
-#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
-#: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_kanban_view
-msgid "Secret document"
-msgstr "Dokument tajny"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
@@ -1247,3 +1230,46 @@ msgstr "Wiadomości"
 msgid "You cannot modify rows when the form is in this state!"
 msgstr "Nie można modyfikować wierszy, gdy formularz jest w tym stanie!"
 
+#. module: hr_document_flow
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__confidentiality__public
+msgid "Public"
+msgstr "Publiczne"
+
+#. module: hr_document_flow
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__confidentiality__internal
+msgid "Internal"
+msgstr "Wewnętrzne"
+
+#. module: hr_document_flow
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__confidentiality__confidential
+msgid "Confidential"
+msgstr "Poufne"
+
+#. module: hr_document_flow
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__confidentiality__strictly_confidential
+msgid "Strictly confidential"
+msgstr "Ściśle poufne"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow__confidentiality
+msgid "Confidentiality"
+msgstr "Poziom poufności"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+#, python-format
+msgid "Confidential document"
+msgstr "Dokument poufny"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+#, python-format
+msgid "Strictly confidential document"
+msgstr "Dokument ściśle poufny"
+
+#. module: hr_document_flow
+#: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__confidentiality
+msgid "Confidentiality level of the signed document filed in Document hub. Strictly confidential flows are also hidden from the Officer."
+msgstr "Poziom poufności podpisanego dokumentu archiwizowanego w Document hub. Obiegi ściśle poufne są dodatkowo ukryte przed Urzędnikiem."

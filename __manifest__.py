@@ -2,7 +2,7 @@
 
 {
     'name': 'HR Document Flow',
-    'version': '17.0.0.0.1',
+    'version': '17.0.0.0.3',
     'author': 'DSquare Net',
     'license': 'LGPL-3',
     'sequence': 135,

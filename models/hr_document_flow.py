@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from odoo import models, fields, api, http, _
 from odoo.exceptions import UserError, ValidationError, AccessError
 
+from odoo.addons.document_hub.models.folder import CONFIDENTIALITY_LEVELS
+
 _logger = logging.getLogger(__name__)
 
 
@@ -42,7 +44,10 @@ class DocumentFlow(models.Model):
     partner_id = fields.Many2one('res.partner', string='Client', tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     single_signature = fields.Boolean(string='Single signature', help='This button accepts documents signed by only one signer.')
-    secret_doc = fields.Boolean(string="Secret", default=False, help="Mark if document is secret.", copy=False)
+    confidentiality = fields.Selection(
+        CONFIDENTIALITY_LEVELS, string='Confidentiality', required=True, default='internal', tracking=True,
+        help='Confidentiality level of the signed document filed in Document hub. '
+             'Strictly confidential flows are also hidden from the Officer.')
 
     # Presentation-only helpers: they summarise `signers_lines` for the kanban
     # cards and the list view. They never drive the flow itself - the signing
@@ -85,23 +90,16 @@ class DocumentFlow(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = (self.env['ir.sequence'].next_by_code('hr.document_flow'))
-
+                vals['name'] = self.env['ir.sequence'].next_by_code('hr.document_flow')
             vals['state'] = 'new'
-            res = super(DocumentFlow, self).create(vals)
-            res.archive_activity_log('create', res.create_date, res.creator_id)
-            res.add_follower()
+        records = super().create(vals_list)
+        for record, vals in zip(records, vals_list):
+            record.archive_activity_log('create', record.create_date, record.creator_id)
+            record.add_follower()
             if 'attachment_ids' in vals:
-                index = 0
-                for item in vals['attachment_ids']:
-                    attachments = self.env['ir.attachment'].browse(vals['attachment_ids'][index][1])
-                    attachments.write({
-                        'res_model': self._name,
-                        'res_id': res.id,
-                    })
-                    index += 1
-            
-        return res
+                # Files uploaded on the form before saving belong to no record yet.
+                record.attachment_ids.write({'res_model': self._name, 'res_id': record.id})
+        return records
 
     def write(self, vals):
         if vals.get('signers_lines'):
@@ -427,20 +425,20 @@ class DocumentFlow(models.Model):
                     raise ValidationError(_("Only PDF files are allowed!"))
 
     def create_related_document(self):
-        if not self.secret_doc:
-            last_signer = self.signers_lines.sorted(key=lambda r: r.sequence or r.id)[-1] if self.signers_lines else False
-            
-            vals = {
-                'topic': self.title,
-                'partner_id': self.partner_id.id or False,
-                'company_id': self.company_id.id,
-                'document_flow_id': self.id,
-                'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
-                'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
-                'owner_id': self.creator_id.user_id.id if self.creator_id.user_id else False,
-            }
-            
-            self.env['document_hub.document'].sudo().create(vals)
+        last_signer = self.signers_lines.sorted(key=lambda r: r.sequence or r.id)[-1] if self.signers_lines else False
+        # The owner (the creator of the flow) keeps access whatever the level.
+        vals = {
+            'topic': self.title,
+            'partner_id': self.partner_id.id or False,
+            'company_id': self.company_id.id,
+            'document_flow_id': self.id,
+            'file_ids': [(6, 0, last_signer.attachment_ids.ids)],
+            'folder_id': self.env.ref('document_hub.folder_administration_inbox').id,
+            'owner_id': self.creator_id.user_id.id if self.creator_id.user_id else False,
+            'confidentiality': self.confidentiality,
+        }
+
+        self.env['document_hub.document'].sudo().create(vals)
 
 
 class Role(models.Model):

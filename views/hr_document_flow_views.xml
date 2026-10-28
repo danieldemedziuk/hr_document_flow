@@ -45,7 +45,7 @@
                     <field name="partner_id" />
                     <field name="doc_type" />
                     <field name="validity" />
-                    <field name="secret_doc" />
+                    <field name="confidentiality" />
                     <field name="signer_count" />
                     <field name="signed_count" />
                     <field name="progress_percent" />
@@ -56,9 +56,9 @@
                                 <div class="o_df_card_top">
                                     <div class="flex-grow-1 overflow-hidden">
                                         <div class="o_df_card_ref">
-                                            <i t-if="record.secret_doc.raw_value"
+                                            <i t-if="['confidential', 'strictly_confidential'].includes(record.confidentiality.raw_value)"
                                                class="fa fa-lock me-1 text-danger"
-                                               title="Secret document" />
+                                               t-att-title="record.confidentiality.value" />
                                             <t t-esc="record.name.value" />
                                         </div>
                                         <div class="o_df_card_title">
@@ -146,7 +146,7 @@
                         <group>
                             <group col="2">
                                 <field name="title" readonly="state not in ('draft', 'new')"/>
-                                <field name="secret_doc" readonly="state not in ('draft', 'new')" />
+                                <field name="confidentiality" readonly="state not in ('draft', 'new')" />
                                 <field name="partner_id" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')" />
                                 <field name="doc_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')" />
                                 <field name="sign_type" options="{'no_open': True, 'no_create': True, 'no_create_edit': True}" readonly="state not in ('draft', 'new')" />

@@ -14,8 +14,8 @@
                     <span t-if="record.data.single_signature" class="o_df_flag" t-att-title="singleSignatureLabel">
                         <i class="fa fa-pencil-square-o me-1"/><t t-esc="singleSignatureLabel"/>
                     </span>
-                    <span t-if="record.data.secret_doc" class="o_df_flag o_df_flag_secret" t-att-title="secretLabel">
-                        <i class="fa fa-lock me-1"/><t t-esc="secretLabel"/>
+                    <span t-if="confidentialityLabel" class="o_df_flag o_df_flag_secret" t-att-title="confidentialityLabel">
+                        <i class="fa fa-lock me-1"/><t t-esc="confidentialityLabel"/>
                     </span>
                     <span t-if="validityDate" class="o_df_flag" t-att-class="validityClass">
                         <i class="fa fa-calendar-o me-1"/><t t-esc="validityLabel"/>
