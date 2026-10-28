@@ -216,8 +216,13 @@ export class DocumentFlowTimeline extends Component {
         return _t("No signers added yet.");
     }
 
-    get secretLabel() {
-        return _t("Secret document");
+    get confidentialityLabel() {
+        // Only the restricted levels are flagged, like a lock on the kanban card.
+        const labels = {
+            confidential: _t("Confidential document"),
+            strictly_confidential: _t("Strictly confidential document"),
+        };
+        return labels[this.props.record.data.confidentiality] || "";
     }
 
     get singleSignatureLabel() {
@@ -231,7 +236,7 @@ export const documentFlowTimeline = {
         { name: "state", type: "selection" },
         { name: "single_signature", type: "boolean" },
         { name: "validity", type: "date" },
-        { name: "secret_doc", type: "boolean" },
+        { name: "confidentiality", type: "selection" },
     ],
 };
 
