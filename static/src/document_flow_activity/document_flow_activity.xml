@@ -17,6 +17,9 @@
                 <div class="o_df_log_body">
                     <div class="o_df_log_line">
                         <span class="o_df_log_action"><t t-esc="visual(entry).label"/></span>
+                        <span t-if="target(entry)" class="o_df_log_target">
+                            <i class="fa fa-long-arrow-right me-1"/><t t-esc="target(entry)"/>
+                        </span>
                         <span class="o_df_log_when"><t t-esc="when(entry)"/></span>
                     </div>
                     <div class="o_df_log_author">

@@ -26,6 +26,6 @@ def migrate(cr, version):
         if not last_signer.attachment_ids:
             skipped |= flow
             continue
-        flow.create_related_document()
+        flow._create_related_document()
     _logger.info("hr_document_flow: filed %s secret flows in Document hub, skipped without signed file: %s",
                  len(flows - skipped), skipped.mapped('name'))

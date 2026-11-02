@@ -342,6 +342,7 @@ msgstr "Anuluj"
 
 #. module: hr_document_flow
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__canceled
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__canceled
 msgid "Canceled"
 msgstr "Anulowane"
 
@@ -590,6 +591,7 @@ msgstr "Wygasłe dokumenty"
 #. module: hr_document_flow
 #. odoo-javascript
 #: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+#: code:addons/hr_document_flow/static/src/document_flow_activity/document_flow_activity.esm.js:0
 msgid "Flow canceled"
 msgstr "Obieg anulowany"
 
@@ -1067,6 +1069,7 @@ msgstr "Podpisane dokumenty"
 #. module: hr_document_flow
 #: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_signers__employee_id
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
+#: model:ir.model.fields,field_description:hr_document_flow.field_hr_document_flow_activity_logs__signer_id
 msgid "Signer"
 msgstr "Podpisujący"
 
@@ -1182,8 +1185,9 @@ msgstr "Termin ważności minął"
 
 #. module: hr_document_flow
 #: model_terms:ir.ui.view,arch_db:hr_document_flow.hr_document_flow_form_view
+#: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow_activity_logs__action__verified
 msgid "Verified"
-msgstr "Zwerifikowane"
+msgstr "Zweryfikowane"
 
 #. module: hr_document_flow
 #: model:ir.model.fields.selection,name:hr_document_flow.selection__hr_document_flow__state__verified-done
@@ -1273,3 +1277,185 @@ msgstr "Dokument ściśle poufny"
 #: model:ir.model.fields,help:hr_document_flow.field_hr_document_flow__confidentiality
 msgid "Confidentiality level of the signed document filed in Document hub. Strictly confidential flows are also hidden from the Officer."
 msgstr "Poziom poufności podpisanego dokumentu archiwizowanego w Document hub. Obiegi ściśle poufne są dodatkowo ukryte przed Urzędnikiem."
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_activity/document_flow_activity.esm.js:0
+msgid "Flow completed"
+msgstr "Obieg zakończony"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Received"
+msgstr "Otrzymał"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Sent by %s"
+msgstr "Wysłał(a): %s"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Reminders (%s)"
+msgstr "Przypomnienia (%s)"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Reminder"
+msgstr "Przypomnienie"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Last reminder sent by %s"
+msgstr "Ostatnie przypomnienie wysłał(a): %s"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "uploaded by %s"
+msgstr "wgrał(a): %s"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Recorded by %s"
+msgstr "Zarejestrował(a): %s"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Not yet"
+msgstr "Jeszcze nie"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Created on"
+msgstr "Utworzono"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "sent by %s"
+msgstr "wysłał(a): %s"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Unknown author"
+msgstr "Nieznany autor"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Author"
+msgstr "Autor"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Preparing the document"
+msgstr "Przygotowuje dokument"
+
+#. module: hr_document_flow
+#. odoo-javascript
+#: code:addons/hr_document_flow/static/src/document_flow_timeline/document_flow_timeline.esm.js:0
+msgid "Sent on"
+msgstr "Wysłano"
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "A reminder can only be sent to the signer the document is waiting for."
+msgstr "Przypomnienie można wysłać tylko do osoby, na której podpis czeka dokument."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "It is not your turn to sign this document yet."
+msgstr "To jeszcze nie Twoja kolej na podpisanie tego dokumentu."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#, python-format
+msgid "Only %s can refuse to sign this document."
+msgstr "Odmówić podpisania tego dokumentu może tylko %s."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+#, python-format
+msgid "Only %s can upload the signed document."
+msgstr "Podpisany dokument może wgrać tylko %s."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only a document flow manager can change the author of a document."
+msgstr "Autora dokumentu może zmienić tylko menedżer obiegu dokumentów."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only a document flow officer can archive a document."
+msgstr "Dokument może zarchiwizować tylko urzędnik obiegu dokumentów."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only a document flow officer can verify a document."
+msgstr "Dokument może zweryfikować tylko urzędnik obiegu dokumentów."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only a sent document with all required signatures can be archived."
+msgstr "Zarchiwizować można tylko wysłany dokument ze wszystkimi wymaganymi podpisami."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only a sent document with all required signatures can be verified."
+msgstr "Zweryfikować można tylko wysłany dokument ze wszystkimi wymaganymi podpisami."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only a sent or expired document can be canceled."
+msgstr "Anulować można tylko dokument wysłany lub przeterminowany."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only the author of the document or a manager can cancel it."
+msgstr "Dokument może anulować tylko jego autor lub menedżer."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Only the author of the document or a manager can send it for signature."
+msgstr "Dokument do podpisu może wysłać tylko jego autor lub menedżer."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "Signers cannot be changed once the document has been sent."
+msgstr "Po wysłaniu dokumentu nie można zmieniać podpisujących."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "The signature state is set by the document flow only."
+msgstr "Stan podpisu ustawia wyłącznie obieg dokumentów."
+
+#. module: hr_document_flow
+#. odoo-python
+#: code:addons/hr_document_flow/models/hr_document_flow.py:0
+msgid "This document has already been sent for signature."
+msgstr "Ten dokument został już wysłany do podpisu."

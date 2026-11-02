@@ -34,7 +34,7 @@ class TestFlowConfidentiality(TransactionCase):
         return self.env['document_hub.document'].search([('document_flow_id', '=', self.flow.id)])
 
     def test_strictly_confidential_flow_is_filed_with_its_level(self):
-        self.flow.create_related_document()
+        self.flow._create_related_document()
 
         document = self._filed_document()
         self.assertEqual(document.confidentiality, 'strictly_confidential')

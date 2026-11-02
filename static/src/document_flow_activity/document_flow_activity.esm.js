@@ -7,6 +7,42 @@ import { deserializeDateTime, formatDateTime } from "@web/core/l10n/dates";
 import { useService } from "@web/core/utils/hooks";
 import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
 
+/** Icon / colour / label per logged action; shared with the progress widget. */
+export function logVisual(action) {
+    switch (action) {
+        case "create":
+            return { icon: "fa-plus", cls: "o_df_log_create", label: _t("Document created") };
+        case "sent":
+            return { icon: "fa-paper-plane", cls: "o_df_log_sent", label: _t("Sent for signature") };
+        case "resent":
+            return { icon: "fa-repeat", cls: "o_df_log_sent", label: _t("Reminder resent") };
+        case "sign":
+            return { icon: "fa-check", cls: "o_df_log_sign", label: _t("Document signed") };
+        case "refuse":
+            return { icon: "fa-times", cls: "o_df_log_refuse", label: _t("Signature refused") };
+        case "verified":
+            return { icon: "fa-flag-checkered", cls: "o_df_log_sign", label: _t("Flow completed") };
+        case "canceled":
+            return { icon: "fa-ban", cls: "o_df_log_refuse", label: _t("Flow canceled") };
+        case "archived":
+            return { icon: "fa-archive", cls: "o_df_log_muted", label: _t("Archived") };
+        case "expired":
+            return { icon: "fa-hourglass-end", cls: "o_df_log_refuse", label: _t("Validity expired") };
+        default:
+            return { icon: "fa-circle-o", cls: "o_df_log_muted", label: action || "" };
+    }
+}
+
+/** Fetches the activity log of a document, oldest first. */
+export function fetchActivityLogs(orm, documentId) {
+    return orm.searchRead(
+        "hr.document_flow.activity_logs",
+        [["document_id", "=", documentId]],
+        ["action", "log_date", "employee_id", "signer_id"],
+        { order: "log_date asc, id asc" }
+    );
+}
+
 /**
  * Read-only history of what happened to the document, as a vertical timeline.
  *
@@ -44,40 +80,25 @@ export class DocumentFlowActivity extends Component {
             this.state.loaded = true;
             return;
         }
-        const rows = await this.orm.searchRead(
-            "hr.document_flow.activity_logs",
-            [["document_id", "=", record.resId]],
-            ["action", "log_date", "employee_id"],
-            { order: "log_date asc, id asc" }
-        );
+        const rows = await fetchActivityLogs(this.orm, record.resId);
         this.state.entries = rows;
         this.state.loaded = true;
     }
 
-    /** Icon / colour / label per logged action. */
     visual(entry) {
-        switch (entry.action) {
-            case "create":
-                return { icon: "fa-plus", cls: "o_df_log_create", label: _t("Document created") };
-            case "sent":
-                return { icon: "fa-paper-plane", cls: "o_df_log_sent", label: _t("Sent for signature") };
-            case "resent":
-                return { icon: "fa-repeat", cls: "o_df_log_sent", label: _t("Reminder resent") };
-            case "sign":
-                return { icon: "fa-check", cls: "o_df_log_sign", label: _t("Document signed") };
-            case "refuse":
-                return { icon: "fa-times", cls: "o_df_log_refuse", label: _t("Signature refused") };
-            case "archived":
-                return { icon: "fa-archive", cls: "o_df_log_muted", label: _t("Archived") };
-            case "expired":
-                return { icon: "fa-hourglass-end", cls: "o_df_log_refuse", label: _t("Validity expired") };
-            default:
-                return { icon: "fa-circle-o", cls: "o_df_log_muted", label: entry.action || "" };
-        }
+        return logVisual(entry.action);
     }
 
     author(entry) {
         return (entry.employee_id && entry.employee_id[1]) || _t("System");
+    }
+
+    /** Recipient of a send/reminder, shown as "→ name". */
+    target(entry) {
+        if (!["sent", "resent"].includes(entry.action) || !entry.signer_id) {
+            return "";
+        }
+        return entry.signer_id[1];
     }
 
     avatarUrl(entry) {

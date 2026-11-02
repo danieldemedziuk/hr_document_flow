@@ -2,15 +2,22 @@
 
 {
     'name': 'HR Document Flow',
-    'version': '17.0.0.0.3',
+    'version': '17.0.0.0.5',
     'author': 'DSquare Net',
     'license': 'LGPL-3',
     'sequence': 135,
     'summary': 'HR Document Flow.',
     'description': """
-HR Document flow is a module for Odoo 12 that streamlines the document circulation process within an organization. 
-It allows users to upload documents that need signatures, select the type of document and signature, and send it for approval to multiple recipients. 
-Additionally, the module supports adding CC (carbon copy) recipients who will be notified via email for each signature update.
+Serial signature circulation of HR documents.
+
+The author uploads a PDF, picks the document and signature type and lists the
+signers in order. Each signer is notified in turn, uploads the signed PDF, and
+the next one receives the file signed so far; contacts in copy are kept informed
+by e-mail. A completed flow is filed in Document hub with its confidentiality
+level.
+
+The form shows a signature progress timeline (author first, then the signers)
+with who did what and when, based on the activity log.
     """,
     'category': 'Human Resources',
     'depends': [
