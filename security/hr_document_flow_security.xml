@@ -36,7 +36,7 @@
         <record id="users_restrict_sign_lines_rule" model="ir.rule">
             <field name="name">HR Document flow: User see documents to sign</field>
             <field name="model_id" ref="model_hr_document_flow_signers" />
-            <field name="domain_force">['|', ('document_id.create_uid', '=', user.id), ('document_id.state', 'not in', ['draft', 'new'])]</field>
+            <field name="domain_force">['|', ('document_id.create_uid', '=', user.id), ('document_id.user_signer_ids', 'in', [user.id])]</field>
             <field name="groups" eval="[(4, ref('group_hr_document_flow_user'))]" />
         </record>
 
@@ -62,6 +62,92 @@
             <field name="name">HR Document Flow Multi-Company</field>
             <field name="model_id" ref="model_hr_document_flow" />
             <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+
+        <!-- Child records follow the visibility of their document: without
+             these, any user could read the logs, signers and contacts of
+             every flow (including strictly confidential ones) over RPC. -->
+        <record id="officer_visibility_signers_rule" model="ir.rule">
+            <field name="name">HR Document flow: Officer see signer lines of visibility documents</field>
+            <field name="model_id" ref="model_hr_document_flow_signers" />
+            <field name="domain_force">[('document_id.rel_visible_officer', '=', True), ('document_id.confidentiality', '!=', 'strictly_confidential')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_officer'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="manager_visibility_signers_rule" model="ir.rule">
+            <field name="name">HR Document flow: Manager see all signer lines</field>
+            <field name="model_id" ref="model_hr_document_flow_signers" />
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_manager'))]" />
+        </record>
+
+        <record id="hr_document_flow_signers_rule_multi_company" model="ir.rule">
+            <field name="name">HR Document Flow signer lines: Multi-Company</field>
+            <field name="model_id" ref="model_hr_document_flow_signers" />
+            <field name="domain_force">[('document_id.company_id', 'in', company_ids + [False])]</field>
+        </record>
+        <record id="users_own_employee_cc_rule" model="ir.rule">
+            <field name="name">HR Document flow: User see contacts in copy of own documents</field>
+            <field name="model_id" ref="model_hr_document_flow_employee_cc" />
+            <field name="domain_force">['|', ('document_id.create_uid', '=', user.id), ('document_id.user_signer_ids', 'in', [user.id])]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_user'))]" />
+        </record>
+        <record id="officer_visibility_employee_cc_rule" model="ir.rule">
+            <field name="name">HR Document flow: Officer see contacts in copy of visibility documents</field>
+            <field name="model_id" ref="model_hr_document_flow_employee_cc" />
+            <field name="domain_force">[('document_id.rel_visible_officer', '=', True), ('document_id.confidentiality', '!=', 'strictly_confidential')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_officer'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="manager_visibility_employee_cc_rule" model="ir.rule">
+            <field name="name">HR Document flow: Manager see all contacts in copy</field>
+            <field name="model_id" ref="model_hr_document_flow_employee_cc" />
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_manager'))]" />
+        </record>
+
+        <record id="hr_document_flow_employee_cc_rule_multi_company" model="ir.rule">
+            <field name="name">HR Document Flow contacts in copy: Multi-Company</field>
+            <field name="model_id" ref="model_hr_document_flow_employee_cc" />
+            <field name="domain_force">[('document_id.company_id', 'in', company_ids + [False])]</field>
+        </record>
+        <record id="users_own_activity_logs_rule" model="ir.rule">
+            <field name="name">HR Document flow: User see activity logs of own documents</field>
+            <field name="model_id" ref="model_hr_document_flow_activity_logs" />
+            <field name="domain_force">['|', ('document_id.create_uid', '=', user.id), ('document_id.user_signer_ids', 'in', [user.id])]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_user'))]" />
+        </record>
+        <record id="officer_visibility_activity_logs_rule" model="ir.rule">
+            <field name="name">HR Document flow: Officer see activity logs of visibility documents</field>
+            <field name="model_id" ref="model_hr_document_flow_activity_logs" />
+            <field name="domain_force">[('document_id.rel_visible_officer', '=', True), ('document_id.confidentiality', '!=', 'strictly_confidential')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_officer'))]" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_unlink" eval="False" />
+        </record>
+
+        <record id="manager_visibility_activity_logs_rule" model="ir.rule">
+            <field name="name">HR Document flow: Manager see all activity logs</field>
+            <field name="model_id" ref="model_hr_document_flow_activity_logs" />
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_hr_document_flow_manager'))]" />
+        </record>
+
+        <record id="hr_document_flow_activity_logs_rule_multi_company" model="ir.rule">
+            <field name="name">HR Document Flow activity logs: Multi-Company</field>
+            <field name="model_id" ref="model_hr_document_flow_activity_logs" />
+            <field name="domain_force">[('document_id.company_id', 'in', company_ids + [False])]</field>
         </record>
 
     </data>

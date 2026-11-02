@@ -23,42 +23,61 @@
                 </div>
             </div>
 
-            <div t-if="signers.length" class="o_df_progress_row">
-                <div class="o_df_progress">
-                    <div class="o_df_progress_bar" t-attf-style="width: {{ progress }}%;"/>
+            <!-- Document milestones: who created / sent it and how it ended -->
+            <div t-if="record.resId" class="o_df_milestones">
+                <div t-foreach="milestones" t-as="ms" t-key="ms.key"
+                     class="o_df_milestone" t-att-class="{ 'o_df_milestone_todo': !ms.done }">
+                    <span class="o_df_log_dot" t-att-class="ms.cls">
+                        <i class="fa" t-att-class="ms.icon"/>
+                    </span>
+                    <div class="o_df_milestone_text">
+                        <span class="o_df_milestone_label"><t t-esc="ms.label"/></span>
+                        <span class="o_df_milestone_meta">
+                            <t t-if="ms.who"><t t-esc="ms.who"/> · </t><t t-esc="ms.when"/>
+                        </span>
+                    </div>
                 </div>
+            </div>
+
+            <div t-if="signers.length" class="o_df_progress_row">
                 <span class="o_df_progress_counter"><t t-esc="counterLabel"/></span>
             </div>
 
-            <!-- The signer chain, in signing order -->
+            <!-- Everyone responsible for the document, in order: the author who
+                 uploads and sends it, then the signers. The connector leading to
+                 a person fills in once the flow has reached them. -->
             <div t-if="signers.length" class="o_df_chain">
-                <div t-foreach="signers" t-as="signer" t-key="signer.id"
+                <div t-foreach="steps" t-as="step" t-key="step.key"
                      class="o_df_step"
-                     t-att-class="{ 'o_df_step_current': isCurrent(signer) }">
-                    <div class="o_df_connector"/>
+                     t-att-class="{ 'o_df_step_current': step.current, 'o_df_step_author': step.isAuthor }">
+                    <div class="o_df_connector" t-att-class="step.connectorClass"/>
                     <div class="o_df_avatar_wrap">
-                        <img t-if="signerAvatarUrl(signer)" class="o_df_avatar"
-                             t-att-src="signerAvatarUrl(signer)" alt=""/>
+                        <img t-if="step.avatar" class="o_df_avatar" t-att-src="step.avatar" alt=""/>
                         <span t-else="" class="o_df_avatar o_df_avatar_empty">
                             <i class="fa fa-user"/>
                         </span>
-                        <span class="o_df_badge" t-att-class="signerVisual(signer).cls"
-                              t-att-title="signerVisual(signer).label">
-                            <i class="fa" t-att-class="signerVisual(signer).icon"/>
+                        <span class="o_df_badge" t-att-class="step.visual.cls" t-att-title="step.visual.label">
+                            <i class="fa" t-att-class="step.visual.icon"/>
                         </span>
                     </div>
-                    <div class="o_df_step_name" t-att-title="signerName(signer)">
-                        <t t-esc="signerName(signer)"/>
+                    <div class="o_df_step_name" t-att-title="step.name">
+                        <t t-esc="step.name"/>
                     </div>
-                    <div t-if="signerRole(signer)" class="o_df_step_role">
-                        <t t-esc="signerRole(signer)"/>
+                    <div t-if="step.role" class="o_df_step_role">
+                        <t t-esc="step.role"/>
                     </div>
-                    <div class="o_df_step_state" t-att-class="signerVisual(signer).cls">
-                        <t t-esc="signerVisual(signer).label"/>
+                    <div class="o_df_step_state" t-att-class="step.visual.cls">
+                        <t t-esc="step.visual.label"/>
                     </div>
-                    <div t-if="signerDate(signer)" class="o_df_step_date">
-                        <t t-esc="signerDate(signer)"/>
-                    </div>
+                    <ul t-if="step.events.length" class="o_df_step_events">
+                        <li t-foreach="step.events" t-as="ev" t-key="ev.key"
+                            t-att-class="ev.cls" t-att-title="ev.title">
+                            <i class="fa fa-fw" t-att-class="ev.icon"/>
+                            <span class="o_df_ev_label"><t t-esc="ev.label"/></span>
+                            <span class="o_df_ev_when"><t t-esc="ev.when"/></span>
+                            <span t-if="ev.by" class="o_df_ev_by"><t t-esc="ev.by"/></span>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

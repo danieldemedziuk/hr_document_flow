@@ -1,64 +1,48 @@
-
 # HR Document flow
 
-## Overview
+Serial signature circulation of HR documents for Odoo 17.
 
-HR Document flow is a module for Odoo 12 that streamlines the document circulation process within an organization. It allows users to upload documents that need signatures, select the type of document and signature, and send it for approval to multiple recipients. Additionally, the module supports adding CC (carbon copy) recipients who will be notified via email for each signature update.
+## Features
 
-## Key Features
+- **Document submission** – the author uploads a PDF and chooses the document type, signature type,
+  confidentiality level and optional validity date.
+- **Serial signing** – signers sign one after another, in the order of the list. Each signer is
+  e-mailed when it is their turn, downloads the document, signs it and uploads the signed PDF into
+  their own line; the next signer then receives the file signed so far. With *Single signature*
+  one signature closes the flow.
+- **Contacts in copy** – notified by e-mail about the flow.
+- **Completion** – once the required signatures are collected the flow is verified, the author is
+  notified, and the signed document is filed in *Document hub* (Administration / Inbox) with the
+  flow's confidentiality level.
+- **Signature progress** – a timeline on the form shows the author and every signer with their
+  photo, what each of them did and when (received, reminded, signed, refused), and highlights the
+  person the flow is waiting for.
+- **Activity log** – a full, read-only history of the flow.
+- **Reminders and expiry** – a daily cron reminds the current signer a configurable number of days
+  before the validity date and expires overdue flows.
 
-- **Document Submission**: Users can upload documents directly into the Odoo system for further approval.
-- **Document Classification**: Select the type of document (e.g., contract, agreement, policy) and the required type of signature (e.g., digital, wet).
-- **Approval Flow**: Choose individuals who are required to sign the document from a predefined list of users.
-- **CC Recipients**: Option to add CC recipients who will receive notifications for each signature via email.
-- **Signature Tracking**: Track the status of document signatures and receive notifications upon completion.
-  
-## Installation
+## Security
 
-To install the HR Document flow module in your Odoo 12 instance:
+| Group   | Access |
+|---------|--------|
+| User    | Flows they created or have to sign, with their signers, contacts and log. |
+| Officer | Additionally reads flows whose document type is visible to officers, except strictly confidential ones; can verify and archive. |
+| Manager | Everything. |
 
-1. Download or clone this repository into your Odoo custom addons directory:
-   ```bash
-   git clone https://github.com/danieldemedziuk/hr_document_flow.git
-   ```
-2. Update the app list from the Odoo interface.
-3. Search for **HR Document flow** and click **Install**.
+The flow is enforced server-side, not only by the form:
 
-## Usage
-
-1. Navigate to the **Document flow** app in Odoo.
-2. Click **Create** to upload a new document for signature.
-3. Fill out the necessary details, including:
-   - Name
-   - Document type
-   - Signature type
-   - List of recipients for signing
-   - Optional: Add CC recipients for signature updates
-4. Submit the document for approval.
-5. Track the progress of the document’s signatures and receive email notifications as the signatures are completed.
+- only the author (or a manager) sends or cancels a flow;
+- only the signer whose turn it is uploads the signed file or refuses (a manager may upload on
+  their behalf);
+- the signature state of a line is set by the flow only, and signers cannot be changed once sent;
+- the activity log is written by the server only.
 
 ## Dependencies
 
-This module requires the following Odoo core modules to be installed:
-- **hr**
-- **mail**
-- **document**
-  
-## Compatibility
-
-- Odoo 12
-- HR and Document Management modules
+- `hr`
+- `mail_template` – e-mail delivery
+- `document_hub` – filing of the signed documents
 
 ## License
 
-This module is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
-## Contribution
-
-Feel free to contribute to this module by submitting a pull request or reporting issues.
-
----
-
-**Author:** [DanielDemedziuk]  
-**Version:** 12.0.0.1  
-**Support:** daniel.demedziuk@gmail.com
+See the [LICENSE](LICENSE) file.
