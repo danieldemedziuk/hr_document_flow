@@ -105,7 +105,7 @@ class DocumentFlow(models.Model):
             vals['state'] = 'new'
         records = super().create(vals_list)
         for record, vals in zip(records, vals_list):
-            record._archive_activity_log('create', record.create_date, record.creator_id)
+            record._archive_activity_log('create', fields.Datetime.now(), record.creator_id)
             record._add_follower()
             if 'attachment_ids' in vals:
                 # Files uploaded on the form before saving belong to no record yet.
