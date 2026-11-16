@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 class DocumentFlow(models.Model):
     _name = 'hr.document_flow'
     _description = 'HR Document Flow'
-    _inherit = ['mail_template', 'mail.activity.mixin', 'mail.thread']
+    _inherit = ['mail.activity.mixin', 'mail.thread']
     _order = "state asc"
 
     # name = fields.Char(string='Name', required=True)
@@ -302,7 +302,7 @@ class DocumentFlow(models.Model):
         
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
         
-        self.send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
+        self.env['mail_template'].send_email(subject=subject, target_email=[target_email], title=title, content=message, footer=footer, cc_email=email_cc_list, attachments=files)
 
     def _check_current_flow(self):
         # Completion now happens when the last signature is uploaded; this
@@ -356,7 +356,7 @@ class DocumentFlow(models.Model):
         
         email_cc_list = [email for email in self.employee_cc_ids.mapped('email')]
         
-        self.send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message, footer=footer, cc_email=email_cc_list)
+        self.env['mail_template'].send_email(subject=subject, target_email=self.creator_id.work_email, title=title, content=message, footer=footer, cc_email=email_cc_list)
 
     def _complete_request(self):
         if self.state != 'verified-done':
@@ -449,7 +449,7 @@ class DocumentFlow(models.Model):
 
                     email_cc_list = [email for email in rec.employee_cc_ids.mapped('email')]
 
-                    rec.send_email(subject=subject, target_email=signer_id.mapped('signer_email'), title=title, content=message, footer=footer, cc_email=email_cc_list)
+                    self.env['mail_template'].send_email(subject=subject, target_email=signer_id.mapped('signer_email'), title=title, content=message, footer=footer, cc_email=email_cc_list)
 
     def compute_doc_number(self):
         self.doc_count = self.env['ir.attachment'].search_count([('res_model', '=', self._name), ('res_id', 'in', self.ids)])
