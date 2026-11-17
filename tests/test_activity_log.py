@@ -8,8 +8,9 @@ class TestFlowActivityLog(DocumentFlowCase):
     """The log tells who did what and to whom - the progress widget is built on it."""
 
     def _logs(self, flow):
-        return [(log.action, log.employee_id, log.signer_id)
-                for log in flow.sudo().activity_log_ids.sorted(lambda log: (log.log_date, log.id))]
+        logs = self.env['hr.document_flow.activity_logs'].sudo().search(
+            [('document_id', '=', flow.id)], order='log_date, id')
+        return [(log.action, log.employee_id, log.signer_id) for log in logs]
 
     def test_full_flow_is_logged_per_signer(self):
         flow = self._flow()
