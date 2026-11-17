@@ -165,13 +165,12 @@ class TestFlowSecurity(DocumentFlowCase):
         self.creator_emp.work_email = 'author@example.com'
         self.signer_1_emp.work_email = 'signer1@example.com'
         sent = []
-        Flow = type(self.env['hr.document_flow'])
+        MailTemplate = type(self.env['mail_template'])
 
-        with patch.object(Flow, 'send_email', lambda self, **kw: sent.append((self, kw))):
+        with patch.object(MailTemplate, 'send_email', lambda self, **kw: sent.append(kw)):
             self.env['hr.document_flow']._cron_check_validity_days()
 
-        mail = [kw for rec, kw in sent if rec == flow]
+        mail = [kw for kw in sent if '#id=%s&' % flow.id in kw['content']]
         self.assertEqual(len(mail), 1)
-        self.assertIn('#id=%s&' % flow.id, mail[0]['content'])
         self.assertEqual(mail[0]['target_email'], ['signer1@example.com'])
         self.assertEqual(mail[0]['cc_email'], ['author@example.com'])
